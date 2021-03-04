@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/sapawarga/phonebook-service/mocks"
 	"github.com/sapawarga/phonebook-service/mocks/testcases"
+	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/usecase"
 
 	kitlog "github.com/go-kit/kit/log"
@@ -37,15 +38,20 @@ var _ = Describe("Phone Book", func() {
 	var GetListLogic = func(idx int) {
 		ctx := context.Background()
 		data := testcases.GetPhoneBookData[idx]
-		mockPhoneBookRepo.EXPECT().GetListPhoneBook(ctx, data.GetListParams).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
-		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, data.GetMetaDataParams).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
-		resp, err := phonebook.GetList(ctx, &data.UsecaseParams)
+		mockPhoneBookRepo.EXPECT().GetListPhoneBook(ctx, &data.GetListParams).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, &data.GetMetaDataParams).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
+		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
+			Name:  data.UsecaseParams.Name,
+			Limit: data.UsecaseParams.Limit,
+			Page:  data.UsecaseParams.Page,
+		})
 		if err != nil {
 			Expect(err).NotTo(BeNil())
 			Expect(resp).To(BeNil())
 		} else {
 			Expect(err).To(BeNil())
-			Expect(resp).To(Equal(data.MockUsecase.Result))
+			Expect(resp.Page).To(Equal(data.MockUsecase.Result.Page))
+			Expect(resp.Total).To(Equal(data.MockUsecase.Result.Total))
 		}
 	}
 

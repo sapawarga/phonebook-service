@@ -36,7 +36,9 @@ var GetPhoneBookData = []GetPhoneBook{
 	{
 		Description: "success get phone book",
 		UsecaseParams: model.ParamsPhoneBook{
-			Name: "kantor",
+			Name:  "kantor",
+			Limit: 10,
+			Page:  1,
 		},
 		GetListParams: model.GetListRequest{
 			Name:  "kantor",
@@ -93,7 +95,9 @@ var GetPhoneBookData = []GetPhoneBook{
 	}, {
 		Description: "success when get nil data",
 		UsecaseParams: model.ParamsPhoneBook{
-			Name: "random name",
+			Name:  "random name",
+			Limit: 10,
+			Page:  1,
 		},
 		GetListParams: model.GetListRequest{
 			Name:  "random name",
@@ -107,7 +111,7 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
-				PhoneBooks: []*model.PhoneBookResponse{},
+				PhoneBooks: nil,
 				Page:       1,
 				Total:      0,
 			},

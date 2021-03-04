@@ -7,4 +7,6 @@ type ParamsPhoneBook struct {
 	RegencyCode  string
 	DistrictCode string
 	VillageCode  string
+	Limit        int64
+	Page         int64
 }
