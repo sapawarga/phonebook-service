@@ -24,6 +24,14 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 			return nil, err
 		}
 
-		return resp, nil
+		meta := &Metadata{
+			Page:  resp.Page,
+			Total: resp.Total,
+		}
+
+		return &PhoneBookWithMeta{
+			Data:     resp.PhoneBooks,
+			Metadata: meta,
+		}, nil
 	}
 }

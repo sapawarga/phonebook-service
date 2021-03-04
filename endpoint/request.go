@@ -7,4 +7,6 @@ type GetListRequest struct {
 	RegencyCode  string `json:"regency_code"`
 	DistrictCode string `json:"district_code"`
 	VillageCode  string `json:"village_code"`
+	Limit        int64  `json:"limit"`
+	Page         int64  `json:"page"`
 }

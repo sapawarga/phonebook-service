@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 
 	kitlog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -27,22 +26,27 @@ func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
 // GetList ...
 func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook) (*model.PhoneBookWithMeta, error) {
 	logger := kitlog.With(pb.logger, "method", "GetList")
-	resp, err := pb.repo.GetListPhoneBook(ctx, &model.GetListRequest{
-		Name:  params.Name,
-		Limit: params.Limit,
-		Page:  params.Page,
-	})
-	fmt.Println(resp)
+	req := &model.GetListRequest{
+		Name:         params.Name,
+		PhoneNumber:  params.PhoneNumber,
+		RegencyCode:  params.RegencyCode,
+		DistrictCode: params.DistrictCode,
+		VillageCode:  params.VillageCode,
+		Limit:        params.Limit,
+		Offset:       (params.Page - 1) * 10,
+	}
+
+	resp, err := pb.repo.GetListPhoneBook(ctx, req)
 	if err != nil {
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
 
-	total, err := pb.repo.GetMetaDataPhoneBook(ctx, &model.GetListRequest{
-		Name:  params.Name,
-		Limit: params.Limit,
-		Page:  params.Page,
-	})
+	total, err := pb.repo.GetMetaDataPhoneBook(ctx, req)
+	if err != nil {
+		level.Error(logger).Log("error", err)
+		return nil, err
+	}
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: resp,

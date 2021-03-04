@@ -7,6 +7,7 @@ type GetListRequest struct {
 	RegencyCode  string
 	DistrictCode string
 	VillageCode  string
+	Status       int64
 	Limit        int64
-	Page         int64
+	Offset       int64
 }

@@ -1,6 +1,10 @@
 package testcases
 
-import "github.com/sapawarga/phonebook-service/model"
+import (
+	"database/sql"
+
+	"github.com/sapawarga/phonebook-service/model"
+)
 
 // ResponseFromUsecase ...
 type ResponseFromUsecase struct {
@@ -41,29 +45,29 @@ var GetPhoneBookData = []GetPhoneBook{
 			Page:  1,
 		},
 		GetListParams: model.GetListRequest{
-			Name:  "kantor",
-			Limit: 10,
-			Page:  1,
+			Name:   "kantor",
+			Limit:  10,
+			Offset: 0,
 		},
 		GetMetaDataParams: model.GetListRequest{
-			Name:  "kantor",
-			Limit: 10,
-			Page:  1,
+			Name:   "kantor",
+			Limit:  10,
+			Offset: 0,
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
 				PhoneBooks: []*model.PhoneBookResponse{
 					{
 						ID:          1,
-						Name:        "kantor",
-						PhoneNumber: "022123",
-						Description: "kantor cabang McD",
+						Name:        sql.NullString{String: "kantor", Valid: true},
+						PhoneNumber: `[{"phone_number": "022123"}]`,
+						Description: sql.NullString{String: "kantor cabang MCD", Valid: true},
 					},
 					{
 						ID:          2,
-						Name:        "kantor",
-						PhoneNumber: "14225",
-						Description: "kantor makanan",
+						Name:        sql.NullString{String: "kantor", Valid: true},
+						PhoneNumber: `[{"phone_number": "423443"}]`,
+						Description: sql.NullString{String: "kantor makanan", Valid: true},
 					},
 				},
 				Page:  1,
@@ -79,15 +83,15 @@ var GetPhoneBookData = []GetPhoneBook{
 			Result: []*model.PhoneBookResponse{
 				{
 					ID:          1,
-					Name:        "kantor McD",
-					PhoneNumber: "022123",
-					Description: "kantor cabang McD",
+					Name:        sql.NullString{String: "kantor", Valid: true},
+					PhoneNumber: `[{"phone_number": "022123"}]`,
+					Description: sql.NullString{String: "kantor cabang MCD", Valid: true},
 				},
 				{
 					ID:          2,
-					Name:        "kantor makanan",
-					PhoneNumber: "14225",
-					Description: "kantor makanan",
+					Name:        sql.NullString{String: "kantor", Valid: true},
+					PhoneNumber: `[{"phone_number": "423443"}]`,
+					Description: sql.NullString{String: "kantor makanan", Valid: true},
 				},
 			},
 			Error: nil,
@@ -100,14 +104,14 @@ var GetPhoneBookData = []GetPhoneBook{
 			Page:  1,
 		},
 		GetListParams: model.GetListRequest{
-			Name:  "random name",
-			Limit: 10,
-			Page:  1,
+			Name:   "random name",
+			Limit:  10,
+			Offset: 0,
 		},
 		GetMetaDataParams: model.GetListRequest{
-			Name:  "random name",
-			Limit: 10,
-			Page:  1,
+			Name:   "random name",
+			Limit:  10,
+			Offset: 0,
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
