@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/sapawarga/phonebook-service/endpoint"
-	transportPhonebook "github.com/sapawarga/phonebook-service/transport/grpc/phonebook"
 	"github.com/sapawarga/phonebook-service/usecase"
+	transportPhonebook "github.com/sapawarga/proto-file/phonebook"
 
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
 )

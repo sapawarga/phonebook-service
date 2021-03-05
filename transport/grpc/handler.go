@@ -3,7 +3,7 @@ package grpc
 import (
 	"context"
 
-	transportPhonebook "github.com/sapawarga/phonebook-service/transport/grpc/phonebook"
+	transportPhonebook "github.com/sapawarga/proto-file/phonebook"
 
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
 )
