@@ -1,0 +1,45 @@
+syntax = "proto3";
+package phonebook;
+
+service PhoneBookHandler {
+    rpc GetList(GetListRequest) returns (GetListResponse);
+}
+
+message GetListRequest {
+    string name = 1;
+	string phone_number = 2;
+	int64 regency_id = 3;  
+	int64 district_id = 4; 
+	int64 village_id = 5;  
+	int64 status = 6;       
+	int64 limit = 7;  
+	int64 page = 8;   
+}
+
+message GetListResponse {
+    repeated PhoneBook data = 1;
+    Metadata metadata = 2;
+}
+
+message Metadata {
+    int64 page = 1;
+    int64 total = 2;
+}
+
+message PhoneBook {
+    int64 id = 1;
+	string phone_number = 2;
+	string description = 3;
+	string name = 4;
+	string address = 5;
+	int64 regency_id = 6;
+	int64 district_id = 7;
+	int64 village_id = 8;
+	string latitude = 9;
+	string longitude = 10;
+	string cover_image_path = 11;
+	int64 status = 12;
+	string created_at = 13;
+	string updated_at = 14;
+	int64 category_id = 15;
+}

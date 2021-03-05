@@ -3,9 +3,10 @@ package endpoint
 import (
 	"context"
 
-	"github.com/go-kit/kit/endpoint"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/usecase"
+
+	"github.com/go-kit/kit/endpoint"
 )
 
 // MakeGetList ...
@@ -13,11 +14,14 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 	return func(ctx context.Context, params interface{}) (interface{}, error) {
 		req := params.(*GetListRequest)
 		resp, err := usecase.GetList(ctx, &model.ParamsPhoneBook{
-			Name:         req.Name,
-			PhoneNumber:  req.PhoneNumber,
-			RegencyCode:  req.RegencyCode,
-			DistrictCode: req.DistrictCode,
-			VillageCode:  req.VillageCode,
+			Name:        req.Name,
+			PhoneNumber: req.PhoneNumber,
+			RegencyID:   req.RegencyID,
+			DistrictID:  req.DistrictID,
+			VillageID:   req.VillageID,
+			Status:      req.Status,
+			Limit:       req.Limit,
+			Page:        req.Page,
 		})
 
 		if err != nil {

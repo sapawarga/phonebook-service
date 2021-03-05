@@ -4,8 +4,8 @@ import "github.com/sapawarga/phonebook-service/model"
 
 // PhoneBookWithMeta ...
 type PhoneBookWithMeta struct {
-	Data     []*model.PhoneBookResponse `json:"data"`
-	Metadata *Metadata                  `json:"metadata"`
+	Data     []*model.Phonebook `json:"data"`
+	Metadata *Metadata          `json:"metadata"`
 }
 
 // Metadata ...

@@ -2,12 +2,12 @@ package model
 
 // ParamsPhoneBook ...
 type ParamsPhoneBook struct {
-	Name         string
-	PhoneNumber  string
-	RegencyCode  string
-	DistrictCode string
-	VillageCode  string
-	Status       int64
-	Limit        int64
-	Page         int64
+	Name        string
+	PhoneNumber string
+	RegencyID   int64
+	DistrictID  int64
+	VillageID   int64
+	Status      int64
+	Limit       int64
+	Page        int64
 }

@@ -56,18 +56,18 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
-				PhoneBooks: []*model.PhoneBookResponse{
+				PhoneBooks: []*model.Phonebook{
 					{
 						ID:          1,
-						Name:        sql.NullString{String: "kantor", Valid: true},
+						Name:        "kantor",
 						PhoneNumber: `[{"phone_number": "022123"}]`,
-						Description: sql.NullString{String: "kantor cabang MCD", Valid: true},
+						Description: "kantor cabang MCD",
 					},
 					{
 						ID:          2,
-						Name:        sql.NullString{String: "kantor", Valid: true},
+						Name:        "kantor",
 						PhoneNumber: `[{"phone_number": "423443"}]`,
-						Description: sql.NullString{String: "kantor makanan", Valid: true},
+						Description: "kantor makanan",
 					},
 				},
 				Page:  1,
