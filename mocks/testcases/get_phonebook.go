@@ -3,6 +3,7 @@ package testcases
 import (
 	"database/sql"
 
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 )
 
@@ -45,14 +46,14 @@ var GetPhoneBookData = []GetPhoneBook{
 			Page:  1,
 		},
 		GetListParams: model.GetListRequest{
-			Name:   "kantor",
-			Limit:  10,
-			Offset: 0,
+			Name:   helper.SetPointerString("kantor"),
+			Limit:  helper.SetPointerInt64(10),
+			Offset: helper.SetPointerInt64(0),
 		},
 		GetMetaDataParams: model.GetListRequest{
-			Name:   "kantor",
-			Limit:  10,
-			Offset: 0,
+			Name:   helper.SetPointerString("kantor"),
+			Limit:  helper.SetPointerInt64(10),
+			Offset: helper.SetPointerInt64(0),
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
@@ -104,14 +105,14 @@ var GetPhoneBookData = []GetPhoneBook{
 			Page:  1,
 		},
 		GetListParams: model.GetListRequest{
-			Name:   "random name",
-			Limit:  10,
-			Offset: 0,
+			Name:   helper.SetPointerString("random name"),
+			Limit:  helper.SetPointerInt64(10),
+			Offset: helper.SetPointerInt64(0),
 		},
 		GetMetaDataParams: model.GetListRequest{
-			Name:   "random name",
-			Limit:  10,
-			Offset: 0,
+			Name:   helper.SetPointerString("random name"),
+			Limit:  helper.SetPointerInt64(10),
+			Offset: helper.SetPointerInt64(0),
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
