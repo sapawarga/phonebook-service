@@ -38,12 +38,11 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 		FROM sapawarga.phonebooks`)
 
 	query.WriteString("WHERE ")
-	if params.Name != nil {
-		query.WriteString(fmt.Sprintf(` name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Name)+"'%'"))
-		queryParams = append(queryParams, params.Name)
-	} else if params.PhoneNumber != nil {
-		query.WriteString(fmt.Sprintf(` AND phone_numbers LIKE %s `, "'%'"+helper.GetStringFromPointer(params.PhoneNumber)+"'%'"))
-		queryParams = append(queryParams, params.Name)
+	if params.Search != nil {
+		query.WriteString(fmt.Sprintf(` name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
+		queryParams = append(queryParams, params.Search)
+		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
+		queryParams = append(queryParams, params.Search)
 	}
 
 	if ctx != nil {
@@ -64,3 +63,15 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 	// TODO: create query for get metadata
 	return 0, nil
 }
+
+// GetPhonebookDetailByID ...
+func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int64) (*model.PhoneBookResponse, error)
+
+// GetCategoryNameByID ...
+func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64) (string, error)
+
+// GetLocationNameByID ...
+func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (string, error)
+
+// Insert ...
+func (r *PhonebookRepository) Insert(ctx context.Context, params interface{}) error
