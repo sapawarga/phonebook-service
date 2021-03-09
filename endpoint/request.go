@@ -15,9 +15,9 @@ type GetListRequest struct {
 
 // AddPhonebookRequest ...
 type AddPhonebookRequest struct {
-	Name           *string `json:"name"`
+	Name           string  `json:"name"`
 	Description    *string `json:"description"`
-	PhoneNumber    *string `json:"phone_number"`
+	PhoneNumbers   *string `json:"phone_numbers"`
 	RegencyID      *int64  `json:"regency_id"`
 	DistrictID     *int64  `json:"district_id"`
 	VillageID      *int64  `json:"village_id"`
@@ -26,6 +26,7 @@ type AddPhonebookRequest struct {
 	Longitude      *string `json:"longitude"`
 	CategoryID     *int64  `json:"category_id"`
 	CoverImagePath *string `json:"cover_image_path"`
+	Address        *string `json:"address"`
 }
 
 // GetDetailRequest ...

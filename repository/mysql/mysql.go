@@ -74,4 +74,4 @@ func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64)
 func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (string, error)
 
 // Insert ...
-func (r *PhonebookRepository) Insert(ctx context.Context, params interface{}) error
+func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhonebook) error

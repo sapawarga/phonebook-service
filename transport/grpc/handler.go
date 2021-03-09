@@ -11,6 +11,7 @@ import (
 type grpcServer struct {
 	phonebookGetList   kitgrpc.Handler
 	phonebookGetDetail kitgrpc.Handler
+	phonebookAdd       kitgrpc.Handler
 }
 
 func (g *grpcServer) GetList(ctx context.Context, req *transportPhonebook.GetListRequest) (*transportPhonebook.GetListResponse, error) {
@@ -27,4 +28,12 @@ func (g *grpcServer) GetDetail(ctx context.Context, req *transportPhonebook.GetD
 		return nil, err
 	}
 	return resp.(*transportPhonebook.GetDetailResponse), nil
+}
+
+func (g *grpcServer) AddPhonebook(ctx context.Context, req *transportPhonebook.AddPhonebookRequest) (*transportPhonebook.StatusResponse, error) {
+	_, resp, err := g.phonebookAdd.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*transportPhonebook.StatusResponse), nil
 }

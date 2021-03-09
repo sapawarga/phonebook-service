@@ -110,7 +110,7 @@ func (mr *MockPhoneBookIMockRecorder) GetPhonebookDetailByID(arg0, arg1 interfac
 }
 
 // Insert mocks base method
-func (m *MockPhoneBookI) Insert(arg0 context.Context, arg1 interface{}) error {
+func (m *MockPhoneBookI) Insert(arg0 context.Context, arg1 *model.AddPhonebook) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
 	ret0, _ := ret[0].(error)
