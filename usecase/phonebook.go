@@ -74,7 +74,6 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 
 // GetDetail ...
 func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookDetail, error) {
-	// TODO: create detail phone number
 	logger := kitlog.With(pb.logger, "method", "GetDetail")
 
 	resp, err := pb.repo.GetPhonebookDetailByID(ctx, id)
@@ -140,7 +139,13 @@ func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookD
 }
 
 // Insert ...
-func (pb *PhoneBook) Insert(ctx context.Context, params interface{}) error {
+func (pb *PhoneBook) Insert(ctx context.Context, params *model.AddPhonebook) error {
 	// TODO: insert new phone number
+	logger := kitlog.With(pb.logger, "method", "Insert")
+	err := pb.repo.Insert(ctx, params)
+	if err != nil {
+		level.Error(logger).Log("error", err)
+		return err
+	}
 	return nil
 }
