@@ -41,9 +41,9 @@ var _ = Describe("Phone Book", func() {
 		mockPhoneBookRepo.EXPECT().GetListPhoneBook(ctx, &data.GetListParams).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, &data.GetMetaDataParams).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
 		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
-			Name:  data.UsecaseParams.Name,
-			Limit: data.UsecaseParams.Limit,
-			Page:  data.UsecaseParams.Page,
+			Search: data.UsecaseParams.Search,
+			Limit:  data.UsecaseParams.Limit,
+			Page:   data.UsecaseParams.Page,
 		})
 		if err != nil {
 			Expect(err).NotTo(BeNil())

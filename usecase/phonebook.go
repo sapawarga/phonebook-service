@@ -29,13 +29,12 @@ func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
 func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook) (*model.PhoneBookWithMeta, error) {
 	logger := kitlog.With(pb.logger, "method", "GetList")
 	req := &model.GetListRequest{
-		Name:        helper.SetPointerString(params.Name),
-		PhoneNumber: helper.SetPointerString(params.PhoneNumber),
-		RegencyID:   helper.SetPointerInt64(params.RegencyID),
-		DistrictID:  helper.SetPointerInt64(params.DistrictID),
-		VillageID:   helper.SetPointerInt64(params.VillageID),
-		Limit:       helper.SetPointerInt64(params.Limit),
-		Offset:      helper.SetPointerInt64((params.Page - 1) * 10),
+		Search:     helper.SetPointerString(params.Search),
+		RegencyID:  helper.SetPointerInt64(params.RegencyID),
+		DistrictID: helper.SetPointerInt64(params.DistrictID),
+		VillageID:  helper.SetPointerInt64(params.VillageID),
+		Limit:      helper.SetPointerInt64(params.Limit),
+		Offset:     helper.SetPointerInt64((params.Page - 1) * 10),
 	}
 
 	resp, err := pb.repo.GetListPhoneBook(ctx, req)
@@ -48,21 +47,14 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 
 	for _, v := range resp {
 		result := &model.Phonebook{
-			ID:             v.ID,
-			PhoneNumber:    v.PhoneNumber,
-			Description:    v.Description.String,
-			Name:           v.Name.String,
-			Address:        v.Address.String,
-			RegencyID:      v.DistrictID.Int64,
-			DistrictID:     v.DistrictID.Int64,
-			VillageID:      v.VillageID.Int64,
-			Latitude:       v.Latitude.String,
-			Longitude:      v.Longitude.String,
-			CoverImagePath: v.CoverImagePath.String,
-			Status:         v.Status.Int64,
-			CreatedAt:      v.CreatedAt.Time,
-			UpdatedAt:      v.UpdatedAt.Time,
-			CategoryID:     v.CategoryID.Int64,
+			ID:           v.ID,
+			PhoneNumbers: v.PhoneNumbers,
+			Description:  v.Description.String,
+			Name:         v.Name.String,
+			Address:      v.Address.String,
+			Latitude:     v.Latitude.String,
+			Longitude:    v.Longitude.String,
+			Status:       v.Status.Int64,
 		}
 		data = append(data, result)
 	}
@@ -78,4 +70,77 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		Page:       params.Page,
 		Total:      total,
 	}, nil
+}
+
+// GetDetail ...
+func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookDetail, error) {
+	// TODO: create detail phone number
+	logger := kitlog.With(pb.logger, "method", "GetDetail")
+
+	resp, err := pb.repo.GetPhonebookDetailByID(ctx, id)
+	if err != nil {
+		level.Error(logger).Log("error", err)
+		return nil, err
+	}
+
+	result := &model.PhonebookDetail{
+		ID:             resp.ID,
+		Name:           resp.Name.String,
+		Address:        resp.Address.String,
+		Description:    resp.Description.String,
+		PhoneNumbers:   resp.PhoneNumbers,
+		Latitude:       resp.Latitude.String,
+		Longitude:      resp.Longitude.String,
+		CoverImagePath: resp.CoverImagePath.String,
+		Status:         resp.Status.Int64,
+		CreatedAt:      resp.CreatedAt.Time,
+		UpdatedAt:      resp.UpdatedAt.Time,
+	}
+
+	if resp.CategoryID.Valid {
+		categoryName, err := pb.repo.GetCategoryNameByID(ctx, resp.CategoryID.Int64)
+		if err != nil {
+			level.Error(logger).Log("error_get_category", err)
+			return nil, err
+		}
+		result.CategoryID = resp.CategoryID.Int64
+		result.CategoryName = categoryName
+	}
+
+	if resp.RegencyID.Valid {
+		regencyName, err := pb.repo.GetLocationNameByID(ctx, resp.RegencyID.Int64)
+		if err != nil {
+			level.Error(logger).Log("error_get_regency", err)
+			return nil, err
+		}
+		result.RegencyID = resp.RegencyID.Int64
+		result.RegencyName = regencyName
+	}
+
+	if resp.DistrictID.Valid {
+		districtName, err := pb.repo.GetLocationNameByID(ctx, resp.DistrictID.Int64)
+		if err != nil {
+			level.Error(logger).Log("error_get_district", err)
+			return nil, err
+		}
+		result.DistrictID = resp.DistrictID.Int64
+		result.DistrictName = districtName
+	}
+
+	if resp.VillageID.Valid {
+		villageName, err := pb.repo.GetLocationNameByID(ctx, resp.VillageID.Int64)
+		if err != nil {
+			level.Error(logger).Log("error_get_village", err)
+			return nil, err
+		}
+		result.VillageID = resp.VillageID.Int64
+		result.VillageName = villageName
+	}
+	return result, nil
+}
+
+// Insert ...
+func (pb *PhoneBook) Insert(ctx context.Context, params interface{}) error {
+	// TODO: insert new phone number
+	return nil
 }

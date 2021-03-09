@@ -41,17 +41,17 @@ var GetPhoneBookData = []GetPhoneBook{
 	{
 		Description: "success get phone book",
 		UsecaseParams: model.ParamsPhoneBook{
-			Name:  "kantor",
-			Limit: 10,
-			Page:  1,
+			Search: "kantor",
+			Limit:  10,
+			Page:   1,
 		},
 		GetListParams: model.GetListRequest{
-			Name:   helper.SetPointerString("kantor"),
+			Search: helper.SetPointerString("kantor"),
 			Limit:  helper.SetPointerInt64(10),
 			Offset: helper.SetPointerInt64(0),
 		},
 		GetMetaDataParams: model.GetListRequest{
-			Name:   helper.SetPointerString("kantor"),
+			Search: helper.SetPointerString("kantor"),
 			Limit:  helper.SetPointerInt64(10),
 			Offset: helper.SetPointerInt64(0),
 		},
@@ -59,16 +59,16 @@ var GetPhoneBookData = []GetPhoneBook{
 			Result: &model.PhoneBookWithMeta{
 				PhoneBooks: []*model.Phonebook{
 					{
-						ID:          1,
-						Name:        "kantor",
-						PhoneNumber: `[{"phone_number": "022123"}]`,
-						Description: "kantor cabang MCD",
+						ID:           1,
+						Name:         "kantor",
+						PhoneNumbers: `[{"phone_number": "022123"}]`,
+						Description:  "kantor cabang MCD",
 					},
 					{
-						ID:          2,
-						Name:        "kantor",
-						PhoneNumber: `[{"phone_number": "423443"}]`,
-						Description: "kantor makanan",
+						ID:           2,
+						Name:         "kantor",
+						PhoneNumbers: `[{"phone_number": "423443"}]`,
+						Description:  "kantor makanan",
 					},
 				},
 				Page:  1,
@@ -83,16 +83,16 @@ var GetPhoneBookData = []GetPhoneBook{
 		MockGetList: ResponseGetList{
 			Result: []*model.PhoneBookResponse{
 				{
-					ID:          1,
-					Name:        sql.NullString{String: "kantor", Valid: true},
-					PhoneNumber: `[{"phone_number": "022123"}]`,
-					Description: sql.NullString{String: "kantor cabang MCD", Valid: true},
+					ID:           1,
+					Name:         sql.NullString{String: "kantor", Valid: true},
+					PhoneNumbers: `[{"phone_number": "022123"}]`,
+					Description:  sql.NullString{String: "kantor cabang MCD", Valid: true},
 				},
 				{
-					ID:          2,
-					Name:        sql.NullString{String: "kantor", Valid: true},
-					PhoneNumber: `[{"phone_number": "423443"}]`,
-					Description: sql.NullString{String: "kantor makanan", Valid: true},
+					ID:           2,
+					Name:         sql.NullString{String: "kantor", Valid: true},
+					PhoneNumbers: `[{"phone_number": "423443"}]`,
+					Description:  sql.NullString{String: "kantor makanan", Valid: true},
 				},
 			},
 			Error: nil,
@@ -100,17 +100,17 @@ var GetPhoneBookData = []GetPhoneBook{
 	}, {
 		Description: "success when get nil data",
 		UsecaseParams: model.ParamsPhoneBook{
-			Name:  "random name",
-			Limit: 10,
-			Page:  1,
+			Search: "random name",
+			Limit:  10,
+			Page:   1,
 		},
 		GetListParams: model.GetListRequest{
-			Name:   helper.SetPointerString("random name"),
+			Search: helper.SetPointerString("random name"),
 			Limit:  helper.SetPointerInt64(10),
 			Offset: helper.SetPointerInt64(0),
 		},
 		GetMetaDataParams: model.GetListRequest{
-			Name:   helper.SetPointerString("random name"),
+			Search: helper.SetPointerString("random name"),
 			Limit:  helper.SetPointerInt64(10),
 			Offset: helper.SetPointerInt64(0),
 		},
