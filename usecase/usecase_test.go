@@ -74,10 +74,22 @@ var _ = Describe("Phone Book", func() {
 		}
 	}
 
+	// InsertPhonebookLogic ...
+	var InsertPhonebookLogic = func(idx int) {
+		ctx := context.Background()
+		data := testcases.InsertPhonebookTestcases[idx]
+		mockPhoneBookRepo.EXPECT().Insert(ctx, &data.RepositoryRequest).Return(data.RepositoryResponse).Times(1)
+		err := phonebook.Insert(ctx, &data.UsecaseRequest)
+		if err != nil {
+			Expect(err).NotTo(BeNil())
+		}
+	}
+
 	// sort all function names
 	var unitTestLogic = map[string]map[string]interface{}{
 		"GetList":   {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
 		"GetDetail": {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
+		"Insert":    {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
 	}
 
 	for _, val := range unitTestLogic {
