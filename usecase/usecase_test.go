@@ -59,18 +59,18 @@ var _ = Describe("Phone Book", func() {
 	// GetDetailPhonebookLogic ...
 	var GetDetailPhonebookLogic = func(idx int) {
 		ctx := context.Background()
-		data := testcases.GetDetailPhonebookData[idx] // test
-		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryRequest).Return(data.MockCategory.Result, data.MockCategory.Error).Times(1)
+		data := testcases.GetDetailPhonebookData[idx]
+		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, gomock.Any()).Return(data.MockCategory.Result, data.MockCategory.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetLocationNameByID(ctx, gomock.Any()).Return(data.MockLocation.Result, data.MockLocation.Error).Times(3)
 		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRequest).Return(data.MockPhonebookDetail.Result, data.MockPhonebookDetail.Error).Times(1)
 		resp, err := phonebook.GetDetail(ctx, data.UsecaseParams)
 		if err != nil {
 			Expect(err).NotTo(BeNil())
-			fmt.Println(err)
 			Expect(resp).To(BeNil())
 		} else {
 			Expect(err).To(BeNil())
 			Expect(resp).NotTo(BeNil())
+			Expect(resp).To(Equal(data.MockUsecase.Result))
 		}
 	}
 
