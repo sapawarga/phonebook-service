@@ -41,9 +41,9 @@ var GetPhoneBookData = []GetPhoneBook{
 	{
 		Description: "success get phone book",
 		UsecaseParams: model.ParamsPhoneBook{
-			Search: "kantor",
-			Limit:  10,
-			Page:   1,
+			Search: helper.SetPointerString("kantor"),
+			Limit:  helper.SetPointerInt64(10),
+			Page:   helper.SetPointerInt64(1),
 		},
 		GetListParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),
@@ -100,9 +100,9 @@ var GetPhoneBookData = []GetPhoneBook{
 	}, {
 		Description: "success when get nil data",
 		UsecaseParams: model.ParamsPhoneBook{
-			Search: "random name",
-			Limit:  10,
-			Page:   1,
+			Search: helper.SetPointerString("random name"),
+			Limit:  helper.SetPointerInt64(10),
+			Page:   helper.SetPointerInt64(1),
 		},
 		GetListParams: model.GetListRequest{
 			Search: helper.SetPointerString("random name"),
@@ -133,8 +133,8 @@ var GetPhoneBookData = []GetPhoneBook{
 	},
 }
 
-// Description :
-func Description() []string {
+// ListPhonebookDescription :
+func ListPhonebookDescription() []string {
 	var arr = []string{}
 	for _, data := range GetPhoneBookData {
 		arr = append(arr, data.Description)

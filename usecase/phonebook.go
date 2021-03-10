@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/repository"
 
@@ -28,13 +27,14 @@ func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
 // GetList ...
 func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook) (*model.PhoneBookWithMeta, error) {
 	logger := kitlog.With(pb.logger, "method", "GetList")
+	offset := (*params.Page - 1) * 10
 	req := &model.GetListRequest{
-		Search:     helper.SetPointerString(params.Search),
-		RegencyID:  helper.SetPointerInt64(params.RegencyID),
-		DistrictID: helper.SetPointerInt64(params.DistrictID),
-		VillageID:  helper.SetPointerInt64(params.VillageID),
-		Limit:      helper.SetPointerInt64(params.Limit),
-		Offset:     helper.SetPointerInt64((params.Page - 1) * 10),
+		Search:     params.Search,
+		RegencyID:  params.RegencyID,
+		DistrictID: params.DistrictID,
+		VillageID:  params.VillageID,
+		Limit:      params.Limit,
+		Offset:     &offset,
 	}
 
 	resp, err := pb.repo.GetListPhoneBook(ctx, req)
@@ -67,7 +67,7 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
-		Page:       params.Page,
+		Page:       *params.Page,
 		Total:      total,
 	}, nil
 }

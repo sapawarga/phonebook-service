@@ -3,6 +3,7 @@ package endpoint
 import (
 	"context"
 
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/usecase"
 
@@ -13,15 +14,29 @@ import (
 func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*GetListRequest)
-		resp, err := usecase.GetList(ctx, &model.ParamsPhoneBook{
-			Search:     req.Search,
-			RegencyID:  req.RegencyID,
-			DistrictID: req.DistrictID,
-			VillageID:  req.VillageID,
-			Status:     req.Status,
-			Limit:      req.Limit,
-			Page:       req.Page,
-		})
+		params := &model.ParamsPhoneBook{}
+		if req.Search != "" {
+			params.Search = helper.SetPointerString(req.Search)
+		}
+		if req.RegencyID != 0 {
+			params.RegencyID = helper.SetPointerInt64(req.RegencyID)
+		}
+		if req.DistrictID != 0 {
+			params.DistrictID = helper.SetPointerInt64(req.DistrictID)
+		}
+		if req.VillageID != 0 {
+			params.VillageID = helper.SetPointerInt64(req.VillageID)
+		}
+		if req.Status != 0 {
+			params.Status = helper.SetPointerInt64(req.Status)
+		}
+		if req.Limit != 0 {
+			params.Limit = helper.SetPointerInt64(req.Limit)
+		}
+		if req.Page != 0 {
+			params.Page = helper.SetPointerInt64(req.Page)
+		}
+		resp, err := usecase.GetList(ctx, params)
 
 		if err != nil {
 			return nil, err

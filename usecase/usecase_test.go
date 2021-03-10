@@ -6,13 +6,13 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/golang/mock/gomock"
 	"github.com/sapawarga/phonebook-service/mocks"
 	"github.com/sapawarga/phonebook-service/mocks/testcases"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/usecase"
 
 	kitlog "github.com/go-kit/kit/log"
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
@@ -38,8 +38,8 @@ var _ = Describe("Phone Book", func() {
 	var GetListLogic = func(idx int) {
 		ctx := context.Background()
 		data := testcases.GetPhoneBookData[idx]
-		mockPhoneBookRepo.EXPECT().GetListPhoneBook(ctx, &data.GetListParams).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
-		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, &data.GetMetaDataParams).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetListPhoneBook(ctx, gomock.Any()).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
 		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
 			Search: data.UsecaseParams.Search,
 			Limit:  data.UsecaseParams.Limit,
@@ -52,12 +52,32 @@ var _ = Describe("Phone Book", func() {
 			Expect(err).To(BeNil())
 			Expect(resp.Page).To(Equal(data.MockUsecase.Result.Page))
 			Expect(resp.Total).To(Equal(data.MockUsecase.Result.Total))
+			Expect(resp).NotTo(BeNil())
+		}
+	}
+
+	// GetDetailPhonebookLogic ...
+	var GetDetailPhonebookLogic = func(idx int) {
+		ctx := context.Background()
+		data := testcases.GetDetailPhonebookData[idx] // test
+		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryRequest).Return(data.MockCategory.Result, data.MockCategory.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetLocationNameByID(ctx, gomock.Any()).Return(data.MockLocation.Result, data.MockLocation.Error).Times(3)
+		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRequest).Return(data.MockPhonebookDetail.Result, data.MockPhonebookDetail.Error).Times(1)
+		resp, err := phonebook.GetDetail(ctx, data.UsecaseParams)
+		if err != nil {
+			Expect(err).NotTo(BeNil())
+			fmt.Println(err)
+			Expect(resp).To(BeNil())
+		} else {
+			Expect(err).To(BeNil())
+			Expect(resp).NotTo(BeNil())
 		}
 	}
 
 	// sort all function names
 	var unitTestLogic = map[string]map[string]interface{}{
-		"GetList": {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.Description()},
+		"GetList":   {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
+		"GetDetail": {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
 	}
 
 	for _, val := range unitTestLogic {

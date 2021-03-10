@@ -9,6 +9,9 @@ proto: clean
 	@mkdir -p ./transport/grpc/phonebook
 	@cd ./transport/grpc/phonebook && protoc *.proto --go_out=plugins=grpc:.
 	@echo "--- Finished generate proto file ---"
+
+test:
+	@go test ./... -coverprofile=./coverage.out & go tool cover -html=./coverage.out
 	
 build:
 	@GOOS=linux GOARCH=amd64
