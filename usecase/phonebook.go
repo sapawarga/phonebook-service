@@ -166,3 +166,20 @@ func (pb *PhoneBook) Update(ctx context.Context, params *model.UpdatePhonebook) 
 
 	return nil
 }
+
+// Delete ...
+func (pb *PhoneBook) Delete(ctx context.Context, id int64) error {
+	// TODO: delete phonebook
+	logger := kitlog.With(pb.logger, "method", "Delete")
+	if _, err := pb.repo.GetCategoryNameByID(ctx, id); err != nil {
+		level.Error(logger).Log("error_get_detail", err)
+		return err
+	}
+
+	if err := pb.repo.Delete(ctx, id); err != nil {
+		level.Error(logger).Log("error_delete", err)
+		return err
+	}
+
+	return nil
+}

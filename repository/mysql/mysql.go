@@ -78,3 +78,6 @@ func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhone
 
 // Update ...
 func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePhonebook) error
+
+// Delete ...
+func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error
