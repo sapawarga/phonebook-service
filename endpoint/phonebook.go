@@ -109,8 +109,8 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 		}
 
 		return &StatusResponse{
-			Code:    "phonebook_success",
-			Message: "phonebook_has_been_created",
+			Code:    "phonebook_created",
+			Message: "phonebook_has_been_created_succesfully",
 		}, nil
 
 	}
@@ -139,8 +139,22 @@ func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint
 		}
 
 		return &StatusResponse{
-			Code:    "phonebook_update",
+			Code:    "phonebook_updated",
 			Message: "phonebook_has_been_updated_successfuly",
+		}, nil
+	}
+}
+
+// MakeDeletePhonebook ...
+func MakeDeletePhonebook(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(*GetDetailRequest)
+		if err := usecase.Delete(ctx, req.ID); err != nil {
+			return nil, err
+		}
+		return &StatusResponse{
+			Code:    "phonebook_deleted",
+			Message: "phonebook_has_been_deleted_successfuly",
 		}, nil
 	}
 }

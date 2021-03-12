@@ -37,11 +37,18 @@ func MakeHandler(ctx context.Context, fs usecase.Provider) transportPhonebook.Ph
 		encodeStatusResponse,
 	)
 
+	phonebookDeleteHandler := kitgrpc.NewServer(
+		endpoint.MakeDeletePhonebook(ctx, fs),
+		decodeGetDetailRequest,
+		encodeStatusResponse,
+	)
+
 	return &grpcServer{
 		phonebookGetListHandler,
 		phonebookGetDetailHandler,
 		phonebookAddHandler,
 		phonebookUpdateHandler,
+		phonebookDeleteHandler,
 	}
 }
 

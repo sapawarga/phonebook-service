@@ -8,7 +8,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/onsi/ginkgo v1.7.0
 	github.com/onsi/gomega v1.4.3
-	github.com/sapawarga/proto-file v0.0.0-20210312021125-639c386748d6
+	github.com/sapawarga/proto-file v0.0.0-20210312064847-ef1cbcb6cf73
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.5.1
 	google.golang.org/grpc v1.36.0
