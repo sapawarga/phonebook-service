@@ -33,3 +33,20 @@ type AddPhonebookRequest struct {
 type GetDetailRequest struct {
 	ID int64 `httpparams:"id"`
 }
+
+// UpdatePhonebookRequest ...
+type UpdatePhonebookRequest struct {
+	ID             int64   `json:"id"`
+	Name           string  `json:"name"`
+	Description    *string `json:"description"`
+	PhoneNumbers   *string `json:"phone_numbers"`
+	RegencyID      *int64  `json:"regency_id"`
+	DistrictID     *int64  `json:"district_id"`
+	VillageID      *int64  `json:"village_id"`
+	Status         *int64  `json:"status"`
+	Latitude       *string `json:"latitude"`
+	Longitude      *string `json:"longitude"`
+	CategoryID     *int64  `json:"category_id"`
+	CoverImagePath *string `json:"cover_image_path"`
+	Address        *string `json:"address"`
+}

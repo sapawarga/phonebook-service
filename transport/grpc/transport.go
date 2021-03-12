@@ -28,13 +28,20 @@ func MakeHandler(ctx context.Context, fs usecase.Provider) transportPhonebook.Ph
 	phonebookAddHandler := kitgrpc.NewServer(
 		endpoint.MakeAddPhonebook(ctx, fs),
 		decodeAddPhonebookRequest,
-		encodeAddPhonebookResponse,
+		encodeStatusResponse,
+	)
+
+	phonebookUpdateHandler := kitgrpc.NewServer(
+		endpoint.MakeUpdatePhonebook(ctx, fs),
+		decodeUpdatePhonebookRequest,
+		encodeStatusResponse,
 	)
 
 	return &grpcServer{
 		phonebookGetListHandler,
 		phonebookGetDetailHandler,
 		phonebookAddHandler,
+		phonebookUpdateHandler,
 	}
 }
 
@@ -146,10 +153,44 @@ func decodeAddPhonebookRequest(ctx context.Context, r interface{}) (interface{},
 	return request, nil
 }
 
-func encodeAddPhonebookResponse(ctx context.Context, r interface{}) (interface{}, error) {
+func encodeStatusResponse(ctx context.Context, r interface{}) (interface{}, error) {
 	resp := r.(*endpoint.StatusResponse)
 	return &transportPhonebook.StatusResponse{
 		Code:    resp.Code,
 		Message: resp.Message,
 	}, nil
+}
+
+func decodeUpdatePhonebookRequest(ctx context.Context, r interface{}) (interface{}, error) {
+	req := r.(*transportPhonebook.UpdatePhonebookRequest)
+	request := &endpoint.UpdatePhonebookRequest{
+		ID:           req.GetId(),
+		Name:         req.GetName(),
+		PhoneNumbers: helper.SetPointerString(req.GetPhoneNumbers()),
+	}
+	if req.Address != "" {
+		request.Address = helper.SetPointerString(req.GetAddress())
+	}
+	if req.CategoryId != 0 {
+		request.CategoryID = helper.SetPointerInt64(req.GetCategoryId())
+	}
+	if req.CoverImagePath != "" {
+		request.CoverImagePath = helper.SetPointerString(req.GetCoverImagePath())
+	}
+	if req.Description != "" {
+		request.Description = helper.SetPointerString(req.GetDescription())
+	}
+	if req.DistrictId != 0 {
+		request.DistrictID = helper.SetPointerInt64(req.GetDistrictId())
+	}
+	if req.Latitude != "" {
+		request.Latitude = helper.SetPointerString(req.GetLatitude())
+	}
+	if req.Longitude != "" {
+		request.Longitude = helper.SetPointerString(req.GetLongitude())
+	}
+	if req.Status != 0 {
+		request.Status = helper.SetPointerInt64(req.GetStatus())
+	}
+	return request, nil
 }
