@@ -1,6 +1,8 @@
 package testcases
 
 import (
+	"errors"
+
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 )
@@ -37,6 +39,12 @@ var InsertPhonebookTestcases = []InsertPhonebook{
 		RepositoryRequest:  insertPhonebook,
 		RepositoryResponse: nil,
 		UsecaseResponse:    nil,
+	}, {
+		Description:        "failed_insert_new_phonebook",
+		UsecaseRequest:     insertPhonebook,
+		RepositoryRequest:  insertPhonebook,
+		RepositoryResponse: errors.New("failed_insert_new_phonebook"),
+		UsecaseResponse:    errors.New("failed_insert_new_phonebook"),
 	},
 }
 

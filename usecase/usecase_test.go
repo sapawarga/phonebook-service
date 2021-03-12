@@ -89,10 +89,24 @@ var _ = Describe("Phone Book", func() {
 	var UpdatePhonebookLogic = func(idx int) {
 		ctx := context.Background()
 		data := testcases.UpdatePhonebookTestcases[idx]
-		fmt.Println("for index ", idx, "get data ", data.GetDetailRepositoryRequest)
 		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRepositoryRequest).Return(data.MockDetailRepository.Result, data.MockDetailRepository.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().Update(ctx, &data.UpdateRepositoryRequest).Return(data.MockUpdateRepository).Times(1)
 		err := phonebook.Update(ctx, &data.UsecaseRequest)
+		if err != nil {
+			Expect(err).NotTo(BeNil())
+		} else {
+			Expect(err).To(BeNil())
+		}
+	}
+
+	// DeletePhonebookLogic ...
+	var DeletePhonebookLogic = func(idx int) {
+		ctx := context.Background()
+		fmt.Println("length of testcase ", len(testcases.DeletePhonebookTestcases))
+		data := testcases.DeletePhonebookTestcases[idx]
+		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRepositoryRequest).Return(data.MockDetailRepository.Result, data.MockDetailRepository.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().Delete(ctx, data.DeleteRepositoryRequest).Return(data.MockDeleteRepository).Times(1)
+		err := phonebook.Delete(ctx, data.UsecaseRequest)
 		if err != nil {
 			Expect(err).NotTo(BeNil())
 		} else {
@@ -106,6 +120,7 @@ var _ = Describe("Phone Book", func() {
 		"GetDetail": {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
 		"Insert":    {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
 		"Update":    {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
+		"Delete":    {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
 	}
 
 	for _, val := range unitTestLogic {
