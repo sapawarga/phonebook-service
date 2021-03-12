@@ -149,3 +149,21 @@ func (pb *PhoneBook) Insert(ctx context.Context, params *model.AddPhonebook) err
 	}
 	return nil
 }
+
+// Update ...
+func (pb *PhoneBook) Update(ctx context.Context, params *model.UpdatePhonebook) error {
+	// TODO: update phonebook
+	logger := kitlog.With(pb.logger, "method", "Update")
+	_, err := pb.GetDetail(ctx, params.ID)
+	if err != nil {
+		level.Error(logger).Log("error_get_detail", err)
+		return err
+	}
+
+	if err = pb.Update(ctx, params); err != nil {
+		level.Error(logger).Log("error_update", err)
+		return err
+	}
+
+	return nil
+}
