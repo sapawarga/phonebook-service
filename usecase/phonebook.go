@@ -154,13 +154,12 @@ func (pb *PhoneBook) Insert(ctx context.Context, params *model.AddPhonebook) err
 func (pb *PhoneBook) Update(ctx context.Context, params *model.UpdatePhonebook) error {
 	// TODO: update phonebook
 	logger := kitlog.With(pb.logger, "method", "Update")
-	_, err := pb.GetDetail(ctx, params.ID)
-	if err != nil {
+	if _, err := pb.repo.GetPhonebookDetailByID(ctx, params.ID); err != nil {
 		level.Error(logger).Log("error_get_detail", err)
 		return err
 	}
 
-	if err = pb.Update(ctx, params); err != nil {
+	if err := pb.repo.Update(ctx, params); err != nil {
 		level.Error(logger).Log("error_update", err)
 		return err
 	}
