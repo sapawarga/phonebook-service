@@ -4,43 +4,26 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 )
 
-// UpdatePhonebook ...
-type UpdatePhonebook struct {
+// DeletePhonebook ...
+type DeletePhonebook struct {
 	Description                string
-	UsecaseRequest             model.UpdatePhonebook
-	UpdateRepositoryRequest    model.UpdatePhonebook
+	UsecaseRequest             int64
+	DeleteRepositoryRequest    int64
 	GetDetailRepositoryRequest int64
 	MockDetailRepository       GetDetailResponseRepository
-	MockUpdateRepository       error
+	MockDeleteRepository       error
 	MockUsecase                error
 }
 
-var updatePhonebook = model.UpdatePhonebook{
-	ID:             1,
-	Name:           "kantor",
-	PhoneNumbers:   helper.SetPointerString(`[{"type": "phone", "phone_number":"14045"}]`),
-	Address:        helper.SetPointerString("jalan jalan"),
-	Description:    helper.SetPointerString("test"),
-	RegencyID:      nil,
-	DistrictID:     nil,
-	VillageID:      nil,
-	Latitude:       helper.SetPointerString("-3.09893"),
-	Longitude:      helper.SetPointerString("0.98878"),
-	CoverImagePath: helper.SetPointerString("http://localhot:3000"),
-	Status:         helper.SetPointerInt64(10),
-	CategoryID:     nil,
-}
-
-// UpdatePhonebookTestcases ...
-var UpdatePhonebookTestcases = []UpdatePhonebook{
+// DeletePhonebookTestcases ...
+var DeletePhonebookTestcases = []DeletePhonebook{
 	{
-		Description:                "success_update_phonebook",
-		UsecaseRequest:             updatePhonebook,
-		UpdateRepositoryRequest:    updatePhonebook,
+		Description:                "success_delete_phonebook",
+		UsecaseRequest:             1,
+		DeleteRepositoryRequest:    1,
 		GetDetailRepositoryRequest: 1,
 		MockDetailRepository: GetDetailResponseRepository{
 			Result: &model.PhoneBookResponse{
@@ -62,23 +45,23 @@ var UpdatePhonebookTestcases = []UpdatePhonebook{
 			},
 			Error: nil,
 		},
-		MockUpdateRepository: nil,
+		MockDeleteRepository: nil,
 		MockUsecase:          nil,
 	}, {
 		Description:                "failed_get_detail_phonebook",
-		UsecaseRequest:             updatePhonebook,
-		UpdateRepositoryRequest:    updatePhonebook,
+		UsecaseRequest:             1,
+		DeleteRepositoryRequest:    1,
 		GetDetailRepositoryRequest: 1,
 		MockDetailRepository: GetDetailResponseRepository{
 			Result: nil,
 			Error:  errors.New("invalid_id_detail"),
 		},
-		MockUpdateRepository: nil,
+		MockDeleteRepository: nil,
 		MockUsecase:          errors.New("invalid_id_detail"),
 	}, {
-		Description:                "failed_update_phonebook",
-		UsecaseRequest:             updatePhonebook,
-		UpdateRepositoryRequest:    updatePhonebook,
+		Description:                "failed_delete_phonebook",
+		UsecaseRequest:             1,
+		DeleteRepositoryRequest:    1,
 		GetDetailRepositoryRequest: 1,
 		MockDetailRepository: GetDetailResponseRepository{
 			Result: &model.PhoneBookResponse{
@@ -100,15 +83,15 @@ var UpdatePhonebookTestcases = []UpdatePhonebook{
 			},
 			Error: nil,
 		},
-		MockUpdateRepository: errors.New("failed_update_a_phonebook"),
-		MockUsecase:          errors.New("failed_update_a_phonebook"),
+		MockDeleteRepository: errors.New("failed_on_delete_phonebook"),
+		MockUsecase:          errors.New("failed_on_delete_phonebook"),
 	},
 }
 
-// UpdatePhonebookDescription :
-func UpdatePhonebookDescription() []string {
+// DeletePhonebookDescription :
+func DeletePhonebookDescription() []string {
 	var arr = []string{}
-	for _, data := range UpdatePhonebookTestcases {
+	for _, data := range DeletePhonebookTestcases {
 		arr = append(arr, data.Description)
 	}
 	return arr

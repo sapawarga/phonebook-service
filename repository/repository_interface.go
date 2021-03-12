@@ -16,6 +16,8 @@ type PhoneBookI interface {
 	GetLocationNameByID(ctx context.Context, id int64) (string, error)
 	// Create section
 	Insert(ctx context.Context, params *model.AddPhonebook) error
-	// Update Section
+	// Update section
 	Update(ctx context.Context, params *model.UpdatePhonebook) error
+	// Delete section
+	Delete(ctx context.Context, id int64) error
 }
