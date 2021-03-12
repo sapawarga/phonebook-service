@@ -115,3 +115,32 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 
 	}
 }
+
+// MakeUpdatePhonebook ...
+func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(*UpdatePhonebookRequest)
+		if err := usecase.Update(ctx, &model.UpdatePhonebook{
+			ID:             req.ID,
+			Name:           req.Name,
+			PhoneNumbers:   req.PhoneNumbers,
+			Address:        req.Address,
+			Description:    req.Description,
+			RegencyID:      req.RegencyID,
+			DistrictID:     req.DistrictID,
+			VillageID:      req.VillageID,
+			CategoryID:     req.CategoryID,
+			Latitude:       req.Latitude,
+			Longitude:      req.Longitude,
+			CoverImagePath: req.CoverImagePath,
+			Status:         req.Status,
+		}); err != nil {
+			return nil, err
+		}
+
+		return &StatusResponse{
+			Code:    "phonebook_update",
+			Message: "phonebook_has_been_updated_successfuly",
+		}, nil
+	}
+}

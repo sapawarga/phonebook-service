@@ -75,3 +75,6 @@ func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64)
 
 // Insert ...
 func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhonebook) error
+
+// Update ...
+func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePhonebook) error

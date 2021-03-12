@@ -62,7 +62,7 @@ var _ = Describe("Phone Book", func() {
 		data := testcases.GetDetailPhonebookData[idx]
 		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, gomock.Any()).Return(data.MockCategory.Result, data.MockCategory.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetLocationNameByID(ctx, gomock.Any()).Return(data.MockLocation.Result, data.MockLocation.Error).Times(3)
-		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRequest).Return(data.MockPhonebookDetail.Result, data.MockPhonebookDetail.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRequest).Return(data.MockPhonebookDetail.Result, data.MockPhonebookDetail.Error)
 		resp, err := phonebook.GetDetail(ctx, data.UsecaseParams)
 		if err != nil {
 			Expect(err).NotTo(BeNil())
@@ -85,11 +85,27 @@ var _ = Describe("Phone Book", func() {
 		}
 	}
 
+	// UpdatePhonebookLogic ...
+	var UpdatePhonebookLogic = func(idx int) {
+		ctx := context.Background()
+		data := testcases.UpdatePhonebookTestcases[idx]
+		fmt.Println("for index ", idx, "get data ", data.GetDetailRepositoryRequest)
+		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRepositoryRequest).Return(data.MockDetailRepository.Result, data.MockDetailRepository.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().Update(ctx, &data.UpdateRepositoryRequest).Return(data.MockUpdateRepository).Times(1)
+		err := phonebook.Update(ctx, &data.UsecaseRequest)
+		if err != nil {
+			Expect(err).NotTo(BeNil())
+		} else {
+			Expect(err).To(BeNil())
+		}
+	}
+
 	// sort all function names
 	var unitTestLogic = map[string]map[string]interface{}{
 		"GetList":   {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
 		"GetDetail": {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
 		"Insert":    {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
+		"Update":    {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
 	}
 
 	for _, val := range unitTestLogic {
