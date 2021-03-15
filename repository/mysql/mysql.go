@@ -36,7 +36,7 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 		SELECT
 			id, name, description, address, phone_numbers, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path,
 			status, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at, category_id
-		FROM sapawarga.phonebooks`)
+		FROM phonebooks`)
 
 	if params.Search != nil {
 		if first {
@@ -121,7 +121,7 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 	query.WriteString(`
 		SELECT
 			COUNT(1)
-		FROM sapawarga.phonebooks`)
+		FROM phonebooks`)
 
 	if params.Search != nil {
 		if first {
@@ -205,7 +205,7 @@ func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int
 	SELECT
 		id, phone_numbers, description, name, address, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path,
 		status, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at, category_id
-	FROM sapawarga.phonebooks`)
+	FROM phonebooks`)
 	query.WriteString(" WHERE id = ? ")
 
 	if ctx != nil {
@@ -226,10 +226,52 @@ func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int
 }
 
 // GetCategoryNameByID ...
-func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64) (string, error)
+func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64) (string, error) {
+	var query bytes.Buffer
+	var result string
+	var err error
+
+	query.WriteString(` SELECT name from categories WHERE id = ?`)
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, &result, query.String(), id)
+	} else {
+		err = r.conn.Get(&result, query.String(), id)
+	}
+
+	if err == sql.ErrNoRows {
+		return "", sql.ErrNoRows
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
+}
 
 // GetLocationNameByID ...
-func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (string, error)
+func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (string, error) {
+	var query bytes.Buffer
+	var result string
+	var err error
+
+	query.WriteString(` SELECT name from areas WHERE id = ?`)
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, &result, query.String(), id)
+	} else {
+		err = r.conn.Get(&result, query.String(), id)
+	}
+
+	if err == sql.ErrNoRows {
+		return "", sql.ErrNoRows
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
+}
 
 // Insert ...
 func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhonebook) error
