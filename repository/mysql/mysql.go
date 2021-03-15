@@ -274,10 +274,188 @@ func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64)
 }
 
 // Insert ...
-func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhonebook) error
+func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhonebook) error {
+	var query bytes.Buffer
+	var err error
+	_, current := helper.GetCurrentTimeUTC()
+
+	query.WriteString("INSERT INTO phonebooks")
+	query.WriteString(`
+		(name, description, address, phone_numbers, kabkota_id, kec_id, kel_id, latitude, longitude, 
+		seq, cover_image_path, status, created_at, updated_at, category_id)`)
+	query.WriteString(`VALUES(
+		:name, :description, :address, :phone_numbers, :kabkota_id, :kec_id, :kel_id, :latitude, :longitude, 
+		1, :cover_image_path, :status, :created_at, :updated_at, :cateogry_id)`)
+	queryParams := map[string]interface{}{
+		"name":             params.Name,
+		"description":      params.Description,
+		"address":          params.Address,
+		"phone_numbers":    params.PhoneNumbers,
+		"kabkota_id":       params.RegencyID,
+		"kec_id":           params.DistrictID,
+		"kel_id":           params.VillageID,
+		"latitude":         params.Latitude,
+		"longitude":        params.Longitude,
+		"cover_image_path": params.CoverImagePath,
+		"status":           params.Status,
+		"created_at":       current,
+		"updated_at":       current,
+		"category_id":      params.CategoryID,
+	}
+
+	if ctx != nil {
+		_, err = r.conn.NamedExecContext(ctx, query.String(), queryParams)
+	} else {
+		_, err = r.conn.NamedExec(query.String(), queryParams)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // Update ...
-func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePhonebook) error
+func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePhonebook) error {
+	var query bytes.Buffer
+	var queryParams = make(map[string]interface{})
+	var first = true
+	var err error
+	_, unixTime := helper.GetCurrentTimeUTC()
+
+	query.WriteString(" UPDATE phonebooks SET ")
+	if params.Address != nil {
+		query.WriteString(" address = :address ")
+		queryParams["address"] = params.Address
+		first = false
+	}
+	if params.CategoryID != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" category_id = :category_id ")
+		queryParams["category_id"] = params.CategoryID
+		first = false
+	}
+	if params.CoverImagePath != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" cover_image_path = :cover_image_path")
+		queryParams["cover_image_path"] = params.CoverImagePath
+		first = false
+	}
+	if params.Description != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" description = :description ")
+		queryParams["description"] = params.Description
+		first = false
+	}
+	if params.DistrictID != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" kec_id = :kec_id ")
+		queryParams["kec_id"] = params.DistrictID
+		first = false
+	}
+	if params.Latitude != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" latitude = :latitude ")
+		queryParams["latitude"] = params.Latitude
+		first = false
+	}
+	if params.Longitude != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" longitude = :longitude ")
+		queryParams["longitude"] = params.Longitude
+		first = false
+	}
+	if params.Name != "" {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" name = :name ")
+		queryParams["name"] = params.Name
+		first = false
+	}
+	if params.PhoneNumbers != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" phone_numbers = :phone_numbers")
+		queryParams["phone_numbers"] = params.PhoneNumbers
+		first = false
+	}
+	if params.RegencyID != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" kabkota_id = :kabkota_id")
+		queryParams["kabkota_id"] = params.RegencyID
+		first = false
+	}
+	if params.Status != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" status = :status")
+		queryParams["status"] = params.Status
+		first = false
+	}
+	if params.VillageID != nil {
+		if !first {
+			query.WriteString(" , ")
+		}
+		query.WriteString(" kel_id = :kel_id")
+		queryParams["kel_id"] = params.VillageID
+		first = false
+	}
+	if !first {
+		query.WriteString(" , ")
+	}
+	query.WriteString(" updated_at = :updated_at WHERE id = :id")
+	queryParams["updated_at"] = unixTime
+	queryParams["id"] = params.ID
+
+	if ctx != nil {
+		_, err = r.conn.NamedExecContext(ctx, query.String(), queryParams)
+	} else {
+		_, err = r.conn.NamedExec(query.String(), queryParams)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // Delete ...
-func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error
+func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error {
+	var query bytes.Buffer
+	var params = make(map[string]interface{})
+	var err error
+
+	query.WriteString(" UPDATE phonebooks SET status = :status WHERE id = :id ")
+	params["status"] = helper.DELETED
+	params["id"] = id
+	if ctx != nil {
+		_, err = r.conn.NamedExecContext(ctx, query.String(), params)
+	} else {
+		_, err = r.conn.NamedExec(query.String(), params)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
