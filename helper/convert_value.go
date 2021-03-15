@@ -31,3 +31,9 @@ func GetInt64FromPointer(val *int64) int64 {
 func GetTimeFromPointer(val *time.Time) time.Time {
 	return *val
 }
+
+// GetCurrentTimeUTC ...
+func GetCurrentTimeUTC() (standartTime time.Time, unixTime int64) {
+	current := time.Now().UTC()
+	return current, current.Unix()
+}
