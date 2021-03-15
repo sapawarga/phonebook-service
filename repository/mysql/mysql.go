@@ -3,6 +3,7 @@ package mysql
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/sapawarga/phonebook-service/helper"
@@ -195,7 +196,34 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 }
 
 // GetPhonebookDetailByID ...
-func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int64) (*model.PhoneBookResponse, error)
+func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int64) (*model.PhoneBookResponse, error) {
+	var query bytes.Buffer
+	var result *model.PhoneBookResponse
+	var err error
+
+	query.WriteString(`
+	SELECT
+		id, phone_numbers, description, name, address, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path,
+		status, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at, category_id
+	FROM sapawarga.phonebooks`)
+	query.WriteString(" WHERE id = ? ")
+
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, result, query.String(), id)
+	} else {
+		err = r.conn.Get(result, query.String(), id)
+	}
+
+	if err == sql.ErrNoRows {
+		return nil, sql.ErrNoRows
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
 
 // GetCategoryNameByID ...
 func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64) (string, error)
