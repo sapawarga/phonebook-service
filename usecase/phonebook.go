@@ -76,7 +76,7 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
-		Page:       *params.Page,
+		Page:       page,
 		Total:      total,
 	}, nil
 }

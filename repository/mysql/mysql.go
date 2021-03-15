@@ -111,8 +111,87 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 
 // GetMetaDataPhoneBook ...
 func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *model.GetListRequest) (int64, error) {
-	// TODO: create query for get metadata
-	return 0, nil
+	var query bytes.Buffer
+	var queryParams []interface{}
+	var total int64
+	var err error
+	var first = true
+
+	query.WriteString(`
+		SELECT
+			COUNT(1)
+		FROM sapawarga.phonebooks`)
+
+	if params.Search != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
+		queryParams = append(queryParams, params.Search)
+		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
+		queryParams = append(queryParams, params.Search)
+		first = false
+	}
+
+	if params.RegencyID != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" kabkota_id = ? ")
+		queryParams = append(queryParams, params.RegencyID)
+		first = false
+	}
+
+	if params.DistrictID != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" kec_id = ? ")
+		queryParams = append(queryParams, params.DistrictID)
+		first = false
+	}
+
+	if params.VillageID != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" kel_id = ?")
+		queryParams = append(queryParams, params.VillageID)
+		first = false
+	}
+
+	if params.Status != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" status = ?")
+		queryParams = append(queryParams, params.Status)
+	}
+
+	query.WriteString(" LIMIT ?, ?")
+	queryParams = append(queryParams, params.Offset, params.Limit)
+
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, &total, query.String(), queryParams...)
+	} else {
+		err = r.conn.Get(&total, query.String(), queryParams...)
+	}
+
+	if err != nil {
+		return 0, err
+	}
+
+	return total, nil
 }
 
 // GetPhonebookDetailByID ...
