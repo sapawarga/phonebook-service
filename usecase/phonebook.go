@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/repository"
 
@@ -27,7 +28,15 @@ func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
 // GetList ...
 func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook) (*model.PhoneBookWithMeta, error) {
 	logger := kitlog.With(pb.logger, "method", "GetList")
-	offset := (*params.Page - 1) * 10
+	var limit, page, offset int64 = 10, 1, 0
+	if params.Limit != nil {
+		limit = helper.GetInt64FromPointer(params.Limit)
+	}
+	if params.Page != nil {
+		page = helper.GetInt64FromPointer(params.Page)
+	}
+	offset = (page - 1) * limit
+
 	req := &model.GetListRequest{
 		Search:     params.Search,
 		RegencyID:  params.RegencyID,

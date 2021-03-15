@@ -25,11 +25,11 @@ func NewPhonebookRepository(conn *sqlx.DB) *PhonebookRepository {
 
 // GetListPhoneBook ...
 func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *model.GetListRequest) ([]*model.PhoneBookResponse, error) {
-	// TODO: create query for get list phone book
 	var query bytes.Buffer
 	var queryParams []interface{}
 	var result []*model.PhoneBookResponse
 	var err error
+	var first = true
 
 	query.WriteString(`
 		SELECT
@@ -37,13 +37,64 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 			status, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at, category_id
 		FROM sapawarga.phonebooks`)
 
-	query.WriteString("WHERE ")
 	if params.Search != nil {
-		query.WriteString(fmt.Sprintf(` name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
 		queryParams = append(queryParams, params.Search)
-		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
+		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
 		queryParams = append(queryParams, params.Search)
+		first = false
 	}
+
+	if params.RegencyID != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" kabkota_id = ? ")
+		queryParams = append(queryParams, params.RegencyID)
+		first = false
+	}
+
+	if params.DistrictID != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" kec_id = ? ")
+		queryParams = append(queryParams, params.DistrictID)
+		first = false
+	}
+
+	if params.VillageID != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" kel_id = ?")
+		queryParams = append(queryParams, params.VillageID)
+		first = false
+	}
+
+	if params.Status != nil {
+		if first {
+			query.WriteString(" WHERE ")
+		} else {
+			query.WriteString(" AND ")
+		}
+		query.WriteString(" status = ?")
+		queryParams = append(queryParams, params.Status)
+	}
+
+	query.WriteString(" LIMIT ?, ?")
+	queryParams = append(queryParams, params.Offset, params.Limit)
 
 	if ctx != nil {
 		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
