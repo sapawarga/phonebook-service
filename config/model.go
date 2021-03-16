@@ -12,7 +12,7 @@ type DB struct {
 
 // Config ...
 type Config struct {
-	AppPort string
+	AppPort int
 	AppEnv  string
 	Debug   bool
 	DB      *DB

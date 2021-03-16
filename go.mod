@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/go-kit/kit v0.10.0
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/mock v1.5.0
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/onsi/ginkgo v1.7.0

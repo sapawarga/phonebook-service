@@ -42,7 +42,8 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		RegencyID:  params.RegencyID,
 		DistrictID: params.DistrictID,
 		VillageID:  params.VillageID,
-		Limit:      params.Limit,
+		Status:     params.Status,
+		Limit:      &limit,
 		Offset:     &offset,
 	}
 
@@ -57,7 +58,7 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 	for _, v := range resp {
 		result := &model.Phonebook{
 			ID:           v.ID,
-			PhoneNumbers: v.PhoneNumbers,
+			PhoneNumbers: v.PhoneNumbers.String,
 			Description:  v.Description.String,
 			Name:         v.Name.String,
 			Address:      v.Address.String,
@@ -96,7 +97,7 @@ func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookD
 		Name:           resp.Name.String,
 		Address:        resp.Address.String,
 		Description:    resp.Description.String,
-		PhoneNumbers:   resp.PhoneNumbers,
+		PhoneNumbers:   resp.PhoneNumbers.String,
 		Latitude:       resp.Latitude.String,
 		Longitude:      resp.Longitude.String,
 		CoverImagePath: resp.CoverImagePath.String,

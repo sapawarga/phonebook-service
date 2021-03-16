@@ -5,7 +5,7 @@ import "database/sql"
 // PhoneBookResponse ...
 type PhoneBookResponse struct {
 	ID             int64          `db:"id"`
-	PhoneNumbers   string         `db:"phone_numbers"`
+	PhoneNumbers   sql.NullString `db:"phone_numbers"`
 	Description    sql.NullString `db:"description"`
 	Name           sql.NullString `db:"name"`
 	Address        sql.NullString `db:"address"`
