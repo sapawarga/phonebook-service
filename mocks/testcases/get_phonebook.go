@@ -85,13 +85,13 @@ var GetPhoneBookData = []GetPhoneBook{
 				{
 					ID:           1,
 					Name:         sql.NullString{String: "kantor", Valid: true},
-					PhoneNumbers: `[{"phone_number": "022123"}]`,
+					PhoneNumbers: sql.NullString{String: `[{"type":"phone", "phone_number":"+62812312131"]`, Valid: true},
 					Description:  sql.NullString{String: "kantor cabang MCD", Valid: true},
 				},
 				{
 					ID:           2,
 					Name:         sql.NullString{String: "kantor", Valid: true},
-					PhoneNumbers: `[{"phone_number": "423443"}]`,
+					PhoneNumbers: sql.NullString{String: `[{"type":"phone", "phone_number":"+62812312131"]`, Valid: true},
 					Description:  sql.NullString{String: "kantor makanan", Valid: true},
 				},
 			},

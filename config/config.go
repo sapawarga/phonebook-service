@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 )
 
@@ -22,8 +23,8 @@ func init() {
 func NewConfig() (defConfig *Config, err error) {
 	defConfig = &Config{}
 	appEnv := viper.GetString(`APP_ENV`)
-	appPort := viper.GetString(`APP_PORT`)
-	debug := viper.GetBool(`DEBUG`)
+	appPort := viper.GetInt(`APP_PORT`)
+	debug := viper.GetBool(`APP_DEBUG`)
 
 	dbHost := viper.GetString(`DB_HOST`)
 	dbPort := viper.GetInt(`DB_PORT`)
@@ -32,7 +33,7 @@ func NewConfig() (defConfig *Config, err error) {
 	dbName := viper.GetString(`DB_NAME`)
 	driverName := viper.GetString(`DB_DRIVER_NAME`)
 
-	if appEnv == "" || appPort == "" {
+	if appEnv == "" || appPort == 0 {
 		err = fmt.Errorf("[CONFIG][Critical] Please check section APP on %s", configJSONFileName)
 		return
 	}
@@ -41,7 +42,7 @@ func NewConfig() (defConfig *Config, err error) {
 	defConfig.AppPort = appPort
 	defConfig.Debug = debug
 
-	if dbHost == "" || dbPort == 0 || dbUser == "" || dbPassword == "" || dbName == "" || driverName == "" {
+	if dbHost == "" || dbPort == 0 || dbUser == "" || dbName == "" || driverName == "" {
 		err = fmt.Errorf("[CONFIG][Critical] Please check section DB on %s", configJSONFileName)
 		return
 	}

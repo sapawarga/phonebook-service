@@ -28,7 +28,7 @@ var DeletePhonebookTestcases = []DeletePhonebook{
 		MockDetailRepository: GetDetailResponseRepository{
 			Result: &model.PhoneBookResponse{
 				ID:             1,
-				PhoneNumbers:   `[{"type":"phone", "phone_number":"+62812312131"]`,
+				PhoneNumbers:   sql.NullString{String: `[{"type":"phone", "phone_number":"+62812312131"]`, Valid: true},
 				Description:    sql.NullString{String: "test case", Valid: true},
 				Name:           sql.NullString{String: "test kantor", Valid: true},
 				Address:        sql.NullString{String: "jalan panjang", Valid: true},
@@ -66,7 +66,7 @@ var DeletePhonebookTestcases = []DeletePhonebook{
 		MockDetailRepository: GetDetailResponseRepository{
 			Result: &model.PhoneBookResponse{
 				ID:             1,
-				PhoneNumbers:   `[{"type":"phone", "phone_number":"+62812312131"]`,
+				PhoneNumbers:   sql.NullString{String: `[{"type":"phone", "phone_number":"+62812312131"]`, Valid: true},
 				Description:    sql.NullString{String: "test case", Valid: true},
 				Name:           sql.NullString{String: "test kantor", Valid: true},
 				Address:        sql.NullString{String: "jalan panjang", Valid: true},

@@ -6,7 +6,7 @@ type GetListRequest struct {
 	RegencyID  int64  `httpquery:"regency_id"`
 	DistrictID int64  `httpquery:"district_id"`
 	VillageID  int64  `httpquery:"village_id"`
-	Status     int64  `httpquery:"status"`
+	Status     *int64 `httpquery:"status"`
 	Latitude   string `httpquery:"latitude"`
 	Longitude  string `httpquery:"longitude"`
 	Limit      int64  `httpquery:"limit"`

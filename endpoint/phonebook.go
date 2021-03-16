@@ -14,7 +14,9 @@ import (
 func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*GetListRequest)
-		params := &model.ParamsPhoneBook{}
+		params := &model.ParamsPhoneBook{
+			Status: req.Status,
+		}
 		if req.Search != "" {
 			params.Search = helper.SetPointerString(req.Search)
 		}
@@ -26,9 +28,6 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 		}
 		if req.VillageID != 0 {
 			params.VillageID = helper.SetPointerInt64(req.VillageID)
-		}
-		if req.Status != 0 {
-			params.Status = helper.SetPointerInt64(req.Status)
 		}
 		if req.Limit != 0 {
 			params.Limit = helper.SetPointerInt64(req.Limit)

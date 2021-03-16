@@ -42,7 +42,7 @@ func main() {
 	uc := usecase.NewPhoneBook(repo, logger)
 
 	// Initialize grpc
-	grpcAdd := flag.String("grpc", fmt.Sprintf(":%s", config.AppPort), "gRPC listening address")
+	grpcAdd := flag.String("grpc", fmt.Sprintf(":%d", config.AppPort), "gRPC listening address")
 	go func() {
 		logger.Log("transport", "grpc", "address", *grpcAdd, "msg", "listening")
 		listener, err := net.Listen("tcp", *grpcAdd)

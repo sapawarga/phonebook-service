@@ -12,7 +12,7 @@ import (
 // NewConnection ...
 func NewConnection(config *config.DB) *sqlx.DB {
 	var err error
-	connection := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", config.Host, config.Port, config.Username, config.Password, config.Name)
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.Username, config.Password, config.Host, config.Port, config.Name)
 	val := url.Values{}
 	val.Add("parseTime", "1")
 	val.Add("loc", "Asia/Jakarta")

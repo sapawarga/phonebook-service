@@ -54,12 +54,18 @@ func MakeHandler(ctx context.Context, fs usecase.Provider) transportPhonebook.Ph
 
 func decodeGetListRequest(ctx context.Context, r interface{}) (interface{}, error) {
 	req := r.(*transportPhonebook.GetListRequest)
+
+	var status *int64 = nil
+	if !req.Status.IsNull {
+		status = helper.SetPointerInt64(req.Status.GetValue())
+	}
+
 	return &endpoint.GetListRequest{
 		Search:     req.GetSearch(),
 		RegencyID:  req.GetRegencyId(),
 		DistrictID: req.GetDistrictId(),
 		VillageID:  req.GetVillageId(),
-		Status:     req.GetStatus(),
+		Status:     status,
 		Limit:      req.GetLimit(),
 		Page:       req.GetPage(),
 	}, nil
@@ -171,9 +177,11 @@ func encodeStatusResponse(ctx context.Context, r interface{}) (interface{}, erro
 func decodeUpdatePhonebookRequest(ctx context.Context, r interface{}) (interface{}, error) {
 	req := r.(*transportPhonebook.UpdatePhonebookRequest)
 	request := &endpoint.UpdatePhonebookRequest{
-		ID:           req.GetId(),
-		Name:         req.GetName(),
-		PhoneNumbers: helper.SetPointerString(req.GetPhoneNumbers()),
+		ID:   req.GetId(),
+		Name: req.GetName(),
+	}
+	if req.PhoneNumbers != "" {
+		request.PhoneNumbers = helper.SetPointerString(req.GetPhoneNumbers())
 	}
 	if req.Address != "" {
 		request.Address = helper.SetPointerString(req.GetAddress())
@@ -187,8 +195,14 @@ func decodeUpdatePhonebookRequest(ctx context.Context, r interface{}) (interface
 	if req.Description != "" {
 		request.Description = helper.SetPointerString(req.GetDescription())
 	}
+	if req.RegencyId != 0 {
+		request.RegencyID = helper.SetPointerInt64(req.GetRegencyId())
+	}
 	if req.DistrictId != 0 {
 		request.DistrictID = helper.SetPointerInt64(req.GetDistrictId())
+	}
+	if req.VillageId != 0 {
+		request.VillageID = helper.SetPointerInt64(req.GetVillageId())
 	}
 	if req.Latitude != "" {
 		request.Latitude = helper.SetPointerString(req.GetLatitude())
@@ -196,8 +210,8 @@ func decodeUpdatePhonebookRequest(ctx context.Context, r interface{}) (interface
 	if req.Longitude != "" {
 		request.Longitude = helper.SetPointerString(req.GetLongitude())
 	}
-	if req.Status != 0 {
-		request.Status = helper.SetPointerInt64(req.GetStatus())
+	if !req.Status.IsNull {
+		request.Status = helper.SetPointerInt64(req.Status.GetValue())
 	}
 	return request, nil
 }
