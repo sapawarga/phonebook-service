@@ -198,7 +198,7 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 // GetPhonebookDetailByID ...
 func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int64) (*model.PhoneBookResponse, error) {
 	var query bytes.Buffer
-	var result *model.PhoneBookResponse
+	var result = &model.PhoneBookResponse{}
 	var err error
 
 	query.WriteString(`
@@ -285,7 +285,7 @@ func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhone
 		seq, cover_image_path, status, created_at, updated_at, category_id)`)
 	query.WriteString(`VALUES(
 		:name, :description, :address, :phone_numbers, :kabkota_id, :kec_id, :kel_id, :latitude, :longitude, 
-		1, :cover_image_path, :status, :created_at, :updated_at, :cateogry_id)`)
+		1, :cover_image_path, :status, :created_at, :updated_at, :category_id)`)
 	queryParams := map[string]interface{}{
 		"name":             params.Name,
 		"description":      params.Description,
@@ -323,6 +323,9 @@ func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePh
 	var first = true
 	var err error
 	_, unixTime := helper.GetCurrentTimeUTC()
+
+	fmt.Println("params ", params)
+	fmt.Println("phonebook is nil ?", params.PhoneNumbers == nil)
 
 	query.WriteString(" UPDATE phonebooks SET ")
 	if params.Address != nil {
