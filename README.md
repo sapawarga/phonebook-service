@@ -1,6 +1,18 @@
 # phonebook-service
 Sapawarga service for "Nomor Penting" feature.
 
+## Quick Setup
+
+1. Download dahulu [bloomRPC](https://appimage.github.io/BloomRPC/) karena aplikasi ini menggunakan protokol GRPC jadi untuk mengetesnya menggunakan bloomRPC. BloomRPC ini seperti Postman. Ikuti saja langkah untuk instalasinya.
+2. Siapkan databasenya, sebaiknya minta file `sql.dump` dari database sapawarga stagging yang existing karena masih menggunakan struktur data yang sama
+3. Jalankan `go mod tidy` atau `go mod download`
+4. Untuk melakukan test dan melihat coveragenya ketikkan command `make test`
+5. Buat file `config.json` dan copy dari `config.example.json`
+6. Jalankan command `make build`
+7. Jalankan command `make run`
+8. Clone repository [proto-file](https://github.com/sapawarga/proto-file)
+9. Buka bloomRPC dan pilih file protonya dari repository sapawarga/proto-file
+
 ## Stack Libraries
 1. [Gomock](https://github.com/golang/mock)
 2. [Gokit](https://github.com/go-kit/kit)
