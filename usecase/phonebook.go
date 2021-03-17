@@ -150,10 +150,16 @@ func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookD
 
 // Insert ...
 func (pb *PhoneBook) Insert(ctx context.Context, params *model.AddPhonebook) error {
-	// TODO: insert new phone number
 	logger := kitlog.With(pb.logger, "method", "Insert")
-	err := pb.repo.Insert(ctx, params)
-	if err != nil {
+	if params.CategoryID != nil {
+		_, err := pb.repo.GetCategoryNameByID(ctx, helper.GetInt64FromPointer(params.CategoryID))
+		if err != nil {
+			level.Error(logger).Log("error_get_category", err)
+			return err
+		}
+	}
+
+	if err := pb.repo.Insert(ctx, params); err != nil {
 		level.Error(logger).Log("error", err)
 		return err
 	}

@@ -231,7 +231,7 @@ func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64)
 	var result string
 	var err error
 
-	query.WriteString(` SELECT name from categories WHERE id = ?`)
+	query.WriteString(` SELECT name from categories WHERE id = ? AND type = 'phonebook' AND status = 10 `)
 	if ctx != nil {
 		err = r.conn.GetContext(ctx, &result, query.String(), id)
 	} else {
@@ -323,9 +323,6 @@ func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePh
 	var first = true
 	var err error
 	_, unixTime := helper.GetCurrentTimeUTC()
-
-	fmt.Println("params ", params)
-	fmt.Println("phonebook is nil ?", params.PhoneNumbers == nil)
 
 	query.WriteString(" UPDATE phonebooks SET ")
 	if params.Address != nil {
