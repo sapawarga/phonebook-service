@@ -9,11 +9,13 @@ import (
 
 // InsertPhonebook ...
 type InsertPhonebook struct {
-	Description        string
-	UsecaseRequest     model.AddPhonebook
-	RepositoryRequest  model.AddPhonebook
-	RepositoryResponse error
-	UsecaseResponse    error
+	Description            string
+	UsecaseRequest         model.AddPhonebook
+	GetCategoryNameRequest int64
+	RepositoryRequest      model.AddPhonebook
+	MockCategory           CategoryResponse
+	RepositoryResponse     error
+	UsecaseResponse        error
 }
 
 var insertPhonebook = model.AddPhonebook{
@@ -28,23 +30,44 @@ var insertPhonebook = model.AddPhonebook{
 	Longitude:      helper.SetPointerString("0.98878"),
 	CoverImagePath: helper.SetPointerString("http://localhot:3000"),
 	Status:         helper.SetPointerInt64(10),
-	CategoryID:     nil,
+	CategoryID:     helper.SetPointerInt64(1),
 }
 
 // InsertPhonebookTestcases ...
 var InsertPhonebookTestcases = []InsertPhonebook{
 	{
-		Description:        "success insert new phonebook",
-		UsecaseRequest:     insertPhonebook,
-		RepositoryRequest:  insertPhonebook,
+		Description:            "success insert new phonebook",
+		UsecaseRequest:         insertPhonebook,
+		RepositoryRequest:      insertPhonebook,
+		GetCategoryNameRequest: 1,
+		MockCategory: CategoryResponse{
+			Result: "phonebook",
+			Error:  nil,
+		},
 		RepositoryResponse: nil,
 		UsecaseResponse:    nil,
 	}, {
-		Description:        "failed_insert_new_phonebook",
-		UsecaseRequest:     insertPhonebook,
-		RepositoryRequest:  insertPhonebook,
-		RepositoryResponse: errors.New("failed_insert_new_phonebook"),
-		UsecaseResponse:    errors.New("failed_insert_new_phonebook"),
+		Description:            "failed_get_category",
+		UsecaseRequest:         insertPhonebook,
+		RepositoryRequest:      insertPhonebook,
+		GetCategoryNameRequest: 1,
+		MockCategory: CategoryResponse{
+			Result: "",
+			Error:  errors.New("failed_get_category"),
+		},
+		RepositoryResponse: nil,
+		UsecaseResponse:    errors.New("failed_get_category"),
+	}, {
+		Description:            "failed_insert_phonebook",
+		UsecaseRequest:         insertPhonebook,
+		RepositoryRequest:      insertPhonebook,
+		GetCategoryNameRequest: 1,
+		MockCategory: CategoryResponse{
+			Result: "phonebook",
+			Error:  nil,
+		},
+		RepositoryResponse: errors.New("failed_insert_phonebook"),
+		UsecaseResponse:    errors.New("failed_insert_phonebook"),
 	},
 }
 

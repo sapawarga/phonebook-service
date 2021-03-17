@@ -78,6 +78,7 @@ var _ = Describe("Phone Book", func() {
 	var InsertPhonebookLogic = func(idx int) {
 		ctx := context.Background()
 		data := testcases.InsertPhonebookTestcases[idx]
+		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryNameRequest).Return(data.MockCategory.Result, data.MockCategory.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().Insert(ctx, &data.RepositoryRequest).Return(data.RepositoryResponse).Times(1)
 		err := phonebook.Insert(ctx, &data.UsecaseRequest)
 		if err != nil {
