@@ -64,5 +64,5 @@ Package ini berfungsi sebagai konfigurasi untuk service yang digunakan. Di sini 
 Package ini berfungsi untuk menyimpan semua permodelan data yang digunakan di dalam keseluruhan package
 
 ### 8. Helper
-Package ini berfungsi menampung semua fungsi yang bersifat utilitas dan dapat digunakan di seluruh package tanpa harus melakukan inisialisasi terlebih dahulu.
+Package ini berfungsi menampung semua fungsi yang bersifat utilitas dan dapat digunakan di seluruh package tanpa harus melakukan inisialisasi terlebih dahulu. Plannya package ini akan dibuat library terpisah tetapi tergantung keperluan
 
