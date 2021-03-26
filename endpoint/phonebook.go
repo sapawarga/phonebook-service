@@ -15,26 +15,15 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*GetListRequest)
 		params := &model.ParamsPhoneBook{
-			Status: req.Status,
+			Status:     req.Status,
+			Search:     helper.SetPointerString(req.Search),
+			RegencyID:  helper.SetPointerInt64(req.RegencyID),
+			DistrictID: helper.SetPointerInt64(req.DistrictID),
+			VillageID:  helper.SetPointerInt64(req.VillageID),
+			Limit:      helper.SetPointerInt64(req.Limit),
+			Page:       helper.SetPointerInt64(req.Page),
 		}
-		if req.Search != "" {
-			params.Search = helper.SetPointerString(req.Search)
-		}
-		if req.RegencyID != 0 {
-			params.RegencyID = helper.SetPointerInt64(req.RegencyID)
-		}
-		if req.DistrictID != 0 {
-			params.DistrictID = helper.SetPointerInt64(req.DistrictID)
-		}
-		if req.VillageID != 0 {
-			params.VillageID = helper.SetPointerInt64(req.VillageID)
-		}
-		if req.Limit != 0 {
-			params.Limit = helper.SetPointerInt64(req.Limit)
-		}
-		if req.Page != 0 {
-			params.Page = helper.SetPointerInt64(req.Page)
-		}
+
 		resp, err := usecase.GetList(ctx, params)
 
 		if err != nil {
