@@ -1,0 +1,11 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=e492a9c1c3002892287289a3c16743f1a16eb74d8b8a5eb23ef9b5cd3bf1cf18
+#### Rest of code omitted for clarity ####
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-netcgo-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+#### Rest of code omitted for clarity ####
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
