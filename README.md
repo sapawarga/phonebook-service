@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/36e08d317218f616c32d/maintainability)](https://codeclimate.com/github/setiadijoe/phonebook-service/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/36e08d317218f616c32d/test_coverage)](https://codeclimate.com/github/setiadijoe/phonebook-service/test_coverage)
 # phonebook-service
 Sapawarga service for "Nomor Penting" feature.
 
