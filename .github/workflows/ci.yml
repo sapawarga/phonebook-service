@@ -35,7 +35,7 @@ jobs:
         - uses: actions/setup-go@main
           with:
             go-version: ${{ matrix.go }}
-        - run: go tool cover -html=./coverage.out
+        - run: go test ./... -coverprofile=./coverage.out & go tool cover -html=./coverage.out
           env:
             CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
