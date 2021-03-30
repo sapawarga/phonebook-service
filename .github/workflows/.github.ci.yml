@@ -4,6 +4,12 @@ env:
 
 language: go
 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 # The coverprofile for multiple packages works in go 1.10
 # see https://tip.golang.org/doc/go1.10#test
 go:
