@@ -1,46 +1,44 @@
 name: Go
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.14
-    - name: Build
-      run: go build -v ./...
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14
+      - name: Build
+        run: go build -v ./...
 
   test:
-      runs-on: ubuntu-latest
-      strategy:
-        fail-fast: false
-        matrix:
-          go: ['1.14']
-      steps:
-        - uses: actions/setup-go@v1
-          with:
-            go-version: ${{ matrix.go }}
-        - uses: actions/checkout@v2
-        - run: go test ./... -coverprofile=./coverage.out
-  coverage:
-      needs: test
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@main
-        - uses: actions/setup-go@main
-          with:
-            go-version: ${{ matrix.go }}
-        - run: go test ./... -coverprofile=./coverage.out 
-        - run: go tool cover -html=./coverage.out
-          env:
-            CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ["1.14"]
+    steps:
+      - uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+      - uses: actions/checkout@v2
+      - run: go test ./... -coverprofile=./coverage.out
 
+  coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Coverage
+        run: make coverage
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
     #     - name: Send coverage
     #       uses: shogo82148/actions-goveralls@v1
     #       with:
@@ -54,4 +52,3 @@ jobs:
     #     - uses: shogo82148/actions-goveralls@v1
     #       with:
     #         parallel-finished: true
-
