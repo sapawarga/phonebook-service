@@ -1,0 +1,39 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=${{ secret.CC_TEST_REPORTER_ID }}
+
+language: go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# The coverprofile for multiple packages works in go 1.10
+# see https://tip.golang.org/doc/go1.10#test
+go:
+  - main
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.14
+    - name: Build
+      run: go build -v ./...
+
+  script:
+    - go test -coverprofile coverage.out ./...
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
