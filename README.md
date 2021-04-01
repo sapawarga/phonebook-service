@@ -1,5 +1,6 @@
 # phonebook-service
 Sapawarga service for "Nomor Penting" feature.
+[![Go Report Card](https://goreportcard.com/badge/github.com/sapawarga/phonebook-service)](https://goreportcard.com/report/github.com/sapawarga/phonebook-service)
 
 ## Quick Setup
 
