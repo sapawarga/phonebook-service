@@ -1,6 +1,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/sapawarga/phonebook-service)](https://goreportcard.com/report/github.com/sapawarga/phonebook-service)
-[![Maintainability](https://api.codeclimate.com/v1/badges/36e08d317218f616c32d/maintainability)](https://codeclimate.com/github/setiadijoe/phonebook-service/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/36e08d317218f616c32d/test_coverage)](https://codeclimate.com/github/setiadijoe/phonebook-service/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d620fba429567c496754/maintainability)](https://codeclimate.com/github/sapawarga/phonebook-service/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d620fba429567c496754/test_coverage)](https://codeclimate.com/github/sapawarga/phonebook-service/test_coverage)
 # phonebook-service
 Sapawarga service for "Nomor Penting" feature.
 
