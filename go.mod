@@ -11,6 +11,6 @@ require (
 	github.com/onsi/gomega v1.4.3
 	github.com/sapawarga/proto-file v0.0.0-20210324074315-dfc236acea56
 	github.com/spf13/viper v1.7.1
-	github.com/stretchr/testify v1.5.1
+	github.com/stretchr/testify v1.7.0
 	google.golang.org/grpc v1.36.0
 )

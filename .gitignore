@@ -16,3 +16,6 @@
 
 config.json
 phonebook-service-grpc
+
+.env
+
