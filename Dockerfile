@@ -23,7 +23,7 @@ ENV PROJECT_PATH=/go/src/github.com/sapawarga/phonebooks
 WORKDIR /app/
 
 COPY --from=compile-image ${PROJECT_PATH}/phonebook-service-grpc .
-COPY --from=compile-image ${PROJECT_PATH}/config.json .
+COPY --from=compile-image ${PROJECT_PATH}/.env .
 
 ENTRYPOINT [ "phonebook-service-grpc" ]
 EXPOSE 5000 5000
