@@ -25,5 +25,5 @@ WORKDIR /app/
 COPY --from=compile-image ${PROJECT_PATH}/phonebook-service-grpc .
 COPY --from=compile-image ${PROJECT_PATH}/.env .
 
-CMD [ "phonebook-service-grpc" ]
+CMD [ "./phonebook-service-grpc" ]
 EXPOSE 5000 5000
