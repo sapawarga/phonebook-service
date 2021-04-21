@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 RUN make build
 
-FROM alpine:3.12 as run-image
+FROM gcr.io/distroless/static as run-image
 
 LABEL maintainer="GoSapawarga <setiadi.yon3@gmail.com>"
 
@@ -25,5 +25,5 @@ WORKDIR /app/
 COPY --from=compile-image ${PROJECT_PATH}/phonebook-service-grpc .
 COPY --from=compile-image ${PROJECT_PATH}/.env .
 
-ENTRYPOINT [ "phonebook-service-grpc" ]
+CMD [ "phonebook-service-grpc" ]
 EXPOSE 5000 5000
