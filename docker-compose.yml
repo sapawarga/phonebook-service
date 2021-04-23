@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app:
+    image: phonebook-service-grpc:0.3.0
+    networks:
+      - internal
+    depends_on:
+      - database
+    env_file:
+      - .env.example
+    ports:
+      - 3000:3000
+
+  database:
+    image: mysql:5.7 
+    networks:
+      - internal
+    environment:
+      - MYSQL_PORT=3306
+      - MYSQL_USER=nathan
+      - MYSQL_PASSWORD=mysql_admin
+      - MYSQL_DATABASE=sapawarga
+      - MYSQL_HOST=database
+      - MYSQL_ROOT_PASSWORD=mysql_admin
+
+    volumes:
+      - vol_mysql_data:/var/lib/mysql
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  vol_storage:
+    driver: local
+  vol_mysql_data:
+    driver: local
