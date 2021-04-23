@@ -30,8 +30,8 @@ WORKDIR /app
 COPY --from=compile-image ${PROJECT_PATH}/phonebook-service-grpc /app/phonebook-service-grpc
 COPY --from=compile-image ${PROJECT_PATH}/.env /app/.env
 
-RUN apk --update add ca-certificates && \
-    update-ca-certificates 2>/dev/null || true
+RUN apk --update add tzdata ca-certificates && \
+    update-ca-certificates 2>/dev/null || true 
 
 EXPOSE 3000
 
