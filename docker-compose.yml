@@ -1,27 +1,24 @@
 version: '3'
 services:
   app:
-    image: phonebook-service-grpc:0.3.0
+    build: 
+      context: ./
+    # image: phonebook-service-grpc:0.3.0
     networks:
       - internal
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     env_file:
-      - .env.example
+      - .env
     ports:
       - 3000:3000
 
-  database:
-    image: mysql:5.7 
-    networks:
-      - internal
-    environment:
-      - MYSQL_PORT=3306
-      - MYSQL_USER=nathan
-      - MYSQL_PASSWORD=mysql_admin
-      - MYSQL_DATABASE=sapawarga
-      - MYSQL_HOST=database
-      - MYSQL_ROOT_PASSWORD=mysql_admin
+  # database:
+  #   image: registry.gitlab.com/jdsteam/sapa-warga/sapawarga-app/sapawarga-backend-database:dev 
+  #   networks:
+  #     - internal
+  #   env_file:
+  #     - .env
 
     volumes:
       - vol_mysql_data:/var/lib/mysql

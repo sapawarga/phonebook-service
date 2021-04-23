@@ -44,10 +44,8 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 		} else {
 			query.WriteString(" AND ")
 		}
-		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
-		queryParams = append(queryParams, params.Search)
-		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
-		queryParams = append(queryParams, params.Search)
+		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
+		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		first = false
 	}
 
@@ -58,7 +56,7 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" kabkota_id = ? ")
-		queryParams = append(queryParams, params.RegencyID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.RegencyID))
 		first = false
 	}
 
@@ -69,7 +67,7 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" kec_id = ? ")
-		queryParams = append(queryParams, params.DistrictID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.DistrictID))
 		first = false
 	}
 
@@ -80,7 +78,7 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" kel_id = ?")
-		queryParams = append(queryParams, params.VillageID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.VillageID))
 		first = false
 	}
 
@@ -91,11 +89,14 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" status = ?")
-		queryParams = append(queryParams, params.Status)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.Status))
 	}
 
 	query.WriteString(" LIMIT ?, ?")
-	queryParams = append(queryParams, params.Offset, params.Limit)
+	queryParams = append(queryParams, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
+
+	fmt.Println(query.String())
+	fmt.Println(queryParams)
 
 	if ctx != nil {
 		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
@@ -129,10 +130,8 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 		} else {
 			query.WriteString(" AND ")
 		}
-		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
-		queryParams = append(queryParams, params.Search)
-		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%'"+helper.GetStringFromPointer(params.Search)+"'%'"))
-		queryParams = append(queryParams, params.Search)
+		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
+		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		first = false
 	}
 
@@ -143,7 +142,7 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" kabkota_id = ? ")
-		queryParams = append(queryParams, params.RegencyID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.RegencyID))
 		first = false
 	}
 
@@ -154,7 +153,7 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" kec_id = ? ")
-		queryParams = append(queryParams, params.DistrictID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.DistrictID))
 		first = false
 	}
 
@@ -165,7 +164,7 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 			query.WriteString(" AND ")
 		}
 		query.WriteString(" kel_id = ?")
-		queryParams = append(queryParams, params.VillageID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.VillageID))
 		first = false
 	}
 
@@ -178,9 +177,6 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 		query.WriteString(" status = ?")
 		queryParams = append(queryParams, params.Status)
 	}
-
-	query.WriteString(" LIMIT ?, ?")
-	queryParams = append(queryParams, params.Offset, params.Limit)
 
 	if ctx != nil {
 		err = r.conn.GetContext(ctx, &total, query.String(), queryParams...)

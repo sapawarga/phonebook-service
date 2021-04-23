@@ -19,6 +19,7 @@ type Phonebook struct {
 	Latitude     string
 	Longitude    string
 	Status       int64
+	Category     string
 }
 
 // PhonebookDetail ...

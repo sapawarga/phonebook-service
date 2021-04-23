@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -65,6 +66,14 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 			Latitude:     v.Latitude.String,
 			Longitude:    v.Longitude.String,
 			Status:       v.Status.Int64,
+		}
+		if v.CategoryID.Valid {
+			categoryName, err := pb.repo.GetCategoryNameByID(ctx, v.CategoryID.Int64)
+			if err != nil && err != sql.ErrNoRows {
+				level.Error(logger).Log("error_get_category", err)
+				return nil, err
+			}
+			result.Category = categoryName
 		}
 		data = append(data, result)
 	}
