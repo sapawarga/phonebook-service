@@ -11,7 +11,7 @@ WORKDIR /build
 
 COPY go.mod .
 COPY go.sum .
-COPY .env.example ./.env
+COPY .env ./.env
 RUN go mod download
 
 COPY . .
@@ -30,11 +30,9 @@ WORKDIR /app
 COPY --from=compile-image ${PROJECT_PATH}/phonebook-service-grpc /app/phonebook-service-grpc
 COPY --from=compile-image ${PROJECT_PATH}/.env /app/.env
 
-ENV TZ=Asia/Jakarta
-RUN apk --update add tzdata ca-certificates && \
-    update-ca-certificates 2>/dev/null || true \
-    cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk --update add ca-certificates && \
+    update-ca-certificates 2>/dev/null || true
 
-EXPOSE 5000
+EXPOSE 3000
 
 ENTRYPOINT [ "/app/phonebook-service-grpc" ]
