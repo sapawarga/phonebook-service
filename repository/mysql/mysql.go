@@ -39,64 +39,46 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 		FROM phonebooks`)
 
 	if params.Search != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		first = false
 	}
 
 	if params.RegencyID != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kabkota_id = ? ")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.RegencyID))
 		first = false
 	}
 
 	if params.DistrictID != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kec_id = ? ")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.DistrictID))
 		first = false
 	}
 
 	if params.VillageID != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kel_id = ?")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.VillageID))
 		first = false
 	}
 
 	if params.Status != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" status = ?")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.Status))
 	}
 
 	query.WriteString(" LIMIT ?, ?")
 	queryParams = append(queryParams, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
-
-	fmt.Println(query.String())
-	fmt.Println(queryParams)
 
 	if ctx != nil {
 		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
@@ -125,55 +107,40 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 		FROM phonebooks`)
 
 	if params.Search != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) `, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		query.WriteString(fmt.Sprintf(` OR phone_numbers LIKE %s )`, "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		first = false
 	}
 
 	if params.RegencyID != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kabkota_id = ? ")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.RegencyID))
 		first = false
 	}
 
 	if params.DistrictID != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kec_id = ? ")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.DistrictID))
 		first = false
 	}
 
 	if params.VillageID != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kel_id = ?")
 		queryParams = append(queryParams, helper.GetInt64FromPointer(params.VillageID))
 		first = false
 	}
 
 	if params.Status != nil {
-		if first {
-			query.WriteString(" WHERE ")
-		} else {
-			query.WriteString(" AND ")
-		}
+		qBuffer := checkIsFirst(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" status = ?")
 		queryParams = append(queryParams, params.Status)
 	}
@@ -327,96 +294,85 @@ func (r *PhonebookRepository) Update(ctx context.Context, params *model.UpdatePh
 		first = false
 	}
 	if params.CategoryID != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" category_id = :category_id ")
 		queryParams["category_id"] = params.CategoryID
 		first = false
 	}
 	if params.CoverImagePath != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" cover_image_path = :cover_image_path")
 		queryParams["cover_image_path"] = params.CoverImagePath
 		first = false
 	}
 	if params.Description != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" description = :description ")
 		queryParams["description"] = params.Description
 		first = false
 	}
 	if params.DistrictID != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kec_id = :kec_id ")
 		queryParams["kec_id"] = params.DistrictID
 		first = false
 	}
 	if params.Latitude != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" latitude = :latitude ")
 		queryParams["latitude"] = params.Latitude
 		first = false
 	}
 	if params.Longitude != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" longitude = :longitude ")
 		queryParams["longitude"] = params.Longitude
 		first = false
 	}
 	if params.Name != "" {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" name = :name ")
 		queryParams["name"] = params.Name
 		first = false
 	}
 	if params.PhoneNumbers != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" phone_numbers = :phone_numbers")
 		queryParams["phone_numbers"] = params.PhoneNumbers
 		first = false
 	}
 	if params.RegencyID != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kabkota_id = :kabkota_id")
 		queryParams["kabkota_id"] = params.RegencyID
 		first = false
 	}
 	if params.Status != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" status = :status")
 		queryParams["status"] = params.Status
 		first = false
 	}
 	if params.VillageID != nil {
-		if !first {
-			query.WriteString(" , ")
-		}
+		qBuffer := addComma(ctx, query, first)
+		query.WriteString(qBuffer.String())
 		query.WriteString(" kel_id = :kel_id")
 		queryParams["kel_id"] = params.VillageID
 		first = false
 	}
-	if !first {
-		query.WriteString(" , ")
-	}
+
+	qBuffer := addComma(ctx, query, first)
+	query.WriteString(qBuffer.String())
 	query.WriteString(" updated_at = :updated_at WHERE id = :id")
 	queryParams["updated_at"] = unixTime
 	queryParams["id"] = params.ID
@@ -454,4 +410,20 @@ func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error {
 	}
 
 	return nil
+}
+
+func checkIsFirst(ctx context.Context, query bytes.Buffer, first bool) bytes.Buffer {
+	if first {
+		query.WriteString("WHERE")
+	} else {
+		query.WriteString("AND")
+	}
+	return query
+}
+
+func addComma(ctx context.Context, query bytes.Buffer, first bool) bytes.Buffer {
+	if !first {
+		query.WriteString(", ")
+	}
+	return query
 }
