@@ -40,7 +40,7 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 	query.WriteString(selectQuery.String())
 
 	query.WriteString(" LIMIT ?, ?")
-	queryParams = append(queryParams, params.Offset, params.Limit)
+	queryParams = append(queryParams, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
 
 	if ctx != nil {
 		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)

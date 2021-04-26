@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -53,20 +54,10 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		return nil, err
 	}
 
-	data := make([]*model.Phonebook, 0)
-
-	for _, v := range resp {
-		result := &model.Phonebook{
-			ID:           v.ID,
-			PhoneNumbers: v.PhoneNumbers.String,
-			Description:  v.Description.String,
-			Name:         v.Name.String,
-			Address:      v.Address.String,
-			Latitude:     v.Latitude.String,
-			Longitude:    v.Longitude.String,
-			Status:       v.Status.Int64,
-		}
-		data = append(data, result)
+	data, err := pb.appendResultGetList(ctx, resp)
+	if err != nil {
+		level.Error(logger).Log("error_append_result", err)
+		return nil, err
 	}
 
 	total, err := pb.repo.GetMetaDataPhoneBook(ctx, req)
@@ -198,4 +189,28 @@ func (pb *PhoneBook) Delete(ctx context.Context, id int64) error {
 	}
 
 	return nil
+}
+
+func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.PhoneBookResponse) (listPhonebook []*model.Phonebook, err error) {
+	for _, v := range result {
+		result := &model.Phonebook{
+			ID:           v.ID,
+			PhoneNumbers: v.PhoneNumbers.String,
+			Description:  v.Description.String,
+			Name:         v.Name.String,
+			Address:      v.Address.String,
+			Latitude:     v.Latitude.String,
+			Longitude:    v.Longitude.String,
+			Status:       v.Status.Int64,
+		}
+		if v.CategoryID.Valid {
+			categoryName, err := pb.repo.GetCategoryNameByID(ctx, v.CategoryID.Int64)
+			if err != nil && err != sql.ErrNoRows {
+				return nil, err
+			}
+			result.Category = categoryName
+		}
+		listPhonebook = append(listPhonebook, result)
+	}
+	return listPhonebook, nil
 }

@@ -40,6 +40,7 @@ var _ = Describe("Phone Book", func() {
 		data := testcases.GetPhoneBookData[idx]
 		mockPhoneBookRepo.EXPECT().GetListPhoneBook(ctx, gomock.Any()).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryNameParams).Return(data.MockCategorydata.Result, data.MockCategorydata.Error).Times(len(data.MockCategorydata.Result) * 2)
 		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
 			Search: data.UsecaseParams.Search,
 			Limit:  data.UsecaseParams.Limit,
@@ -103,7 +104,6 @@ var _ = Describe("Phone Book", func() {
 	// DeletePhonebookLogic ...
 	var DeletePhonebookLogic = func(idx int) {
 		ctx := context.Background()
-		fmt.Println("length of testcase ", len(testcases.DeletePhonebookTestcases))
 		data := testcases.DeletePhonebookTestcases[idx]
 		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRepositoryRequest).Return(data.MockDetailRepository.Result, data.MockDetailRepository.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().Delete(ctx, data.DeleteRepositoryRequest).Return(data.MockDeleteRepository).Times(1)

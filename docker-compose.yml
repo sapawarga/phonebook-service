@@ -1,0 +1,34 @@
+version: '3'
+services:
+  app:
+    build: 
+      context: ./
+    # image: phonebook-service-grpc:0.3.0
+    networks:
+      - internal
+    # depends_on:
+    #   - database
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+
+  # database:
+  #   image: registry.gitlab.com/jdsteam/sapa-warga/sapawarga-app/sapawarga-backend-database:dev 
+  #   networks:
+  #     - internal
+  #   env_file:
+  #     - .env
+
+    volumes:
+      - vol_mysql_data:/var/lib/mysql
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  vol_storage:
+    driver: local
+  vol_mysql_data:
+    driver: local
