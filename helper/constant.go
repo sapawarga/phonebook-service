@@ -9,6 +9,8 @@ const (
 	DELETED_STRING         = "deleted"
 	INACTIVED_STRING       = "inactived"
 	ACTIVED_STRING         = "actived"
+	SELECT_QUERY           = "select"
+	UPDATE_QUERY           = "update"
 )
 
 // StatusEnum ...
