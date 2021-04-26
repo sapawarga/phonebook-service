@@ -11,7 +11,7 @@ WORKDIR /build
 
 COPY go.mod .
 COPY go.sum .
-COPY .env ./.env
+COPY .env.example ./.env
 RUN go mod download
 
 COPY . .
