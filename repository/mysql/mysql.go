@@ -245,40 +245,31 @@ func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error {
 func querySelectParams(ctx context.Context, query bytes.Buffer, params *model.GetListRequest) (newQuery bytes.Buffer, queryParams []interface{}) {
 	var first = true
 	if params.Search != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.SELECT_QUERY)
-		query.WriteString(qBuffer.String())
+		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY))
 		query.WriteString(fmt.Sprintf(`(name LIKE LOWER(%s) OR phone_numbers LIKE %s ) `, "'%"+helper.GetStringFromPointer(params.Search)+"%'", "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 		first = false
 	}
 
 	if params.RegencyID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.SELECT_QUERY)
-		query.WriteString(qBuffer.String())
-		query.WriteString(" kabkota_id = ? ")
+		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " kabkota_id = ? ")
 		queryParams = append(queryParams, params.RegencyID)
 		first = false
 	}
 
 	if params.DistrictID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.SELECT_QUERY)
-		query.WriteString(qBuffer.String())
-		query.WriteString(" kec_id = ? ")
+		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " kec_id = ? ")
 		queryParams = append(queryParams, params.DistrictID)
 		first = false
 	}
 
 	if params.VillageID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.SELECT_QUERY)
-		query.WriteString(qBuffer.String())
-		query.WriteString(" kel_id = ?")
+		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " kel_id = ?")
 		queryParams = append(queryParams, params.VillageID)
 		first = false
 	}
 
 	if params.Status != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.SELECT_QUERY)
-		query.WriteString(qBuffer.String())
-		query.WriteString(" status = ?")
+		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " status = ?")
 		queryParams = append(queryParams, params.Status)
 	}
 
@@ -295,79 +286,67 @@ func queryUpdateParams(ctx context.Context, params *model.UpdatePhonebook, query
 		first = false
 	}
 	if params.CategoryID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " category_id = :category_id ")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " category_id = :category_id ")
 		queryParams["category_id"] = params.CategoryID
 		first = false
 	}
 	if params.CoverImagePath != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " cover_image_path = :cover_image_path")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " cover_image_path = :cover_image_path")
 		queryParams["cover_image_path"] = params.CoverImagePath
 		first = false
 	}
 	if params.Description != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " description = :description ")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " description = :description ")
 		queryParams["description"] = params.Description
 		first = false
 	}
 	if params.DistrictID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " kec_id = :kec_id ")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " kec_id = :kec_id ")
 		queryParams["kec_id"] = params.DistrictID
 		first = false
 	}
 	if params.Latitude != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " latitude = :latitude ")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " latitude = :latitude ")
 		queryParams["latitude"] = params.Latitude
 		first = false
 	}
 	if params.Longitude != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " longitude = :longitude ")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " longitude = :longitude ")
 		queryParams["longitude"] = params.Longitude
 		first = false
 	}
 	if params.Name != "" {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " name = :name ")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " name = :name ")
 		queryParams["name"] = params.Name
 		first = false
 	}
 	if params.PhoneNumbers != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " phone_numbers = :phone_numbers")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " phone_numbers = :phone_numbers")
 		queryParams["phone_numbers"] = params.PhoneNumbers
 		first = false
 	}
 	if params.RegencyID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " kabkota_id = :kabkota_id")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " kabkota_id = :kabkota_id")
 		queryParams["kabkota_id"] = params.RegencyID
 		first = false
 	}
 	if params.Status != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " status = :status")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " status = :status")
 		queryParams["status"] = params.Status
 		first = false
 	}
 	if params.VillageID != nil {
-		qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-		query.WriteString(qBuffer.String() + " kel_id = :kel_id")
+		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " kel_id = :kel_id")
 		queryParams["kel_id"] = params.VillageID
 		first = false
 	}
-	qBuffer := isFirstQuery(ctx, first, helper.UPDATE_QUERY)
-	query.WriteString(qBuffer.String() + " updated_at = :updated_at WHERE id = :id")
+	query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " updated_at = :updated_at WHERE id = :id")
 	queryParams["updated_at"] = unixTime
 	queryParams["id"] = params.ID
 	return query, queryParams
 }
 
-func isFirstQuery(ctx context.Context, isFirst bool, queryType string) bytes.Buffer {
+func isFirstQuery(ctx context.Context, isFirst bool, queryType string) string {
 	var query bytes.Buffer
 	if queryType == helper.SELECT_QUERY {
 		if isFirst {
@@ -381,5 +360,5 @@ func isFirstQuery(ctx context.Context, isFirst bool, queryType string) bytes.Buf
 		}
 	}
 
-	return query
+	return query.String()
 }
