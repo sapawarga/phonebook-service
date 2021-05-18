@@ -54,11 +54,7 @@ func main() {
 		handler := transportGRPC.MakeHandler(ctx, uc)
 		grpcServer := grpc.NewServer()
 		phonebook.RegisterPhoneBookHandlerServer(grpcServer, handler)
-		logger.Log(
-			"filename", filename,
-			"method", method,
-			"note", "running phonebook service grpc",
-		)
+		logger.Log("filename", filename, "method", method, "note", "running phonebook service grpc")
 		errChan <- grpcServer.Serve(listener)
 	}()
 	// initialize http
@@ -76,17 +72,10 @@ func main() {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 		errChan <- fmt.Errorf("%s", <-c)
-		logger.Log(
-			"filename", filename,
-			"method", method,
-			"note", "Gracefully Stop Trading Account GRPC",
-		)
+		logger.Log("filename", filename, "method", method, "note", "Gracefully Stop Trading Account GRPC")
 	}()
-	logger.Log(
-		"filename", filename,
-		"method", method,
-		"note", <-errChan,
-	)
+
+	logger.Log("filename", filename, "method", method, "note", <-errChan)
 }
 
 func accessControl(h http.Handler) http.Handler {
