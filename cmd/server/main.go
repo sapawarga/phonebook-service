@@ -38,7 +38,6 @@ func main() {
 
 	// setting repository
 	repo := mysql.NewPhonebookRepository(db)
-
 	logger := kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stderr))
 	logger = kitlog.With(logger, "ts", kitlog.DefaultTimestampUTC)
 	uc := usecase.NewPhoneBook(repo, logger)
@@ -62,7 +61,6 @@ func main() {
 		)
 		errChan <- grpcServer.Serve(listener)
 	}()
-
 	// initialize http
 	httpAdd := flag.String("http", fmt.Sprintf(":%d", config.AppHTTPPort), "http listening address")
 	go func() {
