@@ -11,6 +11,14 @@ const (
 	ACTIVED_STRING         = "actived"
 	SELECT_QUERY           = "select"
 	UPDATE_QUERY           = "update"
+	HTTP_GET               = "GET"
+	HTTP_PUT               = "PUT"
+	HTTP_POST              = "POST"
+	HTTP_DELETE            = "DELETE"
+	STATUS_OK              = "status_ok"
+	STATUS_CREATED         = "status_created"
+	STATUS_UPDATED         = "status_updated"
+	STATUS_DELETED         = "status_deleted"
 )
 
 // StatusEnum ...

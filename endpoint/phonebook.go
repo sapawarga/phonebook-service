@@ -97,7 +97,7 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 		}
 
 		return &StatusResponse{
-			Code:    "phonebook_created",
+			Code:    helper.STATUS_CREATED,
 			Message: "phonebook_has_been_created_succesfully",
 		}, nil
 
@@ -127,7 +127,7 @@ func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint
 		}
 
 		return &StatusResponse{
-			Code:    "phonebook_updated",
+			Code:    helper.STATUS_UPDATED,
 			Message: "phonebook_has_been_updated_successfuly",
 		}, nil
 	}
@@ -141,8 +141,17 @@ func MakeDeletePhonebook(ctx context.Context, usecase usecase.Provider) endpoint
 			return nil, err
 		}
 		return &StatusResponse{
-			Code:    "phonebook_deleted",
+			Code:    helper.STATUS_DELETED,
 			Message: "phonebook_has_been_deleted_successfuly",
+		}, nil
+	}
+}
+
+func MakeCheckHealthy(ctx context.Context) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		return &StatusResponse{
+			Code:    helper.STATUS_OK,
+			Message: "service_is_ok",
 		}, nil
 	}
 }

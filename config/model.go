@@ -12,8 +12,9 @@ type DB struct {
 
 // Config ...
 type Config struct {
-	AppPort int    `env:"APP_PORT,required"`
-	AppEnv  string `env:"APP_ENV,required"`
-	Debug   bool   `env:"APP_DEBUG,required"`
-	DB      *DB
+	AppGRPCPort int    `env:"APP_GRPC_PORT,required"`
+	AppHTTPPort int    `env:"APP_HTTP_PORT,required"`
+	AppEnv      string `env:"APP_ENV,required"`
+	Debug       bool   `env:"APP_DEBUG,required"`
+	DB          *DB
 }
