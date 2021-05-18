@@ -43,9 +43,9 @@ test:
 build:
 	@GOOS=linux GOARCH=amd64
 	@echo ">> Building GRPC..."
-	@go build -o phonebook-service-grpc ./cmd/grpc
+	@go build -o phonebook-service ./cmd/server
 	@echo ">> Finished"
 
 run:
-	@./phonebook-service-grpc
+	@./phonebook-service
 	
