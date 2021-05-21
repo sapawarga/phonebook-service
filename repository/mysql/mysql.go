@@ -37,15 +37,13 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 
 	selectQuery, queryParams := querySelectParams(ctx, query, params)
 
-	query.WriteString(selectQuery.String())
-
-	query.WriteString(" LIMIT ?, ?")
+	selectQuery.WriteString(" LIMIT ?, ?")
 	queryParams = append(queryParams, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
 
 	if ctx != nil {
-		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
+		err = r.conn.SelectContext(ctx, &result, selectQuery.String(), queryParams...)
 	} else {
-		err = r.conn.Select(&result, query.String(), queryParams...)
+		err = r.conn.Select(&result, selectQuery.String(), queryParams...)
 	}
 
 	if err != nil {
@@ -64,12 +62,10 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 	query.WriteString(`SELECT COUNT(1) FROM phonebooks`)
 	selectQuery, queryParams := querySelectParams(ctx, query, params)
 
-	query.WriteString(selectQuery.String())
-
 	if ctx != nil {
-		err = r.conn.GetContext(ctx, &total, query.String(), queryParams...)
+		err = r.conn.GetContext(ctx, &total, selectQuery.String(), queryParams...)
 	} else {
-		err = r.conn.Get(&total, query.String(), queryParams...)
+		err = r.conn.Get(&total, selectQuery.String(), queryParams...)
 	}
 
 	if err != nil {
@@ -252,25 +248,25 @@ func querySelectParams(ctx context.Context, query bytes.Buffer, params *model.Ge
 
 	if params.RegencyID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " kabkota_id = ? ")
-		queryParams = append(queryParams, params.RegencyID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.RegencyID))
 		first = false
 	}
 
 	if params.DistrictID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " kec_id = ? ")
-		queryParams = append(queryParams, params.DistrictID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.DistrictID))
 		first = false
 	}
 
 	if params.VillageID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " kel_id = ?")
-		queryParams = append(queryParams, params.VillageID)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.VillageID))
 		first = false
 	}
 
 	if params.Status != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.SELECT_QUERY) + " status = ?")
-		queryParams = append(queryParams, params.Status)
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.Status))
 	}
 
 	return query, queryParams
@@ -282,37 +278,37 @@ func queryUpdateParams(ctx context.Context, params *model.UpdatePhonebook, query
 	_, unixTime := helper.GetCurrentTimeUTC()
 	if params.Address != nil {
 		query.WriteString(" address = :address ")
-		queryParams["address"] = params.Address
+		queryParams["address"] = helper.GetStringFromPointer(params.Address)
 		first = false
 	}
 	if params.CategoryID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " category_id = :category_id ")
-		queryParams["category_id"] = params.CategoryID
+		queryParams["category_id"] = helper.GetInt64FromPointer(params.CategoryID)
 		first = false
 	}
 	if params.CoverImagePath != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " cover_image_path = :cover_image_path")
-		queryParams["cover_image_path"] = params.CoverImagePath
+		queryParams["cover_image_path"] = helper.GetStringFromPointer(params.CoverImagePath)
 		first = false
 	}
 	if params.Description != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " description = :description ")
-		queryParams["description"] = params.Description
+		queryParams["description"] = helper.GetStringFromPointer(params.Description)
 		first = false
 	}
 	if params.DistrictID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " kec_id = :kec_id ")
-		queryParams["kec_id"] = params.DistrictID
+		queryParams["kec_id"] = helper.GetInt64FromPointer(params.DistrictID)
 		first = false
 	}
 	if params.Latitude != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " latitude = :latitude ")
-		queryParams["latitude"] = params.Latitude
+		queryParams["latitude"] = helper.GetStringFromPointer(params.Latitude)
 		first = false
 	}
 	if params.Longitude != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " longitude = :longitude ")
-		queryParams["longitude"] = params.Longitude
+		queryParams["longitude"] = helper.GetStringFromPointer(params.Longitude)
 		first = false
 	}
 	if params.Name != "" {
@@ -322,22 +318,22 @@ func queryUpdateParams(ctx context.Context, params *model.UpdatePhonebook, query
 	}
 	if params.PhoneNumbers != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " phone_numbers = :phone_numbers")
-		queryParams["phone_numbers"] = params.PhoneNumbers
+		queryParams["phone_numbers"] = helper.GetStringFromPointer(params.PhoneNumbers)
 		first = false
 	}
 	if params.RegencyID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " kabkota_id = :kabkota_id")
-		queryParams["kabkota_id"] = params.RegencyID
+		queryParams["kabkota_id"] = helper.GetInt64FromPointer(params.RegencyID)
 		first = false
 	}
 	if params.Status != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " status = :status")
-		queryParams["status"] = params.Status
+		queryParams["status"] = helper.GetInt64FromPointer(params.Status)
 		first = false
 	}
 	if params.VillageID != nil {
 		query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " kel_id = :kel_id")
-		queryParams["kel_id"] = params.VillageID
+		queryParams["kel_id"] = helper.GetInt64FromPointer(params.VillageID)
 		first = false
 	}
 	query.WriteString(isFirstQuery(ctx, first, helper.UPDATE_QUERY) + " updated_at = :updated_at WHERE id = :id")

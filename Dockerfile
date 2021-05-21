@@ -33,6 +33,4 @@ COPY --from=compile-image ${PROJECT_PATH}/.env /app/.env
 RUN apk --update add tzdata ca-certificates && \
     update-ca-certificates 2>/dev/null || true 
 
-EXPOSE 3003 3004
-
 ENTRYPOINT [ "/app/phonebook-service" ]
