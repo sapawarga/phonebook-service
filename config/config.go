@@ -24,7 +24,7 @@ func NewConfig() (defConfig *Config, err error) {
 	defConfig = &Config{}
 	appEnv := viper.GetString(`APP_ENV`)
 	appGRPCPort := viper.GetInt(`APP_GRPC_PORT`)
-	appHTTPPort := viper.GetInt(`APP_HTTP_POST`)
+	appHTTPPort := viper.GetInt(`APP_HTTP_PORT`)
 	debug := viper.GetBool(`APP_DEBUG`)
 
 	dbHost := viper.GetString(`DB_HOST`)
