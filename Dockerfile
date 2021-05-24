@@ -11,7 +11,6 @@ WORKDIR /build
 
 COPY go.mod .
 COPY go.sum .
-COPY .env.example ./.env
 RUN go mod download
 
 COPY . .
@@ -19,18 +18,10 @@ COPY . .
 RUN CGO_ENABLED=0 go test -v ./...
 RUN make build
 
-FROM alpine:3.11.3 as run-image
+FROM gcr.io/distroless/base-debian10
 
 LABEL maintainer="GoSapawarga <setiadi.yon3@gmail.com>"
 
-ENV PROJECT_PATH=/build
+COPY --from=compile-image /build/phonebook-service /phonebook-service
 
-WORKDIR /app
-
-COPY --from=compile-image ${PROJECT_PATH}/phonebook-service /app/phonebook-service
-COPY --from=compile-image ${PROJECT_PATH}/.env /app/.env
-
-RUN apk --update add tzdata ca-certificates && \
-    update-ca-certificates 2>/dev/null || true 
-
-ENTRYPOINT [ "/app/phonebook-service" ]
+ENTRYPOINT [ "/phonebook-service" ]
