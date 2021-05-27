@@ -13,7 +13,7 @@ type PhoneBookI interface {
 	GetMetaDataPhoneBook(ctx context.Context, params *model.GetListRequest) (int64, error)
 	GetPhonebookDetailByID(ctx context.Context, id int64) (*model.PhoneBookResponse, error)
 	GetCategoryNameByID(ctx context.Context, id int64) (string, error)
-	GetLocationNameByID(ctx context.Context, id int64) (string, error)
+	GetLocationNameByID(ctx context.Context, id int64) (*string, error)
 	// Create section
 	Insert(ctx context.Context, params *model.AddPhonebook) error
 	// Update section

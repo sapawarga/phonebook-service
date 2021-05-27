@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/stretchr/testify/mock"
 )
@@ -29,7 +30,7 @@ type CategoryResponse struct {
 
 // LocationResponse ...
 type LocationResponse struct {
-	Result string
+	Result *string
 	Error  error
 }
 
@@ -81,7 +82,7 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Error:  nil,
 		},
 		MockLocation: LocationResponse{
-			Result: mock.Anything,
+			Result: helper.SetPointerString(mock.Anything),
 			Error:  nil,
 		},
 		MockUsecase: GetDetailResponseUsecase{
@@ -94,11 +95,11 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 				Description:    "test case",
 				PhoneNumbers:   `[{"type":"phone", "phone_number":"+62812312131"]`,
 				RegencyID:      1,
-				RegencyName:    "mock.Anything",
+				RegencyName:    helper.SetPointerString("mock.Anything"),
 				DistrictID:     10,
-				DistrictName:   "mock.Anything",
+				DistrictName:   helper.SetPointerString("mock.Anything"),
 				VillageID:      100,
-				VillageName:    "mock.Anything",
+				VillageName:    helper.SetPointerString("mock.Anything"),
 				Latitude:       "-6.231928",
 				Longitude:      "0.988789",
 				CoverImagePath: "http://localhost:9080",
@@ -123,7 +124,7 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Error:  errors.New("id_is_invalid"),
 		},
 		MockLocation: LocationResponse{
-			Result: "",
+			Result: nil,
 			Error:  errors.New("id_is_invalid"),
 		},
 		MockUsecase: GetDetailResponseUsecase{
@@ -161,7 +162,7 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Error:  errors.New("id_is_invalid"),
 		},
 		MockLocation: LocationResponse{
-			Result: "",
+			Result: nil,
 			Error:  errors.New("id_is_invalid"),
 		},
 		MockUsecase: GetDetailResponseUsecase{
@@ -199,7 +200,7 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Error:  nil,
 		},
 		MockLocation: LocationResponse{
-			Result: "",
+			Result: nil,
 			Error:  errors.New("id_is_invalid"),
 		},
 		MockUsecase: GetDetailResponseUsecase{
