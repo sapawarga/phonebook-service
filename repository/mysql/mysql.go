@@ -92,7 +92,7 @@ func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int
 	}
 
 	if err == sql.ErrNoRows {
-		return nil, sql.ErrNoRows
+		return nil, nil
 	}
 
 	if err != nil {
@@ -116,7 +116,7 @@ func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64)
 	}
 
 	if err == sql.ErrNoRows {
-		return "", sql.ErrNoRows
+		return "", nil
 	}
 
 	if err != nil {
@@ -127,9 +127,9 @@ func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64)
 }
 
 // GetLocationNameByID ...
-func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (string, error) {
+func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (*string, error) {
 	var query bytes.Buffer
-	var result string
+	var result *string
 	var err error
 
 	query.WriteString(` SELECT name from areas WHERE id = ?`)
@@ -140,11 +140,11 @@ func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64)
 	}
 
 	if err == sql.ErrNoRows {
-		return "", sql.ErrNoRows
+		return nil, nil
 	}
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return result, nil

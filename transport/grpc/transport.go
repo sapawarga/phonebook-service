@@ -124,12 +124,12 @@ func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, e
 		UpdatedAt:    resp.UpdatedAt.String(),
 		CategoryId:   resp.CategoryID,
 		CategoryName: resp.CategoryName,
-		RegencyId:    resp.RegencyID,
-		RegencyName:  resp.RegencyName,
-		DistrictId:   resp.DistrictID,
-		DistrictName: resp.DistrictName,
-		VillageId:    resp.VillageID,
-		VillageName:  resp.VillageName,
+		RegencyId:    helper.GetInt64FromPointer(resp.RegencyID),
+		RegencyName:  helper.GetStringFromPointer(resp.RegencyName),
+		DistrictId:   helper.GetInt64FromPointer(resp.DistrictID),
+		DistrictName: helper.GetStringFromPointer(resp.DistrictName),
+		VillageId:    helper.GetInt64FromPointer(resp.VillageID),
+		VillageName:  helper.GetStringFromPointer(resp.VillageName),
 	}, nil
 }
 

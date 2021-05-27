@@ -6,20 +6,9 @@ import (
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/spf13/viper"
 )
 
-var envFileName = "./.env"
-
-func init() {
-	viper.SetConfigFile(envFileName)
-	// Enable VIPER to read Environment Variables
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Connont find config file, %s", err)
-	}
-}
+var envFileName = "../.env"
 
 //NewConfig ...
 func NewConfig() (defConfig *Config, err error) {
