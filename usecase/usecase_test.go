@@ -6,7 +6,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/sapawarga/phonebook-service/mocks"
+	mocks "github.com/sapawarga/phonebook-service/mocks"
 	"github.com/sapawarga/phonebook-service/mocks/testcases"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/usecase"

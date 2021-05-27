@@ -59,7 +59,6 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		level.Error(logger).Log("error_append_result", err)
 		return nil, err
 	}
-
 	total, err := pb.repo.GetMetaDataPhoneBook(ctx, req)
 	if err != nil {
 		level.Error(logger).Log("error", err)
@@ -76,7 +75,6 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 // GetDetail ...
 func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookDetail, error) {
 	logger := kitlog.With(pb.logger, "method", "GetDetail")
-
 	resp, err := pb.repo.GetPhonebookDetailByID(ctx, id)
 	if err != nil {
 		level.Error(logger).Log("error", err)
