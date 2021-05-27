@@ -32,11 +32,11 @@ type PhonebookDetail struct {
 	Description    string
 	PhoneNumbers   string
 	RegencyID      int64
-	RegencyName    string
+	RegencyName    *string
 	DistrictID     int64
-	DistrictName   string
+	DistrictName   *string
 	VillageID      int64
-	VillageName    string
+	VillageName    *string
 	Latitude       string
 	Longitude      string
 	CoverImagePath string
