@@ -4,43 +4,44 @@ import "time"
 
 // PhoneBookWithMeta ...
 type PhoneBookWithMeta struct {
-	PhoneBooks []*Phonebook
-	Page       int64
-	Total      int64
+	PhoneBooks []*Phonebook `json:"data"`
+	Page       int64        `json:"page"`
+	Total      int64        `json:"total"`
+	TotalPage  int64        `json:"total_page"`
 }
 
 // Phonebook ...
 type Phonebook struct {
-	ID           int64
-	PhoneNumbers string
-	Description  string
-	Name         string
-	Address      string
-	Latitude     string
-	Longitude    string
-	Status       int64
-	Category     string
+	ID           int64  `json:"id"`
+	PhoneNumbers string `json:"phone_numbers"`
+	Description  string `json:"description"`
+	Name         string `json:"name"`
+	Address      string `json:"address"`
+	Latitude     string `json:"latitude"`
+	Longitude    string `json:"longitude"`
+	Status       int64  `json:"status"`
+	Category     string `json:"category_name"`
 }
 
 // PhonebookDetail ...
 type PhonebookDetail struct {
-	ID             int64
-	Name           string
-	CategoryID     int64
-	CategoryName   string
-	Address        string
-	Description    string
-	PhoneNumbers   string
-	RegencyID      int64
-	RegencyName    *string
-	DistrictID     int64
-	DistrictName   *string
-	VillageID      int64
-	VillageName    *string
-	Latitude       string
-	Longitude      string
-	CoverImagePath string
-	Status         int64
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID             int64     `json:"id"`
+	Name           string    `json:"name"`
+	CategoryID     int64     `json:"category_id"`
+	CategoryName   string    `json:"category_name"`
+	Address        string    `json:"address"`
+	Description    string    `json:"description"`
+	PhoneNumbers   string    `json:"phone_numbers"`
+	RegencyID      int64     `json:"regency_id"`
+	RegencyName    *string   `json:"regency_name,omitempty"`
+	DistrictID     int64     `json:"district_id"`
+	DistrictName   *string   `json:"district_name,omitempty"`
+	VillageID      int64     `json:"village_id"`
+	VillageName    *string   `json:"village_name,omitempty"`
+	Latitude       string    `json:"latitude"`
+	Longitude      string    `json:"longitude"`
+	CoverImagePath string    `json:"cover_image_path"`
+	Status         int64     `json:"status"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }

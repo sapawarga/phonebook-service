@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"math"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -64,11 +65,13 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
+	totalPage := int64(math.Ceil(float64(total / limit)))
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
 		Page:       page,
 		Total:      total,
+		TotalPage:  totalPage + 1,
 	}, nil
 }
 
