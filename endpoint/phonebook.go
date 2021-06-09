@@ -22,6 +22,8 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 			VillageID:  helper.SetPointerInt64(req.VillageID),
 			Limit:      helper.SetPointerInt64(req.Limit),
 			Page:       helper.SetPointerInt64(req.Page),
+			Longitude:  helper.SetPointerString(req.Longitude),
+			Latitude:   helper.SetPointerString(req.Latitude),
 		}
 
 		resp, err := usecase.GetList(ctx, params)
