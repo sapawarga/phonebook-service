@@ -12,15 +12,16 @@ type PhoneBookWithMeta struct {
 
 // Phonebook ...
 type Phonebook struct {
-	ID           int64  `json:"id"`
-	PhoneNumbers string `json:"phone_numbers"`
-	Description  string `json:"description"`
-	Name         string `json:"name"`
-	Address      string `json:"address"`
-	Latitude     string `json:"latitude"`
-	Longitude    string `json:"longitude"`
-	Status       int64  `json:"status"`
-	Category     string `json:"category_name"`
+	ID           int64   `json:"id"`
+	PhoneNumbers string  `json:"phone_numbers"`
+	Description  string  `json:"description"`
+	Name         string  `json:"name"`
+	Address      string  `json:"address"`
+	Latitude     string  `json:"latitude"`
+	Longitude    string  `json:"longitude"`
+	Status       int64   `json:"status,omitempty"`
+	Category     string  `json:"category_name"`
+	Distance     float64 `json:"distance,omitempty"`
 }
 
 // PhonebookDetail ...

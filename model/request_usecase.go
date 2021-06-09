@@ -9,6 +9,8 @@ type ParamsPhoneBook struct {
 	Status     *int64
 	Limit      *int64
 	Page       *int64
+	Longitude  *string
+	Latitude   *string
 }
 
 // AddPhonebook ...

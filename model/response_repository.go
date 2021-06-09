@@ -19,4 +19,5 @@ type PhoneBookResponse struct {
 	CreatedAt      sql.NullTime   `db:"created_at"`
 	UpdatedAt      sql.NullTime   `db:"updated_at"`
 	CategoryID     sql.NullInt64  `db:"category_id"`
+	Distance       float64        `db:"distance,omitempty"`
 }
