@@ -19,14 +19,15 @@ type err interface {
 	error() error
 }
 
-func MakeHealthyCheckHandler(ctx context.Context, logger kitlog.Logger) http.Handler {
+func MakeHealthyCheckHandler(ctx context.Context, fs usecase.Provider, logger kitlog.Logger) http.Handler {
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorHandler(transport.NewLogErrorHandler(logger)),
 		kithttp.ServerErrorEncoder(encodeError),
 	}
 
 	r := mux.NewRouter()
-	r.Handle("/videos/healthy", kithttp.NewServer(endpoint.MakeCheckHealthy(ctx), decodeNoRequest, encodeResponse, opts...)).Methods(helper.HTTP_GET)
+	r.Handle("/health/live", kithttp.NewServer(endpoint.MakeCheckHealthy(ctx), decodeNoRequest, encodeResponse, opts...)).Methods(helper.HTTP_GET)
+	r.Handle("/health/ready", kithttp.NewServer(endpoint.MakeCheckReadiness(ctx, fs), decodeNoRequest, encodeResponse, opts...)).Methods(helper.HTTP_GET)
 	return r
 }
 
@@ -45,11 +46,11 @@ func MakeHTTPHandler(ctx context.Context, fs usecase.Provider, logger kitlog.Log
 	r := mux.NewRouter()
 
 	// TODO: handle token middleware
-	r.Handle("/phonebook/", processGetList).Methods(helper.HTTP_GET)
-	r.Handle("/phonebook/{id}", processGetDetail).Methods(helper.HTTP_GET)
-	r.Handle("/phonebook/", processAdd).Methods(helper.HTTP_POST)
-	r.Handle("/phonebook/{id}", processUpdate).Methods(helper.HTTP_PUT)
-	r.Handle("/phonebook/{id}", processDelete).Methods(helper.HTTP_DELETE)
+	r.Handle("/phone-books/", processGetList).Methods(helper.HTTP_GET)
+	r.Handle("/phone-books/{id}", processGetDetail).Methods(helper.HTTP_GET)
+	r.Handle("/phone-books/", processAdd).Methods(helper.HTTP_POST)
+	r.Handle("/phone-books/{id}", processUpdate).Methods(helper.HTTP_PUT)
+	r.Handle("/phone-books/{id}", processDelete).Methods(helper.HTTP_DELETE)
 
 	return r
 }
@@ -133,12 +134,14 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	status, ok := response.(*endpoint.StatusResponse)
-	if ok {
+	if ok && status.Code != helper.STATUS_OK {
 		if status.Code == helper.STATUS_CREATED {
 			w.WriteHeader(http.StatusCreated)
 		} else if status.Code == helper.STATUS_UPDATED || status.Code == helper.STATUS_DELETED {
 			w.WriteHeader(http.StatusNoContent)
 		}
+		_ = json.NewEncoder(w).Encode(nil)
+		return nil
 	} else {
 		w.WriteHeader(http.StatusOK)
 	}

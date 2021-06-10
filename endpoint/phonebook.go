@@ -157,3 +157,15 @@ func MakeCheckHealthy(ctx context.Context) endpoint.Endpoint {
 		}, nil
 	}
 }
+
+func MakeCheckReadiness(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		if err := usecase.CheckHealthReadiness(ctx); err != nil {
+			return nil, err
+		}
+		return &StatusResponse{
+			Code:    helper.STATUS_OK,
+			Message: "service_is_ready",
+		}, nil
+	}
+}

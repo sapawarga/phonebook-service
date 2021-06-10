@@ -119,13 +119,25 @@ var _ = Describe("Phone Book", func() {
 		}
 	}
 
+	var CheckReadinessLogic = func(idx int) {
+		ctx := context.Background()
+		data := testcases.CheckReadinessData[idx]
+		mockPhoneBookRepo.EXPECT().CheckHealthReadiness(ctx).Return(data.MockCheckReadiness).Times(1)
+		if err := phonebook.CheckHealthReadiness(ctx); err != nil {
+			Expect(err).NotTo(BeNil())
+		} else {
+			Expect(err).To(BeNil())
+		}
+	}
+
 	// sort all function names
 	var unitTestLogic = map[string]map[string]interface{}{
-		"GetList":   {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
-		"GetDetail": {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
-		"Insert":    {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
-		"Update":    {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
-		"Delete":    {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
+		"GetList":        {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
+		"GetDetail":      {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
+		"Insert":         {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
+		"Update":         {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
+		"Delete":         {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
+		"CheckReadiness": {"func": CheckReadinessLogic, "test_case_count": len(testcases.CheckReadinessData), "desc": testcases.CheckReadinessDescription()},
 	}
 
 	for _, val := range unitTestLogic {

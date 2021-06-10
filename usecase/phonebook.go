@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"math"
 
 	"github.com/sapawarga/phonebook-service/helper"
@@ -143,5 +144,15 @@ func (pb *PhoneBook) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
+	return nil
+}
+
+// CheckHealthReadiness ...
+func (pb *PhoneBook) CheckHealthReadiness(ctx context.Context) error {
+	logger := kitlog.With(pb.logger, "method", "CheckHealthReadiness")
+	if err := pb.repo.CheckHealthReadiness(ctx); err != nil {
+		level.Error(logger).Log("error", errors.New("service_not_ready"))
+		return errors.New("service_not_ready")
+	}
 	return nil
 }
