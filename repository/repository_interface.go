@@ -22,4 +22,6 @@ type PhoneBookI interface {
 	Update(ctx context.Context, params *model.UpdatePhonebook) error
 	// Delete section
 	Delete(ctx context.Context, id int64) error
+	// Check health
+	CheckHealthReadiness(ctx context.Context) error
 }

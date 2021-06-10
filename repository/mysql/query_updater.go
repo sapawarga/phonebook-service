@@ -58,6 +58,21 @@ func (r *PhonebookRepository) GetListPhonebookByLongLatMeta(ctx context.Context,
 	return total, nil
 }
 
+func (r *PhonebookRepository) CheckHealthReadiness(ctx context.Context) error {
+	var err error
+	if ctx != nil {
+		err = r.conn.PingContext(ctx)
+	} else {
+		err = r.conn.Ping()
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func querySelectLongLat(ctx context.Context, query bytes.Buffer, params *model.GetListRequest, isCount bool) (newQuery bytes.Buffer, queryParams []interface{}) {
 	query.WriteString(`
 	FROM (
