@@ -38,23 +38,29 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		page = helper.GetInt64FromPointer(params.Page)
 	}
 	offset = (page - 1) * limit
-
 	req := &model.GetListRequest{
 		Search:     params.Search,
 		RegencyID:  params.RegencyID,
 		DistrictID: params.DistrictID,
 		VillageID:  params.VillageID,
 		Status:     params.Status,
+		Longitude:  params.Longitude,
+		Latitude:   params.Latitude,
 		Limit:      &limit,
 		Offset:     &offset,
 	}
+	var resp []*model.PhoneBookResponse
+	var err error
 
-	resp, err := pb.repo.GetListPhoneBook(ctx, req)
+	if req.Longitude != nil && req.Latitude != nil {
+		resp, err = pb.repo.GetListPhonebookByLongLat(ctx, req)
+	} else {
+		resp, err = pb.repo.GetListPhoneBook(ctx, req)
+	}
 	if err != nil {
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
-
 	data, err := pb.appendResultGetList(ctx, resp)
 	if err != nil {
 		level.Error(logger).Log("error_append_result", err)
@@ -65,14 +71,12 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
-	totalPage := int64(math.Ceil(float64(total / limit)))
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
 		Page:       page,
 		Total:      total,
-		TotalPage:  totalPage + 1,
-	}, nil
+		TotalPage:  int64(math.Ceil(float64(total/limit))) + 1}, nil
 }
 
 // GetDetail ...

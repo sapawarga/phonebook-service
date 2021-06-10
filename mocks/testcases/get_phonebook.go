@@ -110,6 +110,82 @@ var GetPhoneBookData = []GetPhoneBook{
 			Error: nil,
 		},
 	}, {
+		Description: "success get phone book by long and lat",
+		UsecaseParams: model.ParamsPhoneBook{
+			Search:    helper.SetPointerString("kantor"),
+			Limit:     helper.SetPointerInt64(10),
+			Page:      helper.SetPointerInt64(1),
+			Longitude: helper.SetPointerString("-6.00009"),
+			Latitude:  helper.SetPointerString("+90.00009"),
+		},
+		GetListParams: model.GetListRequest{
+			Search:    helper.SetPointerString("kantor"),
+			Limit:     helper.SetPointerInt64(10),
+			Offset:    helper.SetPointerInt64(0),
+			Longitude: helper.SetPointerString("-6.00009"),
+			Latitude:  helper.SetPointerString("+90.00009"),
+		},
+		GetMetaDataParams: model.GetListRequest{
+			Search:    helper.SetPointerString("kantor"),
+			Limit:     helper.SetPointerInt64(10),
+			Offset:    helper.SetPointerInt64(0),
+			Longitude: helper.SetPointerString("-6.00009"),
+			Latitude:  helper.SetPointerString("+90.00009"),
+		},
+		GetCategoryNameParams: 1,
+		MockCategorydata: CategoryResponse{
+			Result: "category",
+			Error:  nil,
+		},
+		MockUsecase: ResponseFromUsecase{
+			Result: &model.PhoneBookWithMeta{
+				PhoneBooks: []*model.Phonebook{
+					{
+						ID:           1,
+						Name:         "kantor",
+						PhoneNumbers: `[{"phone_number": "022123"}]`,
+						Description:  "kantor cabang MCD",
+						Category:     "category",
+					},
+					{
+						ID:           2,
+						Name:         "kantor",
+						PhoneNumbers: `[{"phone_number": "423443"}]`,
+						Description:  "kantor makanan",
+						Category:     "category",
+						Distance:     40,
+					},
+				},
+				Page:  1,
+				Total: 2,
+			},
+			Error: nil,
+		},
+		MockGetMetadata: ResponseGetMetadata{
+			Result: 2,
+			Error:  nil,
+		},
+		MockGetList: ResponseGetList{
+			Result: []*model.PhoneBookResponse{
+				{
+					ID:           1,
+					Name:         sql.NullString{String: "kantor", Valid: true},
+					PhoneNumbers: sql.NullString{String: `[{"type":"phone", "phone_number":"+62812312131"]`, Valid: true},
+					Description:  sql.NullString{String: "kantor cabang MCD", Valid: true},
+					CategoryID:   sql.NullInt64{Int64: 1, Valid: true},
+				},
+				{
+					ID:           2,
+					Name:         sql.NullString{String: "kantor", Valid: true},
+					PhoneNumbers: sql.NullString{String: `[{"type":"phone", "phone_number":"+62812312131"]`, Valid: true},
+					Description:  sql.NullString{String: "kantor makanan", Valid: true},
+					CategoryID:   sql.NullInt64{Int64: 1, Valid: true},
+					Distance:     40,
+				},
+			},
+			Error: nil,
+		},
+	}, {
 		Description: "success when get nil data",
 		UsecaseParams: model.ParamsPhoneBook{
 			Search: helper.SetPointerString("random name"),

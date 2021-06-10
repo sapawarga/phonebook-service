@@ -9,4 +9,6 @@ type GetListRequest struct {
 	Status     *int64
 	Limit      *int64
 	Offset     *int64
+	Longitude  *string
+	Latitude   *string
 }

@@ -85,6 +85,8 @@ func decodeGetListRequest(ctx context.Context, r *http.Request) (interface{}, er
 		Status:     status,
 		Limit:      limit,
 		Page:       page,
+		Latitude:   r.URL.Query().Get("latitude"),
+		Longitude:  r.URL.Query().Get("longitude"),
 	}, nil
 }
 
