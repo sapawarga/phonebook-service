@@ -42,6 +42,7 @@ var _ = Describe("Phone Book", func() {
 		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryNameParams).Return(data.MockCategorydata.Result, data.MockCategorydata.Error).Times(len(data.MockCategorydata.Result) * 2)
 		mockPhoneBookRepo.EXPECT().GetListPhonebookByLongLat(ctx, gomock.Any()).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetListPhonebookByLongLatMeta(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
 		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
 			Search:    data.UsecaseParams.Search,
 			Limit:     data.UsecaseParams.Limit,

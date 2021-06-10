@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"database/sql"
 	"math"
 
 	"github.com/sapawarga/phonebook-service/helper"
@@ -49,34 +48,18 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		Limit:      &limit,
 		Offset:     &offset,
 	}
-	var resp []*model.PhoneBookResponse
-	var err error
 
-	if req.Longitude != nil && req.Latitude != nil {
-		resp, err = pb.repo.GetListPhonebookByLongLat(ctx, req)
-	} else {
-		resp, err = pb.repo.GetListPhoneBook(ctx, req)
-	}
-	if err != nil {
-		level.Error(logger).Log("error", err)
-		return nil, err
-	}
-	data, err := pb.appendResultGetList(ctx, resp)
-	if err != nil {
-		level.Error(logger).Log("error_append_result", err)
-		return nil, err
-	}
-	total, err := pb.repo.GetMetaDataPhoneBook(ctx, req)
+	result, err := pb.getPhonebookAndMetadata(ctx, req, logger)
 	if err != nil {
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
 
 	return &model.PhoneBookWithMeta{
-		PhoneBooks: data,
+		PhoneBooks: result.PhoneBooks,
 		Page:       page,
-		Total:      total,
-		TotalPage:  int64(math.Ceil(float64(total/limit))) + 1}, nil
+		Total:      result.Total,
+		TotalPage:  int64(math.Ceil(float64(result.Total/limit))) + 1}, nil
 }
 
 // GetDetail ...
@@ -161,64 +144,4 @@ func (pb *PhoneBook) Delete(ctx context.Context, id int64) error {
 	}
 
 	return nil
-}
-
-func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.PhoneBookResponse) (listPhonebook []*model.Phonebook, err error) {
-	for _, v := range result {
-		result := &model.Phonebook{
-			ID:           v.ID,
-			PhoneNumbers: v.PhoneNumbers.String,
-			Description:  v.Description.String,
-			Name:         v.Name.String,
-			Address:      v.Address.String,
-			Latitude:     v.Latitude.String,
-			Longitude:    v.Longitude.String,
-			Status:       v.Status.Int64,
-		}
-		if v.CategoryID.Valid {
-			categoryName, err := pb.repo.GetCategoryNameByID(ctx, v.CategoryID.Int64)
-			if err != nil && err != sql.ErrNoRows {
-				return nil, err
-			}
-			result.Category = categoryName
-		}
-		listPhonebook = append(listPhonebook, result)
-	}
-	return listPhonebook, nil
-}
-
-func (pb *PhoneBook) appendDetailPhonebook(ctx context.Context, respFromRepo *model.PhoneBookResponse, respDetail *model.PhonebookDetail) (*model.PhonebookDetail, error) {
-	if respFromRepo.CategoryID.Valid {
-		categoryName, err := pb.repo.GetCategoryNameByID(ctx, respFromRepo.CategoryID.Int64)
-		if err != nil {
-			return nil, err
-		}
-		respDetail.CategoryID = respFromRepo.CategoryID.Int64
-		respDetail.CategoryName = categoryName
-	}
-	if respFromRepo.RegencyID.Valid {
-		regencyName, err := pb.repo.GetLocationNameByID(ctx, respFromRepo.RegencyID.Int64)
-		if err != nil {
-			return nil, err
-		}
-		respDetail.RegencyID = respFromRepo.RegencyID.Int64
-		respDetail.RegencyName = regencyName
-	}
-	if respFromRepo.DistrictID.Valid {
-		districtName, err := pb.repo.GetLocationNameByID(ctx, respFromRepo.DistrictID.Int64)
-		if err != nil {
-			return nil, err
-		}
-		respDetail.DistrictID = respFromRepo.DistrictID.Int64
-		respDetail.DistrictName = districtName
-	}
-	if respFromRepo.VillageID.Valid {
-		villageName, err := pb.repo.GetLocationNameByID(ctx, respFromRepo.VillageID.Int64)
-		if err != nil {
-			return nil, err
-		}
-		respDetail.VillageID = respFromRepo.VillageID.Int64
-		respDetail.VillageName = villageName
-	}
-	return respDetail, nil
 }

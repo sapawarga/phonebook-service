@@ -94,6 +94,21 @@ func (mr *MockPhoneBookIMockRecorder) GetListPhonebookByLongLat(ctx, params inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetListPhonebookByLongLat", reflect.TypeOf((*MockPhoneBookI)(nil).GetListPhonebookByLongLat), ctx, params)
 }
 
+// GetListPhonebookByLongLatMeta mocks base method.
+func (m *MockPhoneBookI) GetListPhonebookByLongLatMeta(ctx context.Context, params *model.GetListRequest) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetListPhonebookByLongLatMeta", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetListPhonebookByLongLatMeta indicates an expected call of GetListPhonebookByLongLatMeta.
+func (mr *MockPhoneBookIMockRecorder) GetListPhonebookByLongLatMeta(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetListPhonebookByLongLatMeta", reflect.TypeOf((*MockPhoneBookI)(nil).GetListPhonebookByLongLatMeta), ctx, params)
+}
+
 // GetLocationNameByID mocks base method.
 func (m *MockPhoneBookI) GetLocationNameByID(ctx context.Context, id int64) (*string, error) {
 	m.ctrl.T.Helper()

@@ -3,6 +3,8 @@ package mysql
 import (
 	"bytes"
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/sapawarga/phonebook-service/helper"
@@ -12,12 +14,52 @@ import (
 func (r *PhonebookRepository) GetListPhonebookByLongLat(ctx context.Context, params *model.GetListRequest) ([]*model.PhoneBookResponse, error) {
 	var query bytes.Buffer
 	var result []*model.PhoneBookResponse
-	var queryParams []interface{}
 	var err error
 
-	query.WriteString(`
+	query.WriteString(` 
 	SELECT id, category_id, name, description, address, phone_numbers, kabkota_id , kec_id , kel_id ,status , 
-   		latitude, longitude, distance, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at
+		latitude, longitude, distance, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at
+	`)
+
+	query, queryParams := querySelectLongLat(ctx, query, params, false)
+
+	if ctx != nil {
+		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
+	} else {
+		err = r.conn.Select(&result, query.String(), queryParams...)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (r *PhonebookRepository) GetListPhonebookByLongLatMeta(ctx context.Context, params *model.GetListRequest) (int64, error) {
+	var query bytes.Buffer
+	var total int64
+	var err error
+
+	query.WriteString(" SELECT COUNT(1) ")
+
+	query, queryParams := querySelectLongLat(ctx, query, params, true)
+
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, &total, query.String(), queryParams...)
+	} else {
+		err = r.conn.Get(&total, query.String(), queryParams...)
+	}
+
+	if err != nil || err == sql.ErrNoRows {
+		return 0, errors.New("error_getting_total_data")
+	}
+
+	return total, nil
+}
+
+func querySelectLongLat(ctx context.Context, query bytes.Buffer, params *model.GetListRequest, isCount bool) (newQuery bytes.Buffer, queryParams []interface{}) {
+	query.WriteString(`
 	FROM (
 		SELECT pb.id, pb.category_id, pb.name, pb.description, pb.address,pb.phone_numbers,
 			pb.latitude, pb.longitude, pb.kabkota_id ,pb.kec_id ,pb.kel_id, pb.cover_image_path , pb.status , pb.created_at, pb.updated_at ,
@@ -36,19 +78,18 @@ func (r *PhonebookRepository) GetListPhonebookByLongLat(ctx context.Context, par
 			AND pb.longitude
 			BETWEEN c.longpoint - (c.radius / (c.distance_unit * COS(RADIANS(c.latpoint)))) AND c.longpoint + (c.radius / (c.distance_unit * COS(RADIANS(c.latpoint))))
 			AND pb.status <> -1
-	) AS d	WHERE distance <= radius ORDER BY distance LIMIT ?, ?`)
-	queryParams = append(queryParams, helper.GetStringFromPointer(params.Latitude), helper.GetStringFromPointer(params.Longitude), helper.RADIUS, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
-	if ctx != nil {
-		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
-	} else {
-		err = r.conn.Select(&result, query.String(), queryParams...)
+	) AS d	WHERE distance <= radius
+	`)
+	queryParams = append(queryParams,
+		helper.GetStringFromPointer(params.Latitude),
+		helper.GetStringFromPointer(params.Longitude),
+		helper.RADIUS)
+	if !isCount {
+		query.WriteString(" ORDER BY distance LIMIT ?, ? ")
+		queryParams = append(queryParams, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return query, queryParams
 }
 
 func querySelectParams(ctx context.Context, query bytes.Buffer, params *model.GetListRequest) (newQuery bytes.Buffer, queryParams []interface{}) {
