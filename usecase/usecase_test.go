@@ -42,6 +42,7 @@ var _ = Describe("Phone Book", func() {
 		mockPhoneBookRepo.EXPECT().GetMetaDataPhoneBook(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryNameParams).Return(data.MockCategorydata.Result, data.MockCategorydata.Error).Times(len(data.MockCategorydata.Result) * 2)
 		mockPhoneBookRepo.EXPECT().GetListPhonebookByLongLat(ctx, gomock.Any()).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
+		mockPhoneBookRepo.EXPECT().GetListPhonebookByLongLatMeta(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
 		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
 			Search:    data.UsecaseParams.Search,
 			Limit:     data.UsecaseParams.Limit,
@@ -118,13 +119,25 @@ var _ = Describe("Phone Book", func() {
 		}
 	}
 
+	var CheckReadinessLogic = func(idx int) {
+		ctx := context.Background()
+		data := testcases.CheckReadinessData[idx]
+		mockPhoneBookRepo.EXPECT().CheckHealthReadiness(ctx).Return(data.MockCheckReadiness).Times(1)
+		if err := phonebook.CheckHealthReadiness(ctx); err != nil {
+			Expect(err).NotTo(BeNil())
+		} else {
+			Expect(err).To(BeNil())
+		}
+	}
+
 	// sort all function names
 	var unitTestLogic = map[string]map[string]interface{}{
-		"GetList":   {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
-		"GetDetail": {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
-		"Insert":    {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
-		"Update":    {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
-		"Delete":    {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
+		"GetList":        {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
+		"GetDetail":      {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
+		"Insert":         {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
+		"Update":         {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
+		"Delete":         {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
+		"CheckReadiness": {"func": CheckReadinessLogic, "test_case_count": len(testcases.CheckReadinessData), "desc": testcases.CheckReadinessDescription()},
 	}
 
 	for _, val := range unitTestLogic {

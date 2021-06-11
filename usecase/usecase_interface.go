@@ -13,4 +13,5 @@ type Provider interface {
 	Insert(ctx context.Context, params *model.AddPhonebook) error
 	Update(ctx context.Context, params *model.UpdatePhonebook) error
 	Delete(ctx context.Context, id int64) error
+	CheckHealthReadiness(ctx context.Context) error
 }
