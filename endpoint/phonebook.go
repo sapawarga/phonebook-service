@@ -3,6 +3,8 @@ package endpoint
 import (
 	"context"
 
+	"encoding/json"
+
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/usecase"
@@ -32,13 +34,15 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 			return nil, err
 		}
 
+		phonebooks := EncodePhonebook(resp.PhoneBooks)
+
 		meta := &Metadata{
 			Page:  resp.Page,
 			Total: resp.Total,
 		}
 
 		return &PhoneBookWithMeta{
-			Data:     resp.PhoneBooks,
+			Data:     phonebooks,
 			Metadata: meta,
 		}, nil
 	}
@@ -53,6 +57,11 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			return nil, err
 		}
 
+		phoneNumbers := []*PhoneNumber{}
+		if err := json.Unmarshal([]byte(resp.PhoneNumbers), &phoneNumbers); err != nil {
+			return nil, err
+		}
+
 		return &PhonebookDetail{
 			ID:             resp.ID,
 			Name:           resp.Name,
@@ -60,7 +69,7 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			CategoryName:   resp.CategoryName,
 			Address:        resp.Address,
 			Description:    resp.Description,
-			PhoneNumbers:   resp.PhoneNumbers,
+			PhoneNumbers:   phoneNumbers,
 			RegencyID:      helper.SetPointerInt64(resp.RegencyID),
 			RegencyName:    resp.RegencyName,
 			DistrictID:     helper.SetPointerInt64(resp.DistrictID),
@@ -81,9 +90,10 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(*AddPhonebookRequest)
+		phoneNumbers, _ := json.Marshal(req.PhoneNumbers)
 		if err := usecase.Insert(ctx, &model.AddPhonebook{
 			Name:           req.Name,
-			PhoneNumbers:   req.PhoneNumbers,
+			PhoneNumbers:   helper.SetPointerString(string(phoneNumbers)),
 			Address:        req.Address,
 			Description:    req.Description,
 			RegencyID:      req.RegencyID,
@@ -110,10 +120,11 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(*UpdatePhonebookRequest)
+		phoneNumbers, _ := json.Marshal(req.PhoneNumbers)
 		if err := usecase.Update(ctx, &model.UpdatePhonebook{
 			ID:             req.ID,
 			Name:           req.Name,
-			PhoneNumbers:   req.PhoneNumbers,
+			PhoneNumbers:   helper.SetPointerString(string(phoneNumbers)),
 			Address:        req.Address,
 			Description:    req.Description,
 			RegencyID:      req.RegencyID,

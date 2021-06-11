@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/sapawarga/phonebook-service/endpoint"
 	"github.com/sapawarga/phonebook-service/helper"
@@ -78,9 +79,11 @@ func encodeGetListResponse(ctx context.Context, r interface{}) (interface{}, err
 
 	resultData := make([]*transportPhonebook.PhoneBook, 0)
 	for _, v := range data {
+		phoneString, _ := json.Marshal(v.PhoneNumbers)
+
 		result := &transportPhonebook.PhoneBook{
 			Id:           v.ID,
-			PhoneNumbers: v.PhoneNumbers,
+			PhoneNumbers: string(phoneString),
 			Description:  v.Description,
 			Name:         v.Name,
 			Address:      v.Address,
@@ -111,9 +114,10 @@ func decodeGetDetailRequest(ctx context.Context, r interface{}) (interface{}, er
 
 func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, error) {
 	resp := r.(*endpoint.PhonebookDetail)
+	phoneString, _ := json.Marshal(resp.PhoneNumbers)
 	return &transportPhonebook.GetDetailResponse{
 		Id:           resp.ID,
-		PhoneNumbers: resp.PhoneNumbers,
+		PhoneNumbers: string(phoneString),
 		Description:  resp.Description,
 		Name:         resp.Name,
 		Address:      resp.Address,
@@ -135,9 +139,14 @@ func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, e
 
 func decodeAddPhonebookRequest(ctx context.Context, r interface{}) (interface{}, error) {
 	req := r.(*transportPhonebook.AddPhonebookRequest)
+	phoneNumbers := []*endpoint.PhoneNumber{}
+	err := json.Unmarshal([]byte(req.GetPhoneNumbers()), &phoneNumbers)
+	if err != nil {
+		return nil, err
+	}
 	request := &endpoint.AddPhonebookRequest{
 		Name:         req.GetName(),
-		PhoneNumbers: helper.SetPointerString(req.GetPhoneNumbers()),
+		PhoneNumbers: phoneNumbers,
 	}
 	if req.Address != "" {
 		request.Address = helper.SetPointerString(req.GetAddress())
@@ -181,7 +190,12 @@ func decodeUpdatePhonebookRequest(ctx context.Context, r interface{}) (interface
 		Name: req.GetName(),
 	}
 	if req.PhoneNumbers != "" {
-		request.PhoneNumbers = helper.SetPointerString(req.GetPhoneNumbers())
+		phoneNumbers := []*endpoint.PhoneNumber{}
+		err := json.Unmarshal([]byte(req.GetPhoneNumbers()), &phoneNumbers)
+		if err != nil {
+			return nil, err
+		}
+		request.PhoneNumbers = phoneNumbers
 	}
 	if req.Address != "" {
 		request.Address = helper.SetPointerString(req.GetAddress())
