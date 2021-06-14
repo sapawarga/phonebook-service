@@ -54,6 +54,9 @@ func GetCurrentTimeUTC() (standartTime time.Time, unixTime int64) {
 }
 
 func ConvertFromStringToInt64(val string) (pointerInt64 *int64, plainInt64 int64) {
+	if val == "" {
+		return nil, 0
+	}
 	valInt, _ := strconv.ParseInt(val, 10, 64)
 	return &valInt, valInt
 }
