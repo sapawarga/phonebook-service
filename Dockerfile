@@ -18,7 +18,7 @@ COPY . .
 RUN CGO_ENABLED=0 go test -v ./...
 RUN make build
 
-FROM registry.digitalservice.id/proxyjds/gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/base-debian10
 
 LABEL maintainer="GoSapawarga <setiadi.yon3@gmail.com>"
 
