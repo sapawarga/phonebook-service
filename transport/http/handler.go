@@ -132,6 +132,7 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 		return nil
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
 	status, ok := response.(*endpoint.StatusResponse)
 	if ok && status.Code != helper.STATUS_OK {
@@ -139,12 +140,11 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 			w.WriteHeader(http.StatusCreated)
 		} else if status.Code == helper.STATUS_UPDATED || status.Code == helper.STATUS_DELETED {
 			w.WriteHeader(http.StatusNoContent)
+			_ = json.NewEncoder(w).Encode(nil)
+			return nil
 		}
-		_ = json.NewEncoder(w).Encode(nil)
-		return nil
-	} else {
-		w.WriteHeader(http.StatusOK)
 	}
+
 	return json.NewEncoder(w).Encode(response)
 }
 
