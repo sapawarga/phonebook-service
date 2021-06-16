@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/sapawarga/phonebook-service/model"
@@ -66,12 +65,12 @@ type StatusResponse struct {
 func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 	result := make([]*Phonebook, 0)
 	for _, v := range data {
-
 		phoneNumbers := []*PhoneNumber{}
-		if err := json.Unmarshal([]byte(v.PhoneNumbers), &phoneNumbers); err != nil {
-			fmt.Println("error unmarshal", err)
-			return nil
+
+		if v.PhoneNumbers != "" {
+			_ = json.Unmarshal([]byte(v.PhoneNumbers), &phoneNumbers)
 		}
+
 		encodeData := &Phonebook{
 			ID:           v.ID,
 			PhoneNumbers: phoneNumbers,
