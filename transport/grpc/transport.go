@@ -74,8 +74,8 @@ func decodeGetListRequest(ctx context.Context, r interface{}) (interface{}, erro
 
 func encodeGetListResponse(ctx context.Context, r interface{}) (interface{}, error) {
 	resp := r.(*endpoint.PhoneBookWithMeta)
-	data := resp.Data
-	meta := resp.Metadata
+	data := resp.Data.PhoneBooks
+	meta := resp.Data.Metadata
 
 	resultData := make([]*transportPhonebook.PhoneBook, 0)
 	for _, v := range data {
@@ -95,8 +95,8 @@ func encodeGetListResponse(ctx context.Context, r interface{}) (interface{}, err
 	}
 
 	resultMeta := &transportPhonebook.Metadata{
-		Page:  meta.Page,
-		Total: meta.Total,
+		Page:  int64(meta.PageCount),
+		Total: meta.TotalCount,
 	}
 
 	return &transportPhonebook.GetListResponse{
@@ -126,14 +126,14 @@ func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, e
 		Status:       resp.Status,
 		CreatedAt:    resp.CreatedAt.String(),
 		UpdatedAt:    resp.UpdatedAt.String(),
-		CategoryId:   resp.CategoryID,
-		CategoryName: resp.CategoryName,
-		RegencyId:    helper.GetInt64FromPointer(resp.RegencyID),
-		RegencyName:  helper.GetStringFromPointer(resp.RegencyName),
-		DistrictId:   helper.GetInt64FromPointer(resp.DistrictID),
-		DistrictName: helper.GetStringFromPointer(resp.DistrictName),
-		VillageId:    helper.GetInt64FromPointer(resp.VillageID),
-		VillageName:  helper.GetStringFromPointer(resp.VillageName),
+		CategoryId:   resp.Category.ID,
+		CategoryName: resp.Category.Name,
+		RegencyId:    resp.Regency.ID,
+		RegencyName:  resp.Regency.Name,
+		DistrictId:   resp.District.ID,
+		DistrictName: resp.District.Name,
+		VillageId:    resp.Village.ID,
+		VillageName:  resp.Village.Name,
 	}, nil
 }
 

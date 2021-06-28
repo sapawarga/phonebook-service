@@ -39,6 +39,18 @@ type GetPhoneBook struct {
 	MockCategorydata      CategoryResponse
 }
 
+var category = &model.Category{
+	ID:   10,
+	Name: "category",
+}
+
+var meta = &model.Metadata{
+	TotalCount:  10,
+	PageCount:   2,
+	CurrentPage: 1,
+	PerPage:     5,
+}
+
 // GetPhoneBookData ...
 var GetPhoneBookData = []GetPhoneBook{
 	{
@@ -71,18 +83,17 @@ var GetPhoneBookData = []GetPhoneBook{
 						Name:         "kantor",
 						PhoneNumbers: `[{"phone_number": "022123"}]`,
 						Description:  "kantor cabang MCD",
-						Category:     "category",
+						Category:     category,
 					},
 					{
 						ID:           2,
 						Name:         "kantor",
 						PhoneNumbers: `[{"phone_number": "423443"}]`,
 						Description:  "kantor makanan",
-						Category:     "category",
+						Category:     category,
 					},
 				},
-				Page:  1,
-				Total: 2,
+				Metadata: meta,
 			},
 			Error: nil,
 		},
@@ -145,19 +156,18 @@ var GetPhoneBookData = []GetPhoneBook{
 						Name:         "kantor",
 						PhoneNumbers: `[{"phone_number": "022123"}]`,
 						Description:  "kantor cabang MCD",
-						Category:     "category",
+						Category:     category,
 					},
 					{
 						ID:           2,
 						Name:         "kantor",
 						PhoneNumbers: `[{"phone_number": "423443"}]`,
 						Description:  "kantor makanan",
-						Category:     "category",
+						Category:     category,
 						Distance:     40,
 					},
 				},
-				Page:  1,
-				Total: 2,
+				Metadata: meta,
 			},
 			Error: nil,
 		},
@@ -210,8 +220,7 @@ var GetPhoneBookData = []GetPhoneBook{
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
 				PhoneBooks: nil,
-				Page:       1,
-				Total:      0,
+				Metadata:   nil,
 			},
 			Error: nil,
 		},

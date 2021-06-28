@@ -49,6 +49,12 @@ type GetDetailPhonebook struct {
 
 var currentTime = time.Now().UTC()
 
+var location = &model.Location{
+	ID:      4312,
+	BPSCode: "782941",
+	Name:    "location",
+}
+
 // GetDetailPhonebookData ...
 var GetDetailPhonebookData = []GetDetailPhonebook{
 	{
@@ -89,17 +95,13 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Result: &model.PhonebookDetail{
 				ID:             1,
 				Name:           "test kantor",
-				CategoryID:     1,
-				CategoryName:   "category",
+				Category:       category,
 				Address:        "jalan panjang",
 				Description:    "test case",
 				PhoneNumbers:   `[{"type":"phone", "phone_number":"+62812312131"]`,
-				RegencyID:      1,
-				RegencyName:    helper.SetPointerString("mock.Anything"),
-				DistrictID:     10,
-				DistrictName:   helper.SetPointerString("mock.Anything"),
-				VillageID:      100,
-				VillageName:    helper.SetPointerString("mock.Anything"),
+				Regency:        location,
+				District:       location,
+				Village:        location,
 				Latitude:       "-6.231928",
 				Longitude:      "0.988789",
 				CoverImagePath: "http://localhost:9080",

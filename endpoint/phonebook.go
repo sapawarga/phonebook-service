@@ -34,16 +34,8 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 			return nil, err
 		}
 
-		phonebooks := EncodePhonebook(resp.PhoneBooks)
-
-		meta := &Metadata{
-			Page:  resp.Page,
-			Total: resp.Total,
-		}
-
 		return &PhoneBookWithMeta{
-			Data:     phonebooks,
-			Metadata: meta,
+			Data: resp,
 		}, nil
 	}
 }
@@ -65,17 +57,13 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 		return &PhonebookDetail{
 			ID:             resp.ID,
 			Name:           resp.Name,
-			CategoryID:     resp.CategoryID,
-			CategoryName:   resp.CategoryName,
+			Category:       resp.Category,
 			Address:        resp.Address,
 			Description:    resp.Description,
 			PhoneNumbers:   phoneNumbers,
-			RegencyID:      helper.SetPointerInt64(resp.RegencyID),
-			RegencyName:    resp.RegencyName,
-			DistrictID:     helper.SetPointerInt64(resp.DistrictID),
-			DistrictName:   resp.DistrictName,
-			VillageID:      helper.SetPointerInt64(resp.VillageID),
-			VillageName:    resp.VillageName,
+			Regency:        resp.Regency,
+			District:       resp.District,
+			Village:        resp.Village,
 			Latitude:       resp.Latitude,
 			Longitude:      resp.Longitude,
 			CoverImagePath: resp.CoverImagePath,
