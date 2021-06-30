@@ -18,9 +18,9 @@ type AddPhonebookRequest struct {
 	Name           string         `json:"name"`
 	Description    *string        `json:"description"`
 	PhoneNumbers   []*PhoneNumber `json:"phone_numbers"`
-	RegencyID      *int64         `json:"regency_id"`
-	DistrictID     *int64         `json:"district_id"`
-	VillageID      *int64         `json:"village_id"`
+	RegencyID      *int64         `json:"kabkota_id"`
+	DistrictID     *int64         `json:"kec_id"`
+	VillageID      *int64         `json:"kel_id"`
 	Status         *int64         `json:"status"`
 	Latitude       *string        `json:"latitude"`
 	Longitude      *string        `json:"longitude"`
@@ -40,9 +40,9 @@ type UpdatePhonebookRequest struct {
 	Name           string         `json:"name"`
 	Description    *string        `json:"description"`
 	PhoneNumbers   []*PhoneNumber `json:"phone_numbers"`
-	RegencyID      *int64         `json:"regency_id"`
-	DistrictID     *int64         `json:"district_id"`
-	VillageID      *int64         `json:"village_id"`
+	RegencyID      *int64         `json:"kabkota_id"`
+	DistrictID     *int64         `json:"kec_id"`
+	VillageID      *int64         `json:"kel_id"`
 	Status         *int64         `json:"status"`
 	Latitude       *string        `json:"latitude"`
 	Longitude      *string        `json:"longitude"`
