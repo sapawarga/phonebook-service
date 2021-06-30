@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -125,17 +126,17 @@ func (r *PhonebookRepository) GetCategoryNameByID(ctx context.Context, id int64)
 	return result, nil
 }
 
-// GetLocationNameByID ...
-func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64) (*string, error) {
+// GetLocationByID ...
+func (r *PhonebookRepository) GetLocationByID(ctx context.Context, id int64) (*model.Location, error) {
 	var query bytes.Buffer
-	var result *string
+	var result = &model.Location{}
 	var err error
 
-	query.WriteString(` SELECT name from areas WHERE id = ?`)
+	query.WriteString(` SELECT id, name, code_bps FROM areas WHERE id = ?`)
 	if ctx != nil {
-		err = r.conn.GetContext(ctx, &result, query.String(), id)
+		err = r.conn.GetContext(ctx, result, query.String(), id)
 	} else {
-		err = r.conn.Get(&result, query.String(), id)
+		err = r.conn.Get(result, query.String(), id)
 	}
 
 	if err == sql.ErrNoRows {
@@ -143,6 +144,7 @@ func (r *PhonebookRepository) GetLocationNameByID(ctx context.Context, id int64)
 	}
 
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 

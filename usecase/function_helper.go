@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"math"
 
 	"github.com/sapawarga/phonebook-service/model"
 
@@ -38,14 +39,20 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
-
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
-		Total:      total,
+		Metadata: &model.Metadata{
+			TotalCount: total,
+			PageCount:  math.Ceil(float64(total) / float64(*params.Limit)),
+			PerPage:    *params.Offset,
+		},
 	}, nil
 }
 
 func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.PhoneBookResponse) (listPhonebook []*model.Phonebook, err error) {
+	if len(result) == 0 {
+		return listPhonebook, nil
+	}
 	for _, v := range result {
 		result := &model.Phonebook{
 			ID:           v.ID,
@@ -56,13 +63,18 @@ func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.Ph
 			Latitude:     v.Latitude.String,
 			Longitude:    v.Longitude.String,
 			Status:       v.Status.Int64,
+			RegencyID:    v.RegencyID.Int64,
+			DistrictID:   v.DistrictID.Int64,
+			VillageID:    v.VillageID.Int64,
+			CreatedAt:    v.CreatedAt.Time,
+			UpdatedAt:    v.UpdatedAt.Time,
 		}
 		if v.CategoryID.Valid {
 			categoryName, err := pb.repo.GetCategoryNameByID(ctx, v.CategoryID.Int64)
 			if err != nil && err != sql.ErrNoRows {
 				return nil, err
 			}
-			result.Category = categoryName
+			result.Category = &model.Category{ID: v.CategoryID.Int64, Name: categoryName}
 		}
 		listPhonebook = append(listPhonebook, result)
 	}
@@ -75,32 +87,29 @@ func (pb *PhoneBook) appendDetailPhonebook(ctx context.Context, respFromRepo *mo
 		if err != nil {
 			return nil, err
 		}
-		respDetail.CategoryID = respFromRepo.CategoryID.Int64
-		respDetail.CategoryName = categoryName
+		respDetail.Category = &model.Category{ID: respFromRepo.CategoryID.Int64, Name: categoryName}
 	}
 	if respFromRepo.RegencyID.Valid {
-		regencyName, err := pb.repo.GetLocationNameByID(ctx, respFromRepo.RegencyID.Int64)
+		regency, err := pb.repo.GetLocationByID(ctx, respFromRepo.RegencyID.Int64)
 		if err != nil {
 			return nil, err
 		}
-		respDetail.RegencyID = respFromRepo.RegencyID.Int64
-		respDetail.RegencyName = regencyName
+		respDetail.Regency = regency
+
 	}
 	if respFromRepo.DistrictID.Valid {
-		districtName, err := pb.repo.GetLocationNameByID(ctx, respFromRepo.DistrictID.Int64)
+		district, err := pb.repo.GetLocationByID(ctx, respFromRepo.DistrictID.Int64)
 		if err != nil {
 			return nil, err
 		}
-		respDetail.DistrictID = respFromRepo.DistrictID.Int64
-		respDetail.DistrictName = districtName
+		respDetail.District = district
 	}
 	if respFromRepo.VillageID.Valid {
-		villageName, err := pb.repo.GetLocationNameByID(ctx, respFromRepo.VillageID.Int64)
+		village, err := pb.repo.GetLocationByID(ctx, respFromRepo.VillageID.Int64)
 		if err != nil {
 			return nil, err
 		}
-		respDetail.VillageID = respFromRepo.VillageID.Int64
-		respDetail.VillageName = villageName
+		respDetail.Village = village
 	}
 	return respDetail, nil
 }

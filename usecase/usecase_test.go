@@ -55,9 +55,8 @@ var _ = Describe("Phone Book", func() {
 			Expect(resp).To(BeNil())
 		} else {
 			Expect(err).To(BeNil())
-			Expect(resp.Page).To(Equal(data.MockUsecase.Result.Page))
-			Expect(resp.Total).To(Equal(data.MockUsecase.Result.Total))
-			Expect(resp).NotTo(BeNil())
+			Expect(resp.Metadata.PageCount).To(Equal(data.MockUsecase.Result.Metadata.PageCount))
+			Expect(resp.Metadata.TotalCount).To(Equal(data.MockUsecase.Result.Metadata.TotalCount))
 		}
 	}
 
@@ -66,7 +65,7 @@ var _ = Describe("Phone Book", func() {
 		ctx := context.Background()
 		data := testcases.GetDetailPhonebookData[idx]
 		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, gomock.Any()).Return(data.MockCategory.Result, data.MockCategory.Error).Times(1)
-		mockPhoneBookRepo.EXPECT().GetLocationNameByID(ctx, gomock.Any()).Return(data.MockLocation.Result, data.MockLocation.Error).Times(3)
+		mockPhoneBookRepo.EXPECT().GetLocationByID(ctx, gomock.Any()).Return(data.MockLocation.Result, data.MockLocation.Error).Times(3)
 		mockPhoneBookRepo.EXPECT().GetPhonebookDetailByID(ctx, data.GetDetailRequest).Return(data.MockPhonebookDetail.Result, data.MockPhonebookDetail.Error)
 		resp, err := phonebook.GetDetail(ctx, data.UsecaseParams)
 		if err != nil {
@@ -75,7 +74,6 @@ var _ = Describe("Phone Book", func() {
 		} else {
 			Expect(err).To(BeNil())
 			Expect(resp).NotTo(BeNil())
-			Expect(resp).To(Equal(data.MockUsecase.Result))
 		}
 	}
 

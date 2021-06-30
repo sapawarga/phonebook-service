@@ -9,22 +9,21 @@ import (
 
 // PhoneBookWithMeta ...
 type PhoneBookWithMeta struct {
-	Data     []*Phonebook `json:"data"`
-	Metadata *Metadata    `json:"metadata"`
+	Data *model.PhoneBookWithMeta `json:"data"`
 }
 
 // Phonebook ...
 type Phonebook struct {
-	ID           int64          `json:"id"`
-	PhoneNumbers []*PhoneNumber `json:"phone_numbers"`
-	Description  string         `json:"description"`
-	Name         string         `json:"name"`
-	Address      string         `json:"address"`
-	Latitude     string         `json:"latitude"`
-	Longitude    string         `json:"longitude"`
-	Status       int64          `json:"status,omitempty"`
-	Category     string         `json:"category_name"`
-	Distance     float64        `json:"distance,omitempty"`
+	ID           int64           `json:"id"`
+	PhoneNumbers []*PhoneNumber  `json:"phone_numbers"`
+	Description  string          `json:"description"`
+	Name         string          `json:"name"`
+	Address      string          `json:"address"`
+	Latitude     string          `json:"latitude"`
+	Longitude    string          `json:"longitude"`
+	Status       int64           `json:"status,omitempty"`
+	Category     *model.Category `json:"category"`
+	Distance     float64         `json:"distance,omitempty"`
 }
 
 // Metadata ...
@@ -35,25 +34,21 @@ type Metadata struct {
 
 // PhonebookDetail ...
 type PhonebookDetail struct {
-	ID             int64          `json:"id"`
-	Name           string         `json:"name"`
-	CategoryID     int64          `json:"category_id"`
-	CategoryName   string         `json:"category_name"`
-	Address        string         `json:"address"`
-	Description    string         `json:"description"`
-	PhoneNumbers   []*PhoneNumber `json:"phone_numbers"`
-	RegencyID      *int64         `json:"regency_id,omitempty"`
-	RegencyName    *string        `json:"regency_name,omitempty"`
-	DistrictID     *int64         `json:"district_id,omitempty"`
-	DistrictName   *string        `json:"district_name,omitempty"`
-	VillageID      *int64         `json:"village_id,omitempty"`
-	VillageName    *string        `json:"village_name,omitempty"`
-	Latitude       string         `json:"latitude"`
-	Longitude      string         `json:"longitude"`
-	CoverImagePath string         `json:"cover_image_path"`
-	Status         int64          `json:"status"`
-	CreatedAt      time.Time      `json:"created_at"`
-	UpdatedAt      time.Time      `json:"updated_at"`
+	ID             int64           `json:"id"`
+	Name           string          `json:"name"`
+	Category       *model.Category `json:"category"`
+	Address        string          `json:"address"`
+	Description    string          `json:"description"`
+	PhoneNumbers   []*PhoneNumber  `json:"phone_numbers"`
+	Regency        *model.Location `json:"kabkota,omitempty"`
+	District       *model.Location `json:"kecamatan,omitempty"`
+	Village        *model.Location `json:"kelurahan,omitempty"`
+	Latitude       string          `json:"latitude"`
+	Longitude      string          `json:"longitude"`
+	CoverImagePath string          `json:"cover_image_path"`
+	Status         int64           `json:"status"`
+	CreatedAt      time.Time       `json:"created_at"`
+	UpdatedAt      time.Time       `json:"updated_at"`
 }
 
 // StatusResponse ...
