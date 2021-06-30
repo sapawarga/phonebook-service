@@ -39,7 +39,6 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
-
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
 		Metadata: &model.Metadata{
@@ -51,6 +50,9 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 }
 
 func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.PhoneBookResponse) (listPhonebook []*model.Phonebook, err error) {
+	if len(result) == 0 {
+		return listPhonebook, nil
+	}
 	for _, v := range result {
 		result := &model.Phonebook{
 			ID:           v.ID,

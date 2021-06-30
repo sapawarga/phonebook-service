@@ -45,10 +45,10 @@ var category = &model.Category{
 }
 
 var meta = &model.Metadata{
-	TotalCount:  10,
-	PageCount:   2,
+	TotalCount:  2,
+	PageCount:   1,
 	CurrentPage: 1,
-	PerPage:     5,
+	PerPage:     0,
 }
 
 // GetPhoneBookData ...
@@ -219,8 +219,13 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 		MockUsecase: ResponseFromUsecase{
 			Result: &model.PhoneBookWithMeta{
-				PhoneBooks: nil,
-				Metadata:   nil,
+				PhoneBooks: []*model.Phonebook{},
+				Metadata: &model.Metadata{
+					TotalCount:  0,
+					PageCount:   0,
+					CurrentPage: 0,
+					PerPage:     0,
+				},
 			},
 			Error: nil,
 		},

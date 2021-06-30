@@ -45,7 +45,6 @@ type PhonebookDetail struct {
 	Regency        *Location `json:"kabkota,omitempty"`
 	District       *Location `json:"kecamatan,omitempty"`
 	Village        *Location `json:"kelurahan,omitempty"`
-	VillageName    *string   `json:"village_name,omitempty"`
 	Latitude       string    `json:"latitude"`
 	Longitude      string    `json:"longitude"`
 	CoverImagePath string    `json:"cover_image_path"`

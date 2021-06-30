@@ -54,6 +54,7 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
+
 	result.Metadata.CurrentPage = *params.Page
 
 	return &model.PhoneBookWithMeta{

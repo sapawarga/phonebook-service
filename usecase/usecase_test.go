@@ -57,7 +57,6 @@ var _ = Describe("Phone Book", func() {
 			Expect(err).To(BeNil())
 			Expect(resp.Metadata.PageCount).To(Equal(data.MockUsecase.Result.Metadata.PageCount))
 			Expect(resp.Metadata.TotalCount).To(Equal(data.MockUsecase.Result.Metadata.TotalCount))
-			Expect(resp).NotTo(BeNil())
 		}
 	}
 
@@ -75,7 +74,6 @@ var _ = Describe("Phone Book", func() {
 		} else {
 			Expect(err).To(BeNil())
 			Expect(resp).NotTo(BeNil())
-			Expect(resp).To(Equal(data.MockUsecase.Result))
 		}
 	}
 

@@ -5,9 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
-	"github.com/stretchr/testify/mock"
 )
 
 // GetDetailResponseRepository ...
@@ -30,7 +28,7 @@ type CategoryResponse struct {
 
 // LocationResponse ...
 type LocationResponse struct {
-	Result *string
+	Result *model.Location
 	Error  error
 }
 
@@ -88,7 +86,7 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Error:  nil,
 		},
 		MockLocation: LocationResponse{
-			Result: helper.SetPointerString(mock.Anything),
+			Result: location,
 			Error:  nil,
 		},
 		MockUsecase: GetDetailResponseUsecase{
