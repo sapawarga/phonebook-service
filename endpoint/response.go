@@ -9,7 +9,21 @@ import (
 
 // PhoneBookWithMeta ...
 type PhoneBookWithMeta struct {
-	Data *model.PhoneBookWithMeta `json:"data"`
+	Data *PhonebookWithMeta `json:"data"`
+}
+
+// PhonebookWithMeta ...
+type PhonebookWithMeta struct {
+	Phonebooks []*Phonebook `json:"items"`
+	Meta       *Metadata    `json:"_meta"`
+}
+
+// Metadata ...
+type Metadata struct {
+	TotalCount  int64   `json:"totalCount"`
+	PageCount   float64 `json:"pageCount"`
+	CurrentPage int64   `json:"currentPage"`
+	PerPage     int64   `json:"perPage"`
 }
 
 // Phonebook ...
@@ -24,12 +38,6 @@ type Phonebook struct {
 	Status       int64           `json:"status,omitempty"`
 	Category     *model.Category `json:"category"`
 	Distance     float64         `json:"distance,omitempty"`
-}
-
-// Metadata ...
-type Metadata struct {
-	Page  int64 `json:"page"`
-	Total int64 `json:"total"`
 }
 
 // PhonebookDetail ...

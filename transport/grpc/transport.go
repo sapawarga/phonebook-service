@@ -74,8 +74,8 @@ func decodeGetListRequest(ctx context.Context, r interface{}) (interface{}, erro
 
 func encodeGetListResponse(ctx context.Context, r interface{}) (interface{}, error) {
 	resp := r.(*endpoint.PhoneBookWithMeta)
-	data := resp.Data.PhoneBooks
-	meta := resp.Data.Metadata
+	data := resp.Data.Phonebooks
+	meta := resp.Data.Meta
 
 	resultData := make([]*transportPhonebook.PhoneBook, 0)
 	for _, v := range data {

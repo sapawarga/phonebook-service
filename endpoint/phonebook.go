@@ -34,8 +34,18 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 			return nil, err
 		}
 
+		phonebooks := EncodePhonebook(resp.PhoneBooks)
+
 		return &PhoneBookWithMeta{
-			Data: resp,
+			Data: &PhonebookWithMeta{
+				Phonebooks: phonebooks,
+				Meta: &Metadata{
+					TotalCount:  resp.Metadata.TotalCount,
+					PageCount:   resp.Metadata.PageCount,
+					CurrentPage: resp.Metadata.CurrentPage,
+					PerPage:     resp.Metadata.PerPage,
+				},
+			},
 		}, nil
 	}
 }
