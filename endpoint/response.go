@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/sapawarga/phonebook-service/model"
@@ -72,8 +71,7 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 		phoneNumbers := []*PhoneNumber{}
 
 		if v.PhoneNumbers != "" {
-			err := json.Unmarshal([]byte(v.PhoneNumbers), &phoneNumbers)
-			fmt.Println(err)
+			_ = json.Unmarshal([]byte(v.PhoneNumbers), &phoneNumbers)
 		}
 
 		encodeData := &Phonebook{
