@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"math"
 
 	"github.com/sapawarga/phonebook-service/model"
@@ -55,19 +56,20 @@ func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.Ph
 	}
 	for _, v := range result {
 		result := &model.Phonebook{
-			ID:           v.ID,
-			PhoneNumbers: v.PhoneNumbers.String,
-			Description:  v.Description.String,
-			Name:         v.Name.String,
-			Address:      v.Address.String,
-			Latitude:     v.Latitude.String,
-			Longitude:    v.Longitude.String,
-			Status:       v.Status.Int64,
-			RegencyID:    v.RegencyID.Int64,
-			DistrictID:   v.DistrictID.Int64,
-			VillageID:    v.VillageID.Int64,
-			CreatedAt:    v.CreatedAt.Time,
-			UpdatedAt:    v.UpdatedAt.Time,
+			ID:            v.ID,
+			PhoneNumbers:  v.PhoneNumbers.String,
+			Description:   v.Description.String,
+			Name:          v.Name.String,
+			Address:       v.Address.String,
+			Latitude:      v.Latitude.String,
+			Longitude:     v.Longitude.String,
+			CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImagePath.String),
+			Status:        v.Status.Int64,
+			RegencyID:     v.RegencyID.Int64,
+			DistrictID:    v.DistrictID.Int64,
+			VillageID:     v.VillageID.Int64,
+			CreatedAt:     v.CreatedAt.Time,
+			UpdatedAt:     v.UpdatedAt.Time,
 		}
 		if v.CategoryID.Valid {
 			categoryName, err := pb.repo.GetCategoryNameByID(ctx, v.CategoryID.Int64)

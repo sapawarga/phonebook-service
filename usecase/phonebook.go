@@ -3,7 +3,9 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 
+	"github.com/sapawarga/phonebook-service/config"
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 	"github.com/sapawarga/phonebook-service/repository"
@@ -17,6 +19,8 @@ type PhoneBook struct {
 	repo   repository.PhoneBookI
 	logger kitlog.Logger
 }
+
+var cfg, _ = config.NewConfig()
 
 // NewPhoneBook ...
 func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
@@ -79,7 +83,7 @@ func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookD
 		PhoneNumbers:   resp.PhoneNumbers.String,
 		Latitude:       resp.Latitude.String,
 		Longitude:      resp.Longitude.String,
-		CoverImagePath: resp.CoverImagePath.String,
+		CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath.String),
 		Status:         resp.Status.Int64,
 		CreatedAt:      resp.CreatedAt.Time,
 		UpdatedAt:      resp.UpdatedAt.Time,

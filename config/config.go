@@ -17,6 +17,7 @@ func NewConfig() (defConfig *Config, err error) {
 	appGRPCPort, _ := strconv.Atoi(os.Getenv(`APP_GRPC_PORT`))
 	appHTTPPort, _ := strconv.Atoi(os.Getenv(`APP_HTTP_PORT`))
 	debugString := os.Getenv(`APP_DEBUG`)
+	appStorgePublicURL := os.Getenv(`APP_STORAGE_PUBLIC_URL`)
 	debug := false
 
 	if debugString == "true" {
@@ -30,7 +31,7 @@ func NewConfig() (defConfig *Config, err error) {
 	dbName := os.Getenv(`DB_NAME`)
 	driverName := os.Getenv(`DB_DRIVER_NAME`)
 
-	if appEnv == "" || appGRPCPort == 0 || appHTTPPort == 0 {
+	if appEnv == "" || appGRPCPort == 0 || appHTTPPort == 0 || appStorgePublicURL == "" {
 		err = fmt.Errorf("[CONFIG][Critical] Please check section APP on %s", envFileName)
 		return
 	}
@@ -39,6 +40,7 @@ func NewConfig() (defConfig *Config, err error) {
 	defConfig.AppGRPCPort = appGRPCPort
 	defConfig.AppHTTPPort = appHTTPPort
 	defConfig.Debug = debug
+	defConfig.AppStoragePublicURL = appStorgePublicURL
 
 	if dbHost == "" || dbPort == 0 || dbUser == "" || dbName == "" || driverName == "" {
 		err = fmt.Errorf("[CONFIG][Critical] Please check section DB on %s", envFileName)
