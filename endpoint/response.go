@@ -105,7 +105,7 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 
 // GetStatusLabel ...
 var GetStatusLabel = map[int64]map[string]string{
-	-1: {"en": "status deleted", "ina": "Dihapus"},
-	0:  {"en": "Not Active", "ina": "Tidak Aktif"},
-	10: {"en": "Active", "ina": "Aktif"},
+	-1: {"en": "status deleted", "id": "Dihapus"},
+	0:  {"en": "Not Active", "id": "Tidak Aktif"},
+	10: {"en": "Active", "id": "Aktif"},
 }
