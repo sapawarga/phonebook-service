@@ -79,7 +79,7 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			Longitude:      resp.Longitude,
 			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath),
 			Status:         resp.Status,
-			StatusLabel:    GetStatusLabel[resp.Status]["ina"],
+			StatusLabel:    GetStatusLabel[resp.Status]["id"],
 			CreatedAt:      resp.CreatedAt,
 			UpdatedAt:      resp.UpdatedAt,
 		}, nil

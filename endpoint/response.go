@@ -92,7 +92,7 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 			Latitude:      v.Latitude,
 			Longitude:     v.Longitude,
 			Status:        v.Status,
-			StatusLabel:   GetStatusLabel[v.Status]["ina"],
+			StatusLabel:   GetStatusLabel[v.Status]["id"],
 			Category:      v.Category,
 			Distance:      v.Distance,
 		}
