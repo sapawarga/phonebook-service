@@ -2,6 +2,7 @@ package endpoint
 
 import (
 	"context"
+	"fmt"
 
 	"encoding/json"
 
@@ -76,8 +77,9 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			Village:        resp.Village,
 			Latitude:       resp.Latitude,
 			Longitude:      resp.Longitude,
-			CoverImagePath: resp.CoverImagePath,
+			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath),
 			Status:         resp.Status,
+			StatusLabel:    GetStatusLabel[resp.Status]["id"],
 			CreatedAt:      resp.CreatedAt,
 			UpdatedAt:      resp.UpdatedAt,
 		}, nil

@@ -2,8 +2,10 @@ package endpoint
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
+	"github.com/sapawarga/phonebook-service/config"
 	"github.com/sapawarga/phonebook-service/model"
 )
 
@@ -28,16 +30,18 @@ type Metadata struct {
 
 // Phonebook ...
 type Phonebook struct {
-	ID           int64           `json:"id"`
-	PhoneNumbers []*PhoneNumber  `json:"phone_numbers"`
-	Description  string          `json:"description"`
-	Name         string          `json:"name"`
-	Address      string          `json:"address"`
-	Latitude     string          `json:"latitude"`
-	Longitude    string          `json:"longitude"`
-	Status       int64           `json:"status,omitempty"`
-	Category     *model.Category `json:"category"`
-	Distance     float64         `json:"distance,omitempty"`
+	ID            int64           `json:"id"`
+	PhoneNumbers  []*PhoneNumber  `json:"phone_numbers"`
+	Description   string          `json:"description"`
+	Name          string          `json:"name"`
+	Address       string          `json:"address"`
+	Latitude      string          `json:"latitude"`
+	Longitude     string          `json:"longitude"`
+	Status        int64           `json:"status,omitempty"`
+	StatusLabel   string          `json:"status_label,omitempty"`
+	CoverImageURL string          `json:"cover_image_url,omitempty"`
+	Category      *model.Category `json:"category"`
+	Distance      float64         `json:"distance,omitempty"`
 }
 
 // PhonebookDetail ...
@@ -53,8 +57,9 @@ type PhonebookDetail struct {
 	Village        *model.Location `json:"kelurahan,omitempty"`
 	Latitude       string          `json:"latitude"`
 	Longitude      string          `json:"longitude"`
-	CoverImagePath string          `json:"cover_image_path"`
+	CoverImagePath string          `json:"cover_image_url"`
 	Status         int64           `json:"status"`
+	StatusLabel    string          `json:"status_label"`
 	CreatedAt      time.Time       `json:"created_at"`
 	UpdatedAt      time.Time       `json:"updated_at"`
 }
@@ -65,6 +70,9 @@ type StatusResponse struct {
 	Message string `json:"message"`
 }
 
+var cfg, _ = config.NewConfig()
+
+// EncodePhonebook ...
 func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 	result := make([]*Phonebook, 0)
 	for _, v := range data {
@@ -75,20 +83,29 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 		}
 
 		encodeData := &Phonebook{
-			ID:           v.ID,
-			PhoneNumbers: phoneNumbers,
-			Description:  v.Description,
-			Name:         v.Name,
-			Address:      v.Address,
-			Latitude:     v.Latitude,
-			Longitude:    v.Longitude,
-			Status:       v.Status,
-			Category:     v.Category,
-			Distance:     v.Distance,
+			ID:            v.ID,
+			PhoneNumbers:  phoneNumbers,
+			Description:   v.Description,
+			Name:          v.Name,
+			Address:       v.Address,
+			CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImageURL),
+			Latitude:      v.Latitude,
+			Longitude:     v.Longitude,
+			Status:        v.Status,
+			StatusLabel:   GetStatusLabel[v.Status]["id"],
+			Category:      v.Category,
+			Distance:      v.Distance,
 		}
 
 		result = append(result, encodeData)
 	}
 
 	return result
+}
+
+// GetStatusLabel ...
+var GetStatusLabel = map[int64]map[string]string{
+	-1: {"en": "status deleted", "id": "Dihapus"},
+	0:  {"en": "Not Active", "id": "Tidak Aktif"},
+	10: {"en": "Active", "id": "Aktif"},
 }
