@@ -238,3 +238,29 @@ func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error {
 
 	return nil
 }
+
+// IsExistPhoneNumber ...
+func (r *PhonebookRepository) IsExistPhoneNumber(ctx context.Context, phone string) (bool, error) {
+	var query bytes.Buffer
+	var count int
+	var err error
+
+	query.WriteString(` SELECT count(1)	FROM sapawarga_db_development.phonebooks 
+	WHERE JSON_CONTAINS(phone_numbers->'$[*].phone_number', json_array(?))`)
+
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, count, query.String(), phone)
+	} else {
+		err = r.conn.Get(count, query.String(), phone)
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	if count == 0 || err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	return true, nil
+}

@@ -42,6 +42,7 @@ func MakeHTTPHandler(ctx context.Context, fs usecase.Provider, logger kitlog.Log
 	processAdd := kithttp.NewServer(endpoint.MakeAddPhonebook(ctx, fs), decodeCreateRequest, encodeResponse, opts...)
 	processUpdate := kithttp.NewServer(endpoint.MakeUpdatePhonebook(ctx, fs), decodeUpdateRequest, encodeResponse, opts...)
 	processDelete := kithttp.NewServer(endpoint.MakeDeletePhonebook(ctx, fs), decodeGetByID, encodeResponse, opts...)
+	processIsExist := kithttp.NewServer(endpoint.MakeIsExistPhoneNumber(ctx, fs), decodeIsExist, encodeResponse, opts...)
 
 	r := mux.NewRouter()
 
@@ -51,6 +52,7 @@ func MakeHTTPHandler(ctx context.Context, fs usecase.Provider, logger kitlog.Log
 	r.Handle("/phone-books/", processAdd).Methods(helper.HTTP_POST)
 	r.Handle("/phone-books/{id}", processUpdate).Methods(helper.HTTP_PUT)
 	r.Handle("/phone-books/{id}", processDelete).Methods(helper.HTTP_DELETE)
+	r.Handle("/phone-books/check-exist", processIsExist).Methods(helper.HTTP_GET)
 
 	return r
 }
@@ -119,6 +121,13 @@ func decodeUpdateRequest(ctx context.Context, r *http.Request) (interface{}, err
 	}
 
 	reqBody.ID = id
+	return reqBody, nil
+}
+
+func decodeIsExist(ctx context.Context, r *http.Request) (interface{}, error) {
+	phone := r.URL.Query().Get("phone_number")
+
+	reqBody := &endpoint.IsExistPhoneNumber{PhoneNumber: phone}
 	return reqBody, nil
 }
 

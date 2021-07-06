@@ -180,3 +180,19 @@ func MakeCheckReadiness(ctx context.Context, usecase usecase.Provider) endpoint.
 		}, nil
 	}
 }
+
+// MakeIsExistPhoneNumber ...
+func MakeIsExistPhoneNumber(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(*IsExistPhoneNumber)
+
+		isExist, err := usecase.IsExistPhoneNumber(ctx, req.PhoneNumber)
+		if err != nil {
+			return nil, err
+		}
+
+		return map[string]map[string]interface{}{
+			"data": {"exist": isExist},
+		}, nil
+	}
+}

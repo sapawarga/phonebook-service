@@ -150,6 +150,18 @@ func (pb *PhoneBook) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
+// IsExistPhoneNumber ...
+func (pb *PhoneBook) IsExistPhoneNumber(ctx context.Context, phone string) (bool, error) {
+	logger := kitlog.With(pb.logger, "method", "IsExistPhoneNumber")
+	isExist, err := pb.repo.IsExistPhoneNumber(ctx, phone)
+	if err != nil {
+		level.Error(logger).Log("error_is_exist", err)
+		return false, err
+	}
+
+	return isExist, nil
+}
+
 // CheckHealthReadiness ...
 func (pb *PhoneBook) CheckHealthReadiness(ctx context.Context) error {
 	logger := kitlog.With(pb.logger, "method", "CheckHealthReadiness")

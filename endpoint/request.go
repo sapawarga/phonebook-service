@@ -56,3 +56,8 @@ type PhoneNumber struct {
 	PhoneNumber string `json:"phone_number"`
 	Type        string `json:"type"`
 }
+
+// IsExistPhoneNumber ...
+type IsExistPhoneNumber struct {
+	PhoneNumber string `httpquery:"phone_number"`
+}
