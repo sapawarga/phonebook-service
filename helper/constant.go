@@ -39,3 +39,13 @@ func GetStatusEnum(status string) (*int64, error) {
 
 	return nil, errors.New("status_not_registered")
 }
+
+// AscOrDesc ...
+var AscOrDesc = map[string]string{
+	"ascending":  "ASC",
+	"descending": "DESC",
+	"asc":        "ASC",
+	"desc":       "DESC",
+	"ASC":        "ASC",
+	"DESC":       "DESC",
+}

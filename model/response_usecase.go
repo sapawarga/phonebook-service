@@ -1,7 +1,5 @@
 package model
 
-import "time"
-
 // PhoneBookWithMeta ...
 type PhoneBookWithMeta struct {
 	PhoneBooks []*Phonebook `json:"items"`
@@ -24,34 +22,16 @@ type Phonebook struct {
 	Address       string    `json:"address"`
 	Latitude      string    `json:"latitude"`
 	Longitude     string    `json:"longitude"`
-	RegencyID     int64     `json:"kabkota_id,omitempty"`
-	CoverImageURL string    `json:"cover_image_url,omitempty"`
-	DistrictID    int64     `json:"kec_id,omitempty"`
-	VillageID     int64     `json:"kel_id,omitempty"`
-	Status        int64     `json:"status,omitempty"`
+	CoverImageURL string    `json:"cover_image_url"`
+	Regency       *Location `json:"kabkota"`
+	District      *Location `json:"kecamatan"`
+	Village       *Location `json:"kelurahan"`
+	Status        int64     `json:"status"`
+	Sequence      int64     `json:"seq"`
 	Category      *Category `json:"category"`
 	Distance      float64   `json:"distance,omitempty"`
-	CreatedAt     time.Time `json:"created_at,omitempty"`
-	UpdatedAt     time.Time `json:"updated_at,omitempty"`
-}
-
-// PhonebookDetail ...
-type PhonebookDetail struct {
-	ID             int64     `json:"id"`
-	Name           string    `json:"name"`
-	Category       *Category `json:"category"`
-	Address        string    `json:"address"`
-	Description    string    `json:"description"`
-	PhoneNumbers   string    `json:"phone_numbers"`
-	Regency        *Location `json:"kabkota,omitempty"`
-	District       *Location `json:"kecamatan,omitempty"`
-	Village        *Location `json:"kelurahan,omitempty"`
-	Latitude       string    `json:"latitude"`
-	Longitude      string    `json:"longitude"`
-	CoverImagePath string    `json:"cover_image_path"`
-	Status         int64     `json:"status"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	CreatedAt     int64     `json:"created_at"`
+	UpdatedAt     int64     `json:"updated_at"`
 }
 
 type Category struct {

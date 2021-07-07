@@ -27,6 +27,10 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 			Page:       helper.SetPointerInt64(req.Page),
 			Longitude:  helper.SetPointerString(req.Longitude),
 			Latitude:   helper.SetPointerString(req.Latitude),
+			SortBy:     helper.SetPointerString(req.SortBy),
+			OrderBy:    helper.SetPointerString(helper.AscOrDesc[req.OrderBy]),
+			Name:       helper.SetPointerString(req.Name),
+			Phone:      helper.SetPointerString(req.PhoneNumber),
 		}
 
 		resp, err := usecase.GetList(ctx, params)
@@ -65,7 +69,7 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			return nil, err
 		}
 
-		return &PhonebookDetail{
+		data := &PhonebookDetail{
 			ID:             resp.ID,
 			Name:           resp.Name,
 			Category:       resp.Category,
@@ -77,11 +81,15 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			Village:        resp.Village,
 			Latitude:       resp.Latitude,
 			Longitude:      resp.Longitude,
-			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath),
+			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImageURL),
+			Sequence:       resp.Sequence,
 			Status:         resp.Status,
 			StatusLabel:    GetStatusLabel[resp.Status]["id"],
 			CreatedAt:      resp.CreatedAt,
 			UpdatedAt:      resp.UpdatedAt,
+		}
+		return map[string]interface{}{
+			"data": data,
 		}, nil
 	}
 }
@@ -104,6 +112,7 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 			Longitude:      req.Longitude,
 			CoverImagePath: req.CoverImagePath,
 			Status:         req.Status,
+			Sequence:       req.Sequence,
 		}); err != nil {
 			return nil, err
 		}
@@ -135,6 +144,7 @@ func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint
 			Longitude:      req.Longitude,
 			CoverImagePath: req.CoverImagePath,
 			Status:         req.Status,
+			Sequence:       req.Sequence,
 		}); err != nil {
 			return nil, err
 		}

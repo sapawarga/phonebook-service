@@ -67,7 +67,7 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 }
 
 // GetDetail ...
-func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookDetail, error) {
+func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.Phonebook, error) {
 	logger := kitlog.With(pb.logger, "method", "GetDetail")
 	resp, err := pb.repo.GetPhonebookDetailByID(ctx, id)
 	if err != nil {
@@ -75,18 +75,19 @@ func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookD
 		return nil, err
 	}
 
-	result := &model.PhonebookDetail{
-		ID:             resp.ID,
-		Name:           resp.Name.String,
-		Address:        resp.Address.String,
-		Description:    resp.Description.String,
-		PhoneNumbers:   resp.PhoneNumbers.String,
-		Latitude:       resp.Latitude.String,
-		Longitude:      resp.Longitude.String,
-		CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath.String),
-		Status:         resp.Status.Int64,
-		CreatedAt:      resp.CreatedAt.Time,
-		UpdatedAt:      resp.UpdatedAt.Time,
+	result := &model.Phonebook{
+		ID:            resp.ID,
+		Name:          resp.Name.String,
+		Address:       resp.Address.String,
+		Description:   resp.Description.String,
+		PhoneNumbers:  resp.PhoneNumbers.String,
+		Latitude:      resp.Latitude.String,
+		Longitude:     resp.Longitude.String,
+		CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath.String),
+		Status:        resp.Status.Int64,
+		CreatedAt:     resp.CreatedAt.Int64,
+		UpdatedAt:     resp.UpdatedAt.Int64,
+		Sequence:      resp.Sequence.Int64,
 	}
 
 	result, err = pb.appendDetailPhonebook(ctx, resp, result)

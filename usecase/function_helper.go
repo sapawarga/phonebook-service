@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"math"
 
@@ -23,7 +22,7 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 		resp, err = pb.repo.GetListPhoneBook(ctx, params)
 	}
 	if err != nil {
-		level.Error(logger).Log("error", err)
+		level.Error(logger).Log("error_get_list", err)
 		return nil, err
 	}
 	data, err := pb.appendResultGetList(ctx, resp)
@@ -65,25 +64,22 @@ func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.Ph
 			Longitude:     v.Longitude.String,
 			CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImagePath.String),
 			Status:        v.Status.Int64,
-			RegencyID:     v.RegencyID.Int64,
-			DistrictID:    v.DistrictID.Int64,
-			VillageID:     v.VillageID.Int64,
-			CreatedAt:     v.CreatedAt.Time,
-			UpdatedAt:     v.UpdatedAt.Time,
+			Sequence:      v.Sequence.Int64,
+			CreatedAt:     v.CreatedAt.Int64,
+			UpdatedAt:     v.UpdatedAt.Int64,
 		}
-		if v.CategoryID.Valid {
-			categoryName, err := pb.repo.GetCategoryNameByID(ctx, v.CategoryID.Int64)
-			if err != nil && err != sql.ErrNoRows {
-				return nil, err
-			}
-			result.Category = &model.Category{ID: v.CategoryID.Int64, Name: categoryName}
+
+		resAppend, err := pb.appendDetailPhonebook(ctx, v, result)
+		if err != nil {
+			return nil, err
 		}
-		listPhonebook = append(listPhonebook, result)
+
+		listPhonebook = append(listPhonebook, resAppend)
 	}
 	return listPhonebook, nil
 }
 
-func (pb *PhoneBook) appendDetailPhonebook(ctx context.Context, respFromRepo *model.PhoneBookResponse, respDetail *model.PhonebookDetail) (*model.PhonebookDetail, error) {
+func (pb *PhoneBook) appendDetailPhonebook(ctx context.Context, respFromRepo *model.PhoneBookResponse, respDetail *model.Phonebook) (*model.Phonebook, error) {
 	if respFromRepo.CategoryID.Valid {
 		categoryName, err := pb.repo.GetCategoryNameByID(ctx, respFromRepo.CategoryID.Int64)
 		if err != nil {

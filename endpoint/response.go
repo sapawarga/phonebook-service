@@ -3,9 +3,9 @@ package endpoint
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/sapawarga/phonebook-service/config"
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 )
 
@@ -32,16 +32,22 @@ type Metadata struct {
 type Phonebook struct {
 	ID            int64           `json:"id"`
 	PhoneNumbers  []*PhoneNumber  `json:"phone_numbers"`
-	Description   string          `json:"description"`
-	Name          string          `json:"name"`
-	Address       string          `json:"address"`
-	Latitude      string          `json:"latitude"`
-	Longitude     string          `json:"longitude"`
-	Status        int64           `json:"status,omitempty"`
-	StatusLabel   string          `json:"status_label,omitempty"`
-	CoverImageURL string          `json:"cover_image_url,omitempty"`
+	Description   *string         `json:"description"`
+	Name          *string         `json:"name"`
+	Address       *string         `json:"address"`
+	Latitude      *string         `json:"latitude"`
+	Longitude     *string         `json:"longitude"`
+	Status        int64           `json:"status"`
+	StatusLabel   string          `json:"status_label"`
+	CoverImageURL *string         `json:"cover_image_url"`
 	Category      *model.Category `json:"category"`
+	Sequence      int64           `json:"seq"`
 	Distance      float64         `json:"distance,omitempty"`
+	Regency       *model.Location `json:"kabkota"`
+	District      *model.Location `json:"kecamatan"`
+	Village       *model.Location `json:"kelurahan"`
+	CreatedAt     int64           `json:"created_at"`
+	UpdatedAt     int64           `json:"updated_at"`
 }
 
 // PhonebookDetail ...
@@ -52,16 +58,17 @@ type PhonebookDetail struct {
 	Address        string          `json:"address"`
 	Description    string          `json:"description"`
 	PhoneNumbers   []*PhoneNumber  `json:"phone_numbers"`
-	Regency        *model.Location `json:"kabkota,omitempty"`
-	District       *model.Location `json:"kecamatan,omitempty"`
-	Village        *model.Location `json:"kelurahan,omitempty"`
+	Regency        *model.Location `json:"kabkota"`
+	District       *model.Location `json:"kecamatan"`
+	Village        *model.Location `json:"kelurahan"`
 	Latitude       string          `json:"latitude"`
 	Longitude      string          `json:"longitude"`
+	Sequence       int64           `json:"seq"`
 	CoverImagePath string          `json:"cover_image_url"`
 	Status         int64           `json:"status"`
 	StatusLabel    string          `json:"status_label"`
-	CreatedAt      time.Time       `json:"created_at"`
-	UpdatedAt      time.Time       `json:"updated_at"`
+	CreatedAt      int64           `json:"created_at"`
+	UpdatedAt      int64           `json:"updated_at"`
 }
 
 // StatusResponse ...
@@ -85,16 +92,19 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 		encodeData := &Phonebook{
 			ID:            v.ID,
 			PhoneNumbers:  phoneNumbers,
-			Description:   v.Description,
-			Name:          v.Name,
-			Address:       v.Address,
-			CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImageURL),
-			Latitude:      v.Latitude,
-			Longitude:     v.Longitude,
+			Description:   helper.SetPointerString(v.Description),
+			Name:          helper.SetPointerString(v.Name),
+			Address:       helper.SetPointerString(v.Address),
+			CoverImageURL: helper.SetPointerString(fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImageURL)),
+			Latitude:      helper.SetPointerString(v.Latitude),
+			Longitude:     helper.SetPointerString(v.Longitude),
 			Status:        v.Status,
 			StatusLabel:   GetStatusLabel[v.Status]["id"],
 			Category:      v.Category,
 			Distance:      v.Distance,
+			Sequence:      v.Sequence,
+			CreatedAt:     v.CreatedAt,
+			UpdatedAt:     v.UpdatedAt,
 		}
 
 		result = append(result, encodeData)

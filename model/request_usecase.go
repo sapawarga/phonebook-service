@@ -11,6 +11,10 @@ type ParamsPhoneBook struct {
 	Page       *int64
 	Longitude  *string
 	Latitude   *string
+	SortBy     *string
+	OrderBy    *string
+	Name       *string
+	Phone      *string
 }
 
 // AddPhonebook ...
@@ -27,6 +31,7 @@ type AddPhonebook struct {
 	CoverImagePath *string
 	Status         *int64
 	CategoryID     *int64
+	Sequence       *int64
 }
 
 // UpdatePhonebook ...
@@ -44,4 +49,5 @@ type UpdatePhonebook struct {
 	CoverImagePath *string
 	Status         *int64
 	CategoryID     *int64
+	Sequence       *int64
 }
