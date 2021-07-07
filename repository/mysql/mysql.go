@@ -76,6 +76,10 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 		err = r.conn.Get(&total, query.String(), queryParams...)
 	}
 
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+
 	if err != nil {
 		return 0, err
 	}

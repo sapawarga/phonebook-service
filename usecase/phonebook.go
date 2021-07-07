@@ -31,35 +31,13 @@ func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
 }
 
 // GetList ...
-func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook) (*model.PhoneBookWithMeta, error) {
+func (pb *PhoneBook) GetList(ctx context.Context, params *model.GetListRequest) (*model.PhoneBookWithMeta, error) {
 	logger := kitlog.With(pb.logger, "method", "GetList")
-	var limit, page, offset int64 = 10, 1, 0
-	if params.Limit != nil {
-		limit = helper.GetInt64FromPointer(params.Limit)
-	}
-	if params.Page != nil {
-		page = helper.GetInt64FromPointer(params.Page)
-	}
-	offset = (page - 1) * limit
-	req := &model.GetListRequest{
-		Search:     params.Search,
-		RegencyID:  params.RegencyID,
-		DistrictID: params.DistrictID,
-		VillageID:  params.VillageID,
-		Status:     params.Status,
-		Longitude:  params.Longitude,
-		Latitude:   params.Latitude,
-		Limit:      &limit,
-		Offset:     &offset,
-	}
-
-	result, err := pb.getPhonebookAndMetadata(ctx, req, logger)
+	result, err := pb.getPhonebookAndMetadata(ctx, params, logger)
 	if err != nil {
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
-
-	result.Metadata.CurrentPage = *params.Page
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: result.PhoneBooks,

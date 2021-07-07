@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 
 	kitlog "github.com/go-kit/kit/log"
@@ -30,22 +31,26 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 		level.Error(logger).Log("error_append_result", err)
 		return nil, err
 	}
-	if params.Longitude != nil && params.Latitude != nil {
-		total, err = pb.repo.GetListPhonebookByLongLatMeta(ctx, params)
-	} else {
+	meta := &model.Metadata{}
+	if params.Longitude == nil && params.Latitude == nil {
 		total, err = pb.repo.GetMetaDataPhoneBook(ctx, params)
 	}
+
 	if err != nil {
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
+
+	if meta != nil {
+		meta.TotalCount = total
+		meta.PageCount = math.Ceil(float64(total) / float64(*params.Limit))
+		meta.PerPage = helper.GetInt64FromPointer(params.Limit)
+	} else {
+		meta = nil
+	}
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: data,
-		Metadata: &model.Metadata{
-			TotalCount: total,
-			PageCount:  math.Ceil(float64(total) / float64(*params.Limit)),
-			PerPage:    *params.Offset,
-		},
+		Metadata:   meta,
 	}, nil
 }
 

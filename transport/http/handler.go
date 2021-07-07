@@ -81,15 +81,19 @@ func decodeGetListRequest(ctx context.Context, r *http.Request) (interface{}, er
 	_, page := helper.ConvertFromStringToInt64(pageString)
 
 	return &endpoint.GetListRequest{
-		Search:     search,
-		RegencyID:  regID,
-		DistrictID: disID,
-		VillageID:  vilID,
-		Status:     status,
-		Limit:      limit,
-		Page:       page,
-		Latitude:   r.URL.Query().Get("latitude"),
-		Longitude:  r.URL.Query().Get("longitude"),
+		Search:      search,
+		RegencyID:   regID,
+		DistrictID:  disID,
+		VillageID:   vilID,
+		Status:      status,
+		Limit:       limit,
+		Page:        page,
+		Latitude:    r.URL.Query().Get("latitude"),
+		Longitude:   r.URL.Query().Get("longitude"),
+		Name:        r.URL.Query().Get("name"),
+		PhoneNumber: r.URL.Query().Get("phone"),
+		SortBy:      r.URL.Query().Get("sort_by"),
+		OrderBy:     r.URL.Query().Get("sort_order"),
 	}, nil
 }
 

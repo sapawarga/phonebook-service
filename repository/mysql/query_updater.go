@@ -109,6 +109,7 @@ func querySelectLongLat(ctx context.Context, query bytes.Buffer, params *model.G
 }
 
 func querySelectParams(ctx context.Context, query bytes.Buffer, params *model.GetListRequest) (newQuery bytes.Buffer, queryParams []interface{}) {
+	newQuery.Reset()
 	if params.Search != nil {
 		newQuery.WriteString(fmt.Sprintf(` WHERE (name LIKE LOWER(%s) OR JSON_EXTRACT(phone_numbers, '$[*].phone_number') LIKE %s ) `, "'%"+helper.GetStringFromPointer(params.Search)+"%'", "'%"+helper.GetStringFromPointer(params.Search)+"%'"))
 	}
@@ -119,8 +120,13 @@ func querySelectParams(ctx context.Context, query bytes.Buffer, params *model.Ge
 	}
 
 	if params.Name != nil {
-		newQuery.WriteString(andWhere(ctx, newQuery, "name", "="))
-		queryParams = append(queryParams, helper.GetStringFromPointer(params.Name))
+		newQuery.WriteString(andWhere(ctx, newQuery, "name", "LIKE"))
+		queryParams = append(queryParams, "%"+helper.GetStringFromPointer(params.Name)+"%")
+	}
+
+	if params.Phone != nil {
+		newQuery.WriteString(andWhere(ctx, newQuery, "JSON_EXTRACT(phone_numbers, '$[*].phone_number')", "LIKE"))
+		queryParams = append(queryParams, "%"+helper.GetStringFromPointer(params.Phone)+"%")
 	}
 
 	if params.DistrictID != nil {
@@ -203,14 +209,13 @@ func queryUpdateParams(ctx context.Context, params *model.UpdatePhonebook, query
 }
 
 func andWhere(ctx context.Context, query bytes.Buffer, field string, action string) string {
-	qString := query.String()
-	query.Reset()
-	if strings.Contains(qString, " WHERE ") {
-		query.WriteString(fmt.Sprintf(" AND %s %s ? ", field, action))
+	var newQuery string
+	if strings.Contains(query.String(), "WHERE") {
+		newQuery = fmt.Sprintf(" AND %s %s ? ", field, action)
 	} else {
-		query.WriteString(fmt.Sprintf(" WHERE %s %s ? ", field, action))
+		newQuery = fmt.Sprintf(" WHERE %s %s ? ", field, action)
 	}
-	return query.String()
+	return newQuery
 }
 
 func updateNext(ctx context.Context, field string) string {

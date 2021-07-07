@@ -17,14 +17,22 @@ import (
 func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*GetListRequest)
-		params := &model.ParamsPhoneBook{
+		var limit, page, offset int64 = 10, 1, 0
+		if req.Limit != 0 {
+			limit = req.Limit
+		}
+		if req.Page != 0 {
+			page = req.Page
+		}
+		offset = (page - 1) * limit
+		params := &model.GetListRequest{
 			Status:     req.Status,
 			Search:     helper.SetPointerString(req.Search),
 			RegencyID:  helper.SetPointerInt64(req.RegencyID),
 			DistrictID: helper.SetPointerInt64(req.DistrictID),
 			VillageID:  helper.SetPointerInt64(req.VillageID),
 			Limit:      helper.SetPointerInt64(req.Limit),
-			Page:       helper.SetPointerInt64(req.Page),
+			Offset:     helper.SetPointerInt64(offset),
 			Longitude:  helper.SetPointerString(req.Longitude),
 			Latitude:   helper.SetPointerString(req.Latitude),
 			SortBy:     helper.SetPointerString(req.SortBy),
@@ -34,22 +42,27 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 		}
 
 		resp, err := usecase.GetList(ctx, params)
-
 		if err != nil {
 			return nil, err
 		}
 
 		phonebooks := EncodePhonebook(resp.PhoneBooks)
 
+		meta := &Metadata{}
+		if resp.Metadata != nil {
+			meta = &Metadata{
+				TotalCount:  resp.Metadata.TotalCount,
+				PageCount:   resp.Metadata.PageCount,
+				CurrentPage: req.Page,
+				PerPage:     resp.Metadata.PerPage}
+		} else {
+			meta = nil
+		}
+
 		return &PhoneBookWithMeta{
 			Data: &PhonebookWithMeta{
 				Phonebooks: phonebooks,
-				Meta: &Metadata{
-					TotalCount:  resp.Metadata.TotalCount,
-					PageCount:   resp.Metadata.PageCount,
-					CurrentPage: resp.Metadata.CurrentPage,
-					PerPage:     resp.Metadata.PerPage,
-				},
+				Meta:       meta,
 			},
 		}, nil
 	}
