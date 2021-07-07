@@ -17,35 +17,52 @@ import (
 func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*GetListRequest)
-		params := &model.ParamsPhoneBook{
+		var limit, page, offset int64 = 10, 1, 0
+		if req.Limit != 0 {
+			limit = req.Limit
+		}
+		if req.Page != 0 {
+			page = req.Page
+		}
+		offset = (page - 1) * limit
+		params := &model.GetListRequest{
 			Status:     req.Status,
 			Search:     helper.SetPointerString(req.Search),
 			RegencyID:  helper.SetPointerInt64(req.RegencyID),
 			DistrictID: helper.SetPointerInt64(req.DistrictID),
 			VillageID:  helper.SetPointerInt64(req.VillageID),
 			Limit:      helper.SetPointerInt64(req.Limit),
-			Page:       helper.SetPointerInt64(req.Page),
+			Offset:     helper.SetPointerInt64(offset),
 			Longitude:  helper.SetPointerString(req.Longitude),
 			Latitude:   helper.SetPointerString(req.Latitude),
+			SortBy:     helper.SetPointerString(req.SortBy),
+			OrderBy:    helper.SetPointerString(helper.AscOrDesc[req.OrderBy]),
+			Name:       helper.SetPointerString(req.Name),
+			Phone:      helper.SetPointerString(req.PhoneNumber),
 		}
 
 		resp, err := usecase.GetList(ctx, params)
-
 		if err != nil {
 			return nil, err
 		}
 
 		phonebooks := EncodePhonebook(resp.PhoneBooks)
 
+		meta := &Metadata{}
+		if resp.Metadata != nil {
+			meta = &Metadata{
+				TotalCount:  resp.Metadata.TotalCount,
+				PageCount:   resp.Metadata.PageCount,
+				CurrentPage: req.Page,
+				PerPage:     resp.Metadata.PerPage}
+		} else {
+			meta = nil
+		}
+
 		return &PhoneBookWithMeta{
 			Data: &PhonebookWithMeta{
 				Phonebooks: phonebooks,
-				Meta: &Metadata{
-					TotalCount:  resp.Metadata.TotalCount,
-					PageCount:   resp.Metadata.PageCount,
-					CurrentPage: resp.Metadata.CurrentPage,
-					PerPage:     resp.Metadata.PerPage,
-				},
+				Meta:       meta,
 			},
 		}, nil
 	}
@@ -65,7 +82,7 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			return nil, err
 		}
 
-		return &PhonebookDetail{
+		data := &PhonebookDetail{
 			ID:             resp.ID,
 			Name:           resp.Name,
 			Category:       resp.Category,
@@ -77,11 +94,15 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			Village:        resp.Village,
 			Latitude:       resp.Latitude,
 			Longitude:      resp.Longitude,
-			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath),
+			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImageURL),
+			Sequence:       resp.Sequence,
 			Status:         resp.Status,
 			StatusLabel:    GetStatusLabel[resp.Status]["id"],
 			CreatedAt:      resp.CreatedAt,
 			UpdatedAt:      resp.UpdatedAt,
+		}
+		return map[string]interface{}{
+			"data": data,
 		}, nil
 	}
 }
@@ -104,6 +125,7 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 			Longitude:      req.Longitude,
 			CoverImagePath: req.CoverImagePath,
 			Status:         req.Status,
+			Sequence:       req.Sequence,
 		}); err != nil {
 			return nil, err
 		}
@@ -135,6 +157,7 @@ func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint
 			Longitude:      req.Longitude,
 			CoverImagePath: req.CoverImagePath,
 			Status:         req.Status,
+			Sequence:       req.Sequence,
 		}); err != nil {
 			return nil, err
 		}
@@ -177,6 +200,22 @@ func MakeCheckReadiness(ctx context.Context, usecase usecase.Provider) endpoint.
 		return &StatusResponse{
 			Code:    helper.STATUS_OK,
 			Message: "service_is_ready",
+		}, nil
+	}
+}
+
+// MakeIsExistPhoneNumber ...
+func MakeIsExistPhoneNumber(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(*IsExistPhoneNumber)
+
+		isExist, err := usecase.IsExistPhoneNumber(ctx, req.PhoneNumber)
+		if err != nil {
+			return nil, err
+		}
+
+		return map[string]map[string]interface{}{
+			"data": {"exist": isExist},
 		}, nil
 	}
 }

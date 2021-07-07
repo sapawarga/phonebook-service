@@ -84,11 +84,11 @@ func encodeGetListResponse(ctx context.Context, r interface{}) (interface{}, err
 		result := &transportPhonebook.PhoneBook{
 			Id:           v.ID,
 			PhoneNumbers: string(phoneString),
-			Description:  v.Description,
-			Name:         v.Name,
-			Address:      v.Address,
-			Latitude:     v.Latitude,
-			Longitude:    v.Longitude,
+			Description:  helper.GetStringFromPointer(v.Description),
+			Name:         helper.GetStringFromPointer(v.Name),
+			Address:      helper.GetStringFromPointer(v.Address),
+			Latitude:     helper.GetStringFromPointer(v.Latitude),
+			Longitude:    helper.GetStringFromPointer(v.Longitude),
 			Status:       v.Status,
 		}
 		resultData = append(resultData, result)
@@ -124,8 +124,6 @@ func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, e
 		Latitude:     resp.Latitude,
 		Longitude:    resp.Longitude,
 		Status:       resp.Status,
-		CreatedAt:    resp.CreatedAt.String(),
-		UpdatedAt:    resp.UpdatedAt.String(),
 		CategoryId:   resp.Category.ID,
 		CategoryName: resp.Category.Name,
 		RegencyId:    resp.Regency.ID,

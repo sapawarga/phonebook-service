@@ -16,8 +16,9 @@ type PhoneBookResponse struct {
 	Longitude      sql.NullString `db:"longitude"`
 	CoverImagePath sql.NullString `db:"cover_image_path"`
 	Status         sql.NullInt64  `db:"status"`
-	CreatedAt      sql.NullTime   `db:"created_at"`
-	UpdatedAt      sql.NullTime   `db:"updated_at"`
+	CreatedAt      sql.NullInt64  `db:"created_at"`
+	UpdatedAt      sql.NullInt64  `db:"updated_at"`
 	CategoryID     sql.NullInt64  `db:"category_id"`
+	Sequence       sql.NullInt64  `db:"seq"`
 	Distance       float64        `db:"distance,omitempty"`
 }

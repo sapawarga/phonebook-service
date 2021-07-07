@@ -42,11 +42,13 @@ func MakeHTTPHandler(ctx context.Context, fs usecase.Provider, logger kitlog.Log
 	processAdd := kithttp.NewServer(endpoint.MakeAddPhonebook(ctx, fs), decodeCreateRequest, encodeResponse, opts...)
 	processUpdate := kithttp.NewServer(endpoint.MakeUpdatePhonebook(ctx, fs), decodeUpdateRequest, encodeResponse, opts...)
 	processDelete := kithttp.NewServer(endpoint.MakeDeletePhonebook(ctx, fs), decodeGetByID, encodeResponse, opts...)
+	processIsExist := kithttp.NewServer(endpoint.MakeIsExistPhoneNumber(ctx, fs), decodeIsExist, encodeResponse, opts...)
 
 	r := mux.NewRouter()
 
 	// TODO: handle token middleware
 	r.Handle("/phone-books/", processGetList).Methods(helper.HTTP_GET)
+	r.Handle("/phone-books/check-exist", processIsExist).Methods(helper.HTTP_GET)
 	r.Handle("/phone-books/{id}", processGetDetail).Methods(helper.HTTP_GET)
 	r.Handle("/phone-books/", processAdd).Methods(helper.HTTP_POST)
 	r.Handle("/phone-books/{id}", processUpdate).Methods(helper.HTTP_PUT)
@@ -79,15 +81,19 @@ func decodeGetListRequest(ctx context.Context, r *http.Request) (interface{}, er
 	_, page := helper.ConvertFromStringToInt64(pageString)
 
 	return &endpoint.GetListRequest{
-		Search:     search,
-		RegencyID:  regID,
-		DistrictID: disID,
-		VillageID:  vilID,
-		Status:     status,
-		Limit:      limit,
-		Page:       page,
-		Latitude:   r.URL.Query().Get("latitude"),
-		Longitude:  r.URL.Query().Get("longitude"),
+		Search:      search,
+		RegencyID:   regID,
+		DistrictID:  disID,
+		VillageID:   vilID,
+		Status:      status,
+		Limit:       limit,
+		Page:        page,
+		Latitude:    r.URL.Query().Get("latitude"),
+		Longitude:   r.URL.Query().Get("longitude"),
+		Name:        r.URL.Query().Get("name"),
+		PhoneNumber: r.URL.Query().Get("phone"),
+		SortBy:      r.URL.Query().Get("sort_by"),
+		OrderBy:     r.URL.Query().Get("sort_order"),
 	}, nil
 }
 
@@ -122,6 +128,13 @@ func decodeUpdateRequest(ctx context.Context, r *http.Request) (interface{}, err
 	return reqBody, nil
 }
 
+func decodeIsExist(ctx context.Context, r *http.Request) (interface{}, error) {
+	phone := r.URL.Query().Get("phone_number")
+
+	reqBody := &endpoint.IsExistPhoneNumber{PhoneNumber: phone}
+	return reqBody, nil
+}
+
 func decodeNoRequest(ctx context.Context, r *http.Request) (interface{}, error) {
 	return r, nil
 }
@@ -151,7 +164,7 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 
 func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusBadRequest)
+	w.WriteHeader(http.StatusUnprocessableEntity)
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"error": err.Error(),

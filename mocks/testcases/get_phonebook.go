@@ -29,7 +29,7 @@ type ResponseGetMetadata struct {
 // GetPhoneBook ...
 type GetPhoneBook struct {
 	Description           string
-	UsecaseParams         model.ParamsPhoneBook
+	UsecaseParams         model.GetListRequest
 	GetListParams         model.GetListRequest
 	GetMetaDataParams     model.GetListRequest
 	GetCategoryNameParams int64
@@ -55,10 +55,10 @@ var meta = &model.Metadata{
 var GetPhoneBookData = []GetPhoneBook{
 	{
 		Description: "success get phone book",
-		UsecaseParams: model.ParamsPhoneBook{
+		UsecaseParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),
 			Limit:  helper.SetPointerInt64(10),
-			Page:   helper.SetPointerInt64(1),
+			Offset: helper.SetPointerInt64(0),
 		},
 		GetListParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),
@@ -122,10 +122,10 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 	}, {
 		Description: "success get phone book by long and lat",
-		UsecaseParams: model.ParamsPhoneBook{
+		UsecaseParams: model.GetListRequest{
 			Search:    helper.SetPointerString("kantor"),
 			Limit:     helper.SetPointerInt64(10),
-			Page:      helper.SetPointerInt64(1),
+			Offset:    helper.SetPointerInt64(0),
 			Longitude: helper.SetPointerString("-6.00009"),
 			Latitude:  helper.SetPointerString("+90.00009"),
 		},
@@ -197,10 +197,10 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 	}, {
 		Description: "success when get nil data",
-		UsecaseParams: model.ParamsPhoneBook{
+		UsecaseParams: model.GetListRequest{
 			Search: helper.SetPointerString("random name"),
 			Limit:  helper.SetPointerInt64(10),
-			Page:   helper.SetPointerInt64(1),
+			Offset: helper.SetPointerInt64(0),
 		},
 		GetListParams: model.GetListRequest{
 			Search: helper.SetPointerString("random name"),
@@ -239,10 +239,10 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 	}, {
 		Description: "failed get phone book",
-		UsecaseParams: model.ParamsPhoneBook{
+		UsecaseParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),
 			Limit:  helper.SetPointerInt64(10),
-			Page:   helper.SetPointerInt64(1),
+			Offset: helper.SetPointerInt64(0),
 		},
 		GetListParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),
@@ -273,10 +273,10 @@ var GetPhoneBookData = []GetPhoneBook{
 		},
 	}, {
 		Description: "failed get phone book metadata",
-		UsecaseParams: model.ParamsPhoneBook{
+		UsecaseParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),
 			Limit:  helper.SetPointerInt64(10),
-			Page:   helper.SetPointerInt64(1),
+			Offset: helper.SetPointerInt64(0),
 		},
 		GetListParams: model.GetListRequest{
 			Search: helper.SetPointerString("kantor"),

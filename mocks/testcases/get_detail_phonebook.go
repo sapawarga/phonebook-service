@@ -3,8 +3,8 @@ package testcases
 import (
 	"database/sql"
 	"errors"
-	"time"
 
+	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
 )
 
@@ -16,7 +16,7 @@ type GetDetailResponseRepository struct {
 
 // GetDetailResponseUsecase ...
 type GetDetailResponseUsecase struct {
-	Result *model.PhonebookDetail
+	Result *model.Phonebook
 	Error  error
 }
 
@@ -45,7 +45,7 @@ type GetDetailPhonebook struct {
 	MockLocation        LocationResponse
 }
 
-var currentTime = time.Now().UTC()
+var _, currentTime = helper.GetCurrentTimeUTC()
 
 var location = &model.Location{
 	ID:      4312,
@@ -75,8 +75,8 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 				Longitude:      sql.NullString{String: "0.988789", Valid: true},
 				CoverImagePath: sql.NullString{String: "http://localhost:9080", Valid: true},
 				Status:         sql.NullInt64{Int64: 10, Valid: true},
-				CreatedAt:      sql.NullTime{Time: currentTime, Valid: true},
-				UpdatedAt:      sql.NullTime{Time: currentTime, Valid: true},
+				CreatedAt:      sql.NullInt64{Int64: currentTime, Valid: true},
+				UpdatedAt:      sql.NullInt64{Int64: currentTime, Valid: true},
 				CategoryID:     sql.NullInt64{Int64: 1, Valid: true},
 			},
 			Error: nil,
@@ -90,22 +90,22 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 			Error:  nil,
 		},
 		MockUsecase: GetDetailResponseUsecase{
-			Result: &model.PhonebookDetail{
-				ID:             1,
-				Name:           "test kantor",
-				Category:       category,
-				Address:        "jalan panjang",
-				Description:    "test case",
-				PhoneNumbers:   `[{"type":"phone", "phone_number":"+62812312131"]`,
-				Regency:        location,
-				District:       location,
-				Village:        location,
-				Latitude:       "-6.231928",
-				Longitude:      "0.988789",
-				CoverImagePath: "http://localhost:9080",
-				Status:         10,
-				CreatedAt:      currentTime,
-				UpdatedAt:      currentTime,
+			Result: &model.Phonebook{
+				ID:            1,
+				Name:          "test kantor",
+				Category:      category,
+				Address:       "jalan panjang",
+				Description:   "test case",
+				PhoneNumbers:  `[{"type":"phone", "phone_number":"+62812312131"]`,
+				Regency:       location,
+				District:      location,
+				Village:       location,
+				Latitude:      "-6.231928",
+				Longitude:     "0.988789",
+				CoverImageURL: "http://localhost:9080",
+				Status:        10,
+				CreatedAt:     currentTime,
+				UpdatedAt:     currentTime,
 			},
 			Error: nil,
 		},
@@ -151,8 +151,8 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 				Longitude:      sql.NullString{String: "0.988789", Valid: true},
 				CoverImagePath: sql.NullString{String: "http://localhost:9080", Valid: true},
 				Status:         sql.NullInt64{Int64: 10, Valid: true},
-				CreatedAt:      sql.NullTime{Time: currentTime, Valid: true},
-				UpdatedAt:      sql.NullTime{Time: currentTime, Valid: true},
+				CreatedAt:      sql.NullInt64{Int64: currentTime, Valid: true},
+				UpdatedAt:      sql.NullInt64{Int64: currentTime, Valid: true},
 				CategoryID:     sql.NullInt64{Int64: 1, Valid: true},
 			},
 			Error: nil,
@@ -189,8 +189,8 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 				Longitude:      sql.NullString{String: "0.988789", Valid: true},
 				CoverImagePath: sql.NullString{String: "http://localhost:9080", Valid: true},
 				Status:         sql.NullInt64{Int64: 10, Valid: true},
-				CreatedAt:      sql.NullTime{Time: currentTime, Valid: true},
-				UpdatedAt:      sql.NullTime{Time: currentTime, Valid: true},
+				CreatedAt:      sql.NullInt64{Int64: currentTime, Valid: true},
+				UpdatedAt:      sql.NullInt64{Int64: currentTime, Valid: true},
 				CategoryID:     sql.NullInt64{Int64: 1, Valid: true},
 			},
 			Error: nil,

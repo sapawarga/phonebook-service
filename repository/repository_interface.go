@@ -16,6 +16,7 @@ type PhoneBookI interface {
 	GetLocationByID(ctx context.Context, id int64) (*model.Location, error)
 	GetListPhonebookByLongLat(ctx context.Context, params *model.GetListRequest) ([]*model.PhoneBookResponse, error)
 	GetListPhonebookByLongLatMeta(ctx context.Context, params *model.GetListRequest) (int64, error)
+	IsExistPhoneNumber(ctx context.Context, phone string) (bool, error)
 	// Create section
 	Insert(ctx context.Context, params *model.AddPhonebook) error
 	// Update section

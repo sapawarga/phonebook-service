@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -32,18 +31,26 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 
 	query.WriteString(`
 		SELECT id, name, description, address, phone_numbers, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path,
-			status, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at, category_id
+			status, seq, created_at, updated_at, category_id
 		FROM phonebooks`)
 
 	selectQuery, queryParams := querySelectParams(ctx, query, params)
+	query.WriteString(selectQuery.String())
 
-	selectQuery.WriteString(" LIMIT ?, ?")
+	if params.SortBy != nil && params.OrderBy != nil {
+		query.WriteString(" ORDER BY ? ? ")
+		queryParams = append(queryParams, helper.GetStringFromPointer(params.SortBy), helper.GetStringFromPointer(params.OrderBy))
+	} else {
+		query.WriteString(" ORDER BY seq DESC")
+	}
+
+	query.WriteString(" LIMIT ?, ?")
 	queryParams = append(queryParams, helper.GetInt64FromPointer(params.Offset), helper.GetInt64FromPointer(params.Limit))
 
 	if ctx != nil {
-		err = r.conn.SelectContext(ctx, &result, selectQuery.String(), queryParams...)
+		err = r.conn.SelectContext(ctx, &result, query.String(), queryParams...)
 	} else {
-		err = r.conn.Select(&result, selectQuery.String(), queryParams...)
+		err = r.conn.Select(&result, query.String(), queryParams...)
 	}
 
 	if err != nil {
@@ -61,11 +68,16 @@ func (r *PhonebookRepository) GetMetaDataPhoneBook(ctx context.Context, params *
 
 	query.WriteString(`SELECT COUNT(1) FROM phonebooks`)
 	selectQuery, queryParams := querySelectParams(ctx, query, params)
+	query.WriteString(selectQuery.String())
 
 	if ctx != nil {
-		err = r.conn.GetContext(ctx, &total, selectQuery.String(), queryParams...)
+		err = r.conn.GetContext(ctx, &total, query.String(), queryParams...)
 	} else {
-		err = r.conn.Get(&total, selectQuery.String(), queryParams...)
+		err = r.conn.Get(&total, query.String(), queryParams...)
+	}
+
+	if err == sql.ErrNoRows {
+		return 0, nil
 	}
 
 	if err != nil {
@@ -82,7 +94,7 @@ func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int
 	var err error
 
 	query.WriteString(`
-	SELECT id, phone_numbers, description, name, address, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path, status, FROM_UNIXTIME(created_at) as created_at, FROM_UNIXTIME(updated_at) as updated_at, category_id FROM phonebooks`)
+	SELECT id, phone_numbers, description, name, address, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path, status, created_at, updated_at, category_id FROM phonebooks`)
 	query.WriteString(" WHERE id = ? ")
 
 	if ctx != nil {
@@ -144,7 +156,6 @@ func (r *PhonebookRepository) GetLocationByID(ctx context.Context, id int64) (*m
 	}
 
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 
@@ -163,7 +174,7 @@ func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhone
 		seq, cover_image_path, status, created_at, updated_at, category_id)`)
 	query.WriteString(`VALUES(
 		:name, :description, :address, :phone_numbers, :kabkota_id, :kec_id, :kel_id, :latitude, :longitude, 
-		1, :cover_image_path, :status, :created_at, :updated_at, :category_id)`)
+		:seq, :cover_image_path, :status, :created_at, :updated_at, :category_id)`)
 	queryParams := map[string]interface{}{
 		"name":             params.Name,
 		"description":      params.Description,
@@ -179,6 +190,7 @@ func (r *PhonebookRepository) Insert(ctx context.Context, params *model.AddPhone
 		"created_at":       current,
 		"updated_at":       current,
 		"category_id":      params.CategoryID,
+		"seq":              params.Sequence,
 	}
 
 	if ctx != nil {
@@ -237,4 +249,30 @@ func (r *PhonebookRepository) Delete(ctx context.Context, id int64) error {
 	}
 
 	return nil
+}
+
+// IsExistPhoneNumber ...
+func (r *PhonebookRepository) IsExistPhoneNumber(ctx context.Context, phone string) (bool, error) {
+	var query bytes.Buffer
+	var count int
+	var err error
+
+	query.WriteString(` SELECT count(1)	FROM sapawarga_db_development.phonebooks 
+	WHERE JSON_CONTAINS(phone_numbers->'$[*].phone_number', json_array(?))`)
+
+	if ctx != nil {
+		err = r.conn.GetContext(ctx, &count, query.String(), phone)
+	} else {
+		err = r.conn.Get(&count, query.String(), phone)
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	if count == 0 || err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	return true, nil
 }

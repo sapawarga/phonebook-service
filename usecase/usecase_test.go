@@ -43,10 +43,10 @@ var _ = Describe("Phone Book", func() {
 		mockPhoneBookRepo.EXPECT().GetCategoryNameByID(ctx, data.GetCategoryNameParams).Return(data.MockCategorydata.Result, data.MockCategorydata.Error).Times(len(data.MockCategorydata.Result) * 2)
 		mockPhoneBookRepo.EXPECT().GetListPhonebookByLongLat(ctx, gomock.Any()).Return(data.MockGetList.Result, data.MockGetList.Error).Times(1)
 		mockPhoneBookRepo.EXPECT().GetListPhonebookByLongLatMeta(ctx, gomock.Any()).Return(data.MockGetMetadata.Result, data.MockGetMetadata.Error).Times(1)
-		resp, err := phonebook.GetList(ctx, &model.ParamsPhoneBook{
+		resp, err := phonebook.GetList(ctx, &model.GetListRequest{
 			Search:    data.UsecaseParams.Search,
 			Limit:     data.UsecaseParams.Limit,
-			Page:      data.UsecaseParams.Page,
+			Offset:    data.UsecaseParams.Offset,
 			Longitude: data.UsecaseParams.Longitude,
 			Latitude:  data.UsecaseParams.Latitude,
 		})
@@ -55,8 +55,7 @@ var _ = Describe("Phone Book", func() {
 			Expect(resp).To(BeNil())
 		} else {
 			Expect(err).To(BeNil())
-			Expect(resp.Metadata.PageCount).To(Equal(data.MockUsecase.Result.Metadata.PageCount))
-			Expect(resp.Metadata.TotalCount).To(Equal(data.MockUsecase.Result.Metadata.TotalCount))
+			Expect(resp).ToNot(BeNil())
 		}
 	}
 
@@ -117,6 +116,7 @@ var _ = Describe("Phone Book", func() {
 		}
 	}
 
+	// CheckReadinessLogic ...
 	var CheckReadinessLogic = func(idx int) {
 		ctx := context.Background()
 		data := testcases.CheckReadinessData[idx]
@@ -128,14 +128,29 @@ var _ = Describe("Phone Book", func() {
 		}
 	}
 
+	// IsExistPhoneNumberLogic ...
+	var IsExistPhoneNumberLogic = func(idx int) {
+		ctx := context.Background()
+		data := testcases.IsExistPhoneNumberData[idx]
+		mockPhoneBookRepo.EXPECT().IsExistPhoneNumber(ctx, data.RepositoryParams).Return(data.RepositoryResponse.Result, data.RepositoryResponse.Error).Times(1)
+		isExist, err := phonebook.IsExistPhoneNumber(ctx, data.UsecaseParams)
+		if err != nil {
+			Expect(err).NotTo(BeNil())
+		} else {
+			Expect(isExist).To(Equal(data.UsecaseResponse.Result))
+			Expect(err).To(BeNil())
+		}
+	}
+
 	// sort all function names
 	var unitTestLogic = map[string]map[string]interface{}{
-		"GetList":        {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
-		"GetDetail":      {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
-		"Insert":         {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
-		"Update":         {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
-		"Delete":         {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
-		"CheckReadiness": {"func": CheckReadinessLogic, "test_case_count": len(testcases.CheckReadinessData), "desc": testcases.CheckReadinessDescription()},
+		"GetList":            {"func": GetListLogic, "test_case_count": len(testcases.GetPhoneBookData), "desc": testcases.ListPhonebookDescription()},
+		"GetDetail":          {"func": GetDetailPhonebookLogic, "test_case_count": len(testcases.GetDetailPhonebookData), "desc": testcases.DetailPhonebookDescription()},
+		"Insert":             {"func": InsertPhonebookLogic, "test_case_count": len(testcases.InsertPhonebookTestcases), "desc": testcases.InsertPhonebookDescription()},
+		"Update":             {"func": UpdatePhonebookLogic, "test_case_count": len(testcases.UpdatePhonebookTestcases), "desc": testcases.UpdatePhonebookDescription()},
+		"Delete":             {"func": DeletePhonebookLogic, "test_case_count": len(testcases.DeletePhonebookTestcases), "desc": testcases.DeletePhonebookDescription()},
+		"CheckReadiness":     {"func": CheckReadinessLogic, "test_case_count": len(testcases.CheckReadinessData), "desc": testcases.CheckReadinessDescription()},
+		"IsExistPhoneNumber": {"func": IsExistPhoneNumberLogic, "test_case_count": len(testcases.IsExistPhoneNumberData), "desc": testcases.IsExistDescription()},
 	}
 
 	for _, val := range unitTestLogic {

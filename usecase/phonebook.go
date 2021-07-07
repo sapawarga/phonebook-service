@@ -31,35 +31,13 @@ func NewPhoneBook(repo repository.PhoneBookI, logger kitlog.Logger) *PhoneBook {
 }
 
 // GetList ...
-func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook) (*model.PhoneBookWithMeta, error) {
+func (pb *PhoneBook) GetList(ctx context.Context, params *model.GetListRequest) (*model.PhoneBookWithMeta, error) {
 	logger := kitlog.With(pb.logger, "method", "GetList")
-	var limit, page, offset int64 = 10, 1, 0
-	if params.Limit != nil {
-		limit = helper.GetInt64FromPointer(params.Limit)
-	}
-	if params.Page != nil {
-		page = helper.GetInt64FromPointer(params.Page)
-	}
-	offset = (page - 1) * limit
-	req := &model.GetListRequest{
-		Search:     params.Search,
-		RegencyID:  params.RegencyID,
-		DistrictID: params.DistrictID,
-		VillageID:  params.VillageID,
-		Status:     params.Status,
-		Longitude:  params.Longitude,
-		Latitude:   params.Latitude,
-		Limit:      &limit,
-		Offset:     &offset,
-	}
-
-	result, err := pb.getPhonebookAndMetadata(ctx, req, logger)
+	result, err := pb.getPhonebookAndMetadata(ctx, params, logger)
 	if err != nil {
 		level.Error(logger).Log("error", err)
 		return nil, err
 	}
-
-	result.Metadata.CurrentPage = *params.Page
 
 	return &model.PhoneBookWithMeta{
 		PhoneBooks: result.PhoneBooks,
@@ -67,7 +45,7 @@ func (pb *PhoneBook) GetList(ctx context.Context, params *model.ParamsPhoneBook)
 }
 
 // GetDetail ...
-func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookDetail, error) {
+func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.Phonebook, error) {
 	logger := kitlog.With(pb.logger, "method", "GetDetail")
 	resp, err := pb.repo.GetPhonebookDetailByID(ctx, id)
 	if err != nil {
@@ -75,18 +53,19 @@ func (pb *PhoneBook) GetDetail(ctx context.Context, id int64) (*model.PhonebookD
 		return nil, err
 	}
 
-	result := &model.PhonebookDetail{
-		ID:             resp.ID,
-		Name:           resp.Name.String,
-		Address:        resp.Address.String,
-		Description:    resp.Description.String,
-		PhoneNumbers:   resp.PhoneNumbers.String,
-		Latitude:       resp.Latitude.String,
-		Longitude:      resp.Longitude.String,
-		CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath.String),
-		Status:         resp.Status.Int64,
-		CreatedAt:      resp.CreatedAt.Time,
-		UpdatedAt:      resp.UpdatedAt.Time,
+	result := &model.Phonebook{
+		ID:            resp.ID,
+		Name:          resp.Name.String,
+		Address:       resp.Address.String,
+		Description:   resp.Description.String,
+		PhoneNumbers:  resp.PhoneNumbers.String,
+		Latitude:      resp.Latitude.String,
+		Longitude:     resp.Longitude.String,
+		CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImagePath.String),
+		Status:        resp.Status.Int64,
+		CreatedAt:     resp.CreatedAt.Int64,
+		UpdatedAt:     resp.UpdatedAt.Int64,
+		Sequence:      resp.Sequence.Int64,
 	}
 
 	result, err = pb.appendDetailPhonebook(ctx, resp, result)
@@ -148,6 +127,18 @@ func (pb *PhoneBook) Delete(ctx context.Context, id int64) error {
 	}
 
 	return nil
+}
+
+// IsExistPhoneNumber ...
+func (pb *PhoneBook) IsExistPhoneNumber(ctx context.Context, phone string) (bool, error) {
+	logger := kitlog.With(pb.logger, "method", "IsExistPhoneNumber")
+	isExist, err := pb.repo.IsExistPhoneNumber(ctx, phone)
+	if err != nil {
+		level.Error(logger).Log("error_is_exist", err)
+		return false, err
+	}
+
+	return isExist, nil
 }
 
 // CheckHealthReadiness ...

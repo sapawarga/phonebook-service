@@ -182,6 +182,21 @@ func (mr *MockPhoneBookIMockRecorder) Insert(ctx, params interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockPhoneBookI)(nil).Insert), ctx, params)
 }
 
+// IsExistPhoneNumber mocks base method.
+func (m *MockPhoneBookI) IsExistPhoneNumber(ctx context.Context, phone string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsExistPhoneNumber", ctx, phone)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsExistPhoneNumber indicates an expected call of IsExistPhoneNumber.
+func (mr *MockPhoneBookIMockRecorder) IsExistPhoneNumber(ctx, phone interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsExistPhoneNumber", reflect.TypeOf((*MockPhoneBookI)(nil).IsExistPhoneNumber), ctx, phone)
+}
+
 // Update mocks base method.
 func (m *MockPhoneBookI) Update(ctx context.Context, params *model.UpdatePhonebook) error {
 	m.ctrl.T.Helper()
