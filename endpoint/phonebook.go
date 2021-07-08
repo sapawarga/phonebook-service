@@ -48,7 +48,7 @@ func MakeGetList(ctx context.Context, usecase usecase.Provider) endpoint.Endpoin
 
 		phonebooks := EncodePhonebook(resp.PhoneBooks)
 
-		meta := &Metadata{}
+		var meta *Metadata
 		if resp.Metadata != nil {
 			meta = &Metadata{
 				TotalCount:  resp.Metadata.TotalCount,

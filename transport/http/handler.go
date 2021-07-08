@@ -59,9 +59,9 @@ func MakeHTTPHandler(ctx context.Context, fs usecase.Provider, logger kitlog.Log
 
 func decodeGetListRequest(ctx context.Context, r *http.Request) (interface{}, error) {
 	search := r.URL.Query().Get("search")
-	regIDString := r.URL.Query().Get("regency_id")
-	distIDString := r.URL.Query().Get("district_id")
-	vilIDString := r.URL.Query().Get("village_id")
+	regIDString := r.URL.Query().Get("kabkota_id")
+	distIDString := r.URL.Query().Get("kec_id")
+	vilIDString := r.URL.Query().Get("kel_id")
 	statusString := r.URL.Query().Get("status")
 	limitString := r.URL.Query().Get("limit")
 	pageString := r.URL.Query().Get("page")

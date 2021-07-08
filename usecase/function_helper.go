@@ -81,6 +81,7 @@ func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.Ph
 
 		listPhonebook = append(listPhonebook, resAppend)
 	}
+
 	return listPhonebook, nil
 }
 
@@ -98,7 +99,6 @@ func (pb *PhoneBook) appendDetailPhonebook(ctx context.Context, respFromRepo *mo
 			return nil, err
 		}
 		respDetail.Regency = regency
-
 	}
 	if respFromRepo.DistrictID.Valid {
 		district, err := pb.repo.GetLocationByID(ctx, respFromRepo.DistrictID.Int64)
