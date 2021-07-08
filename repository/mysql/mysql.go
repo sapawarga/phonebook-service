@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -38,8 +39,7 @@ func (r *PhonebookRepository) GetListPhoneBook(ctx context.Context, params *mode
 	query.WriteString(selectQuery.String())
 
 	if params.SortBy != nil && params.OrderBy != nil {
-		query.WriteString(" ORDER BY ? ? ")
-		queryParams = append(queryParams, helper.GetStringFromPointer(params.SortBy), helper.GetStringFromPointer(params.OrderBy))
+		query.WriteString(fmt.Sprintf(" ORDER BY %s %s ", helper.GetStringFromPointer(params.SortBy), helper.GetStringFromPointer(params.OrderBy)))
 	} else {
 		query.WriteString(" ORDER BY seq DESC")
 	}

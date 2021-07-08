@@ -40,11 +40,15 @@ type Phonebook struct {
 	Status        int64           `json:"status"`
 	StatusLabel   string          `json:"status_label"`
 	CoverImageURL *string         `json:"cover_image_url"`
+	CategoryID    *int64          `json:"category_id"`
 	Category      *model.Category `json:"category"`
 	Sequence      int64           `json:"seq"`
 	Distance      float64         `json:"distance,omitempty"`
+	RegencyID     *int64          `json:"kabkota_id"`
 	Regency       *model.Location `json:"kabkota"`
+	DistrictID    *int64          `json:"kec_id"`
 	District      *model.Location `json:"kecamatan"`
+	VillageID     *int64          `json:"kel_id"`
 	Village       *model.Location `json:"kelurahan"`
 	CreatedAt     int64           `json:"created_at"`
 	UpdatedAt     int64           `json:"updated_at"`
@@ -100,11 +104,24 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 			Longitude:     helper.SetPointerString(v.Longitude),
 			Status:        v.Status,
 			StatusLabel:   GetStatusLabel[v.Status]["id"],
+			CategoryID:    helper.SetPointerInt64(v.Category.ID),
 			Category:      v.Category,
 			Distance:      v.Distance,
 			Sequence:      v.Sequence,
 			CreatedAt:     v.CreatedAt,
 			UpdatedAt:     v.UpdatedAt,
+			Regency:       v.Regency,
+			District:      v.District,
+			Village:       v.Village,
+		}
+		if v.Regency != nil {
+			encodeData.RegencyID = helper.SetPointerInt64(v.Regency.ID)
+		}
+		if v.District != nil {
+			encodeData.DistrictID = helper.SetPointerInt64(v.District.ID)
+		}
+		if v.Village != nil {
+			encodeData.VillageID = helper.SetPointerInt64(v.Village.ID)
 		}
 
 		result = append(result, encodeData)
