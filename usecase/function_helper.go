@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/sapawarga/phonebook-service/helper"
 	"github.com/sapawarga/phonebook-service/model"
@@ -26,7 +27,7 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 		level.Error(logger).Log("error_get_list", err)
 		return nil, err
 	}
-	data, err := pb.appendResultGetList(ctx, resp)
+	data, err := pb.appendResultGetList(ctx, params, resp)
 	if err != nil {
 		level.Error(logger).Log("error_append_result", err)
 		return nil, err
@@ -54,7 +55,7 @@ func (pb *PhoneBook) getPhonebookAndMetadata(ctx context.Context, params *model.
 	}, nil
 }
 
-func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.PhoneBookResponse) (listPhonebook []*model.Phonebook, err error) {
+func (pb *PhoneBook) appendResultGetList(ctx context.Context, params *model.GetListRequest, result []*model.PhoneBookResponse) (listPhonebook []*model.Phonebook, err error) {
 	if len(result) == 0 {
 		return listPhonebook, nil
 	}
@@ -72,11 +73,21 @@ func (pb *PhoneBook) appendResultGetList(ctx context.Context, result []*model.Ph
 			Sequence:      v.Sequence.Int64,
 			CreatedAt:     v.CreatedAt.Int64,
 			UpdatedAt:     v.UpdatedAt.Int64,
+			Distance:      v.Distance,
 		}
 
 		resAppend, err := pb.appendDetailPhonebook(ctx, v, result)
 		if err != nil {
 			return nil, err
+		}
+
+		if params.Latitude != nil && params.Longitude != nil {
+			id := resAppend.ID.(int64)
+			distance := resAppend.Distance.(float64)
+			category := resAppend.Category.(*model.Category)
+			resAppend.Category = category.Name
+			resAppend.ID = strconv.FormatInt(id, 10)
+			resAppend.Distance = fmt.Sprintf("%f", distance)
 		}
 
 		listPhonebook = append(listPhonebook, resAppend)

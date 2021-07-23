@@ -15,23 +15,23 @@ type Metadata struct {
 
 // Phonebook ...
 type Phonebook struct {
-	ID            int64     `json:"id"`
-	PhoneNumbers  string    `json:"phone_numbers"`
-	Description   string    `json:"description"`
-	Name          string    `json:"name"`
-	Address       string    `json:"address"`
-	Latitude      string    `json:"latitude"`
-	Longitude     string    `json:"longitude"`
-	CoverImageURL string    `json:"cover_image_url"`
-	Regency       *Location `json:"kabkota"`
-	District      *Location `json:"kecamatan"`
-	Village       *Location `json:"kelurahan"`
-	Status        int64     `json:"status"`
-	Sequence      int64     `json:"seq"`
-	Category      *Category `json:"category"`
-	Distance      float64   `json:"distance,omitempty"`
-	CreatedAt     int64     `json:"created_at"`
-	UpdatedAt     int64     `json:"updated_at"`
+	ID            interface{} `json:"id"`
+	PhoneNumbers  string      `json:"phone_numbers"`
+	Description   string      `json:"description"`
+	Name          string      `json:"name"`
+	Address       string      `json:"address"`
+	Latitude      string      `json:"latitude"`
+	Longitude     string      `json:"longitude"`
+	CoverImageURL string      `json:"cover_image_url"`
+	Regency       *Location   `json:"kabkota"`
+	District      *Location   `json:"kecamatan"`
+	Village       *Location   `json:"kelurahan"`
+	Status        int64       `json:"status"`
+	Sequence      int64       `json:"seq"`
+	Category      interface{} `json:"category"`
+	Distance      interface{} `json:"distance,omitempty"`
+	CreatedAt     int64       `json:"created_at"`
+	UpdatedAt     int64       `json:"updated_at"`
 }
 
 type Category struct {

@@ -82,7 +82,6 @@ func encodeGetListResponse(ctx context.Context, r interface{}) (interface{}, err
 		phoneString, _ := json.Marshal(v.PhoneNumbers)
 
 		result := &transportPhonebook.PhoneBook{
-			Id:           v.ID,
 			PhoneNumbers: string(phoneString),
 			Description:  helper.GetStringFromPointer(v.Description),
 			Name:         helper.GetStringFromPointer(v.Name),
@@ -116,7 +115,6 @@ func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, e
 	resp := r.(*endpoint.PhonebookDetail)
 	phoneString, _ := json.Marshal(resp.PhoneNumbers)
 	return &transportPhonebook.GetDetailResponse{
-		Id:           resp.ID,
 		PhoneNumbers: string(phoneString),
 		Description:  resp.Description,
 		Name:         resp.Name,
@@ -124,8 +122,6 @@ func encodeGetDetailResponse(ctx context.Context, r interface{}) (interface{}, e
 		Latitude:     resp.Latitude,
 		Longitude:    resp.Longitude,
 		Status:       resp.Status,
-		CategoryId:   resp.Category.ID,
-		CategoryName: resp.Category.Name,
 		RegencyId:    resp.Regency.ID,
 		RegencyName:  resp.Regency.Name,
 		DistrictId:   resp.District.ID,
