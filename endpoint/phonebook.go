@@ -82,6 +82,8 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			return nil, err
 		}
 
+		category, ok := resp.Category.(*model.Category)
+
 		data := &PhonebookDetail{
 			ID:             resp.ID,
 			Name:           resp.Name,
@@ -100,6 +102,21 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			StatusLabel:    GetStatusLabel[resp.Status]["id"],
 			CreatedAt:      resp.CreatedAt,
 			UpdatedAt:      resp.UpdatedAt,
+		}
+		if ok {
+			data.CategoryID = category.ID
+		}
+		if resp.Regency != nil {
+			data.RegencyID = helper.SetPointerInt64(resp.Regency.ID)
+		}
+		if resp.District != nil {
+			data.DistrictID = helper.SetPointerInt64(resp.District.ID)
+		}
+		if resp.Village != nil {
+			data.VillageID = helper.SetPointerInt64(resp.Village.ID)
+		}
+		if len(phoneNumbers) == 0 {
+			data.PhoneNumbers = nil
 		}
 		return map[string]interface{}{
 			"data": data,
@@ -142,7 +159,10 @@ func MakeAddPhonebook(ctx context.Context, usecase usecase.Provider) endpoint.En
 func MakeUpdatePhonebook(ctx context.Context, usecase usecase.Provider) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(*UpdatePhonebookRequest)
-		phoneNumbers, _ := json.Marshal(req.PhoneNumbers)
+		var phoneNumbers []byte
+		if len(req.PhoneNumbers) > 0 {
+			phoneNumbers, _ = json.Marshal(req.PhoneNumbers)
+		}
 		if err := usecase.Update(ctx, &model.UpdatePhonebook{
 			ID:             req.ID,
 			Name:           req.Name,
