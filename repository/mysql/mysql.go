@@ -257,7 +257,7 @@ func (r *PhonebookRepository) IsExistPhoneNumber(ctx context.Context, phone stri
 	var count int
 	var err error
 
-	query.WriteString(` SELECT count(1)	FROM sapawarga_db_development.phonebooks 
+	query.WriteString(` SELECT count(1) FROM phonebooks 
 	WHERE JSON_CONTAINS(phone_numbers->'$[*].phone_number', json_array(?))`)
 
 	if ctx != nil {
