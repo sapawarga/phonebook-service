@@ -94,7 +94,8 @@ func (r *PhonebookRepository) GetPhonebookDetailByID(ctx context.Context, id int
 	var err error
 
 	query.WriteString(`
-	SELECT id, phone_numbers, description, name, address, kabkota_id, kec_id, kel_id, latitude, longitude, cover_image_path, status, created_at, updated_at, category_id FROM phonebooks`)
+	SELECT id, phone_numbers, description, name, address, kabkota_id, kec_id, kel_id, latitude, longitude, 
+	cover_image_path, status, seq, created_at, updated_at, category_id FROM phonebooks`)
 	query.WriteString(" WHERE id = ? ")
 
 	if ctx != nil {

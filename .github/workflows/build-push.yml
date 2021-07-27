@@ -1,0 +1,40 @@
+name: Phonebook Service
+on:
+  push:
+    branches:
+      - main
+    path:
+      - 'phonebook-service/**'
+  workflow_dispatch:
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    # Configure Docker with Credentials
+    - name: Configure Docker
+      run: |
+        docker login ${{ secrets.HARBOR_URL }} -u ${{ secrets.HARBOR_USERNAME }} -p ${{ secrets.HARBOR_PASSWORD }}
+      
+    # Build the Docker image
+    - name: Set version tag
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: phonebook-service/
+        file: phonebook-service/Dockerfile
+        push: true
+        tags: ${{ secrets.SERVICE_PHONEBOOK_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
