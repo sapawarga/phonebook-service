@@ -6,24 +6,20 @@ Sapawarga service for "Nomor Penting" feature.
 
 ## Quick Setup
 
-1. Download dahulu [bloomRPC](https://appimage.github.io/BloomRPC/) karena aplikasi ini menggunakan protokol GRPC jadi untuk mengetesnya menggunakan bloomRPC. BloomRPC ini seperti Postman. Ikuti saja langkah untuk instalasinya.
-2. Siapkan databasenya, sebaiknya minta file `sql.dump` dari database sapawarga stagging yang existing karena masih menggunakan struktur data yang sama
-3. Jalankan `go mod tidy` atau `go mod download`
-4. Untuk melakukan test dan melihat coveragenya ketikkan command `make test`
-5. Buat file `config.json` dan copy dari `config.example.json`
-6. Jalankan command `make build`
-7. Jalankan command `make run`
-8. Clone repository [proto-file](https://github.com/sapawarga/proto-file)
-9. Buka bloomRPC dan pilih file protonya dari repository sapawarga/proto-file
+1. Clone this repository with this command `git clone git@github.com:sapawarga/phonebook-service.git`
+2. Use `.env` for environment variable and copy from `.env.example`
+3. Use port that written in `docker-compose.yml`
+4. Run `docker-compose up --build`
 
 ## Stack Libraries
 1. [Gomock](https://github.com/golang/mock)
 2. [Gokit](https://github.com/go-kit/kit)
 3. [GRPC](https://grpc.io/docs/languages/go/basics/)
+4. [Gorilla Mux](https://github.com/gorilla/mux)
 
 
 ## Package Structure
-Pada bahasa pemrograman Golang, satu folder atau *directory* itu dikatakan satu *package* sehingga berikut ini adalah strukur *package* / *directory* dengan menerapkan konsep *clean architecture*
+Golang use pattern, one directory is one package. This is repository's structure directory
 
 ```sh
 cmd 
@@ -46,28 +42,28 @@ model
 helper
 ```
 ### 1. CMD
-Folder `cmd` ini berfungsi sebagai `infrastructure` dari keseluruhan service. Di dalam folder inilah segala jenis inisialisasi baik itu untuk database, aplikasi *thidrdparty*, *routing*, *modul* diinisialisasi di dalam folder ini. Packagenya menggunakan nama `main` yang artinya ini adalah package utama yang akan diakses oleh client saat menggunakan service ini. 
+Directory `cmd` acts as `infrastructure` of all entire service. Initialitation of database, thirdparty apps, routing, and module are in this package. This package using name `main` then this package will be the main package that client will access. 
 
 ### 2. Endpoint
-Folder `endpoint` berfungsi sebagai tempat untuk mengeksekusi terkait request dari client dan response untuk client. Segala bentuk validasi dari client terkait pengisian body request dapat dilakukan di sini sehingga ketika sebelum masuk usecase, body json yang digunakan adlaah body request yang sudah bersih
+Directory `endpoint` acts as encoding for request from client and response to client. Every validations request from clients must be here so each request that sent to usecase is clear and valid.
 
 ### 3. Transport
-Package ini berfungsi untuk mengatur bagaimana caranya aplikasi/service yang dibuat ini dalam menerima request maupun memberikan response ke client. Di dalam sini dapat diatur apakah requestnya yang diterima dapat dari akses `http`, `grpc`, `tcp` atau protokol lainnya.
+This directory has function for how the service accessing and how the service receive request then return response. This package has policy to arrange how request can be sent by any kind of protocols
 
 ### 4. Usecase
-Package ini merupakan bagian dimana segala bisnis logic dari service yang dibuat tersimpan. Seharusnya di dalam package ini tidak terdapat logika dari repository maupun pengecekan validasi dari inputan client, hanya ada bisnis logik saja. Usecase ini dapat terdiri dari kondisi konkret maupun unit testnya. Di package ini juga unit test ditaruh untuk memastikan logik yang dijalankan sudah sesuai dengan ekspektasi.
+This directory is for create all business logic for the service. There is no more validation of the request from client. Moreover, this package is include like usecase, usecase test and usecase interface. Usecase test is for testing all business logic. It is using unit test
 
 ### 5. Mocks
-Package ini terdiri atas dua bagian, yaitu package `mock` yang merupakan hasil generate dari `mockgen` dan package `testcases` yang merupakan skenario untuk unit test. Untuk package `mock` ini adalah hasil generate dari interface di repository, untuk mensimulasikan response dari repository aslinya, sedangkan `testcase` itu tempat menampung segala skenario unit test baik itu untuk bagian sukses maupun failed. Pada kasus ini untuk skenarionya saya buat menjadi satu list sehingga ketika menjalankan unit test, tidak perlu mendeklarasikan satu per satu skenarionya, tinggal melooping saja dari skenario yang sudah dibuat.
+This package is consisted of mocking and testcase. Mocking is generated from repository interface moreover it has function for simulating action from real repository. Testcase is for collecting any scenarios of every single unit test. It is using array for collecting all scenarios and in unit test just loop for each scenario.
 
 ### 6, Config
-Package ini berfungsi sebagai konfigurasi untuk service yang digunakan. Di sini dapat mendeklarasikan variabel-variabl yang diperlukan dalam menjalankan servicenya semisal terkait settingan database yang digunakan, settingan port dari service dan juga settingan untuk akses thirdparty. Selain itu dapat juga digunakan untuk menyimpan `constant` maupun `enum` di sini.
+This package function is for configuration of any constant or variables that use in whole service.
 
 ### 7. Model
-Package ini berfungsi untuk menyimpan semua permodelan data yang digunakan di dalam keseluruhan package
+This package is for create struct that will be used in repository and usecase
 
 ### 8. Helper
-Package ini berfungsi menampung semua fungsi yang bersifat utilitas dan dapat digunakan di seluruh package tanpa harus melakukan inisialisasi terlebih dahulu.
+This package is utility package that can be used without initialization first
 
 
 
