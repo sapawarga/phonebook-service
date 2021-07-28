@@ -22,7 +22,7 @@ jobs:
     # Configure Docker with Credentials
     - name: Configure Docker
       run: |
-        docker login ${{ secrets.HARBOR_URL }} -u ${{ secrets.HARBOR_USERNAME }} -p ${{ secrets.HARBOR_PASSWORD }}
+        docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
       
     # Build the Docker image
     - name: Set version tag
