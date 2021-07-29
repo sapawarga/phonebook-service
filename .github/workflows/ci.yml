@@ -39,16 +39,4 @@ jobs:
         run: make coverage
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-    #     - name: Send coverage
-    #       uses: shogo82148/actions-goveralls@v1
-    #       with:
-    #         path-to-profile: profile.cov
-    #         flag-name: Go-${{ matrix.go }}
-    #         parallel: true
-    # finish:
-    #   needs: test
-    #   runs-on: ubuntu-latest
-    #   steps:
-    #     - uses: shogo82148/actions-goveralls@v1
-    #       with:
-    #         parallel-finished: true
+
