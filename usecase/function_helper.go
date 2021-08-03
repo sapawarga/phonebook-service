@@ -68,7 +68,7 @@ func (pb *PhoneBook) appendResultGetList(ctx context.Context, params *model.GetL
 			Address:       v.Address.String,
 			Latitude:      v.Latitude.String,
 			Longitude:     v.Longitude.String,
-			CoverImageURL: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImagePath.String),
+			CoverImageURL: v.CoverImagePath.String,
 			Status:        v.Status.Int64,
 			Sequence:      v.Sequence.Int64,
 			CreatedAt:     v.CreatedAt.Int64,
