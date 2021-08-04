@@ -53,7 +53,8 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        export VERSION=$(${{ steps.vars.outputs.sha_short }})
+        echo ${{ steps.vars.outputs.sha_short }} > version
+        export VERSION=$(cat ./version)
         echo VERSION
         sed -i "s/__VERSION__/${VERSION}/g" ./kubernetes/deployment.phonebookv2.yml
 
