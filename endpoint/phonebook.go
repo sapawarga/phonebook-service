@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"context"
-	"fmt"
 
 	"encoding/json"
 
@@ -77,49 +76,12 @@ func MakeGetDetail(ctx context.Context, usecase usecase.Provider) endpoint.Endpo
 			return nil, err
 		}
 
-		phoneNumbers := []*PhoneNumber{}
-		if err := json.Unmarshal([]byte(resp.PhoneNumbers), &phoneNumbers); err != nil {
-			return nil, err
-		}
+		dataDecode := []*model.Phonebook{resp}
 
-		category, ok := resp.Category.(*model.Category)
+		data := EncodePhonebook(dataDecode)
 
-		data := &PhonebookDetail{
-			ID:             resp.ID,
-			Name:           resp.Name,
-			Category:       resp.Category,
-			Address:        resp.Address,
-			Description:    resp.Description,
-			PhoneNumbers:   phoneNumbers,
-			Regency:        resp.Regency,
-			District:       resp.District,
-			Village:        resp.Village,
-			Latitude:       resp.Latitude,
-			Longitude:      resp.Longitude,
-			CoverImagePath: fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, resp.CoverImageURL),
-			Sequence:       resp.Sequence,
-			Status:         resp.Status,
-			StatusLabel:    GetStatusLabel[resp.Status]["id"],
-			CreatedAt:      resp.CreatedAt,
-			UpdatedAt:      resp.UpdatedAt,
-		}
-		if ok {
-			data.CategoryID = category.ID
-		}
-		if resp.Regency != nil {
-			data.RegencyID = helper.SetPointerInt64(resp.Regency.ID)
-		}
-		if resp.District != nil {
-			data.DistrictID = helper.SetPointerInt64(resp.District.ID)
-		}
-		if resp.Village != nil {
-			data.VillageID = helper.SetPointerInt64(resp.Village.ID)
-		}
-		if len(phoneNumbers) == 0 {
-			data.PhoneNumbers = nil
-		}
 		return map[string]interface{}{
-			"data": data,
+			"data": data[0],
 		}, nil
 	}
 }

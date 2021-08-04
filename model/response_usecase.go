@@ -22,7 +22,7 @@ type Phonebook struct {
 	Address       string      `json:"address"`
 	Latitude      string      `json:"latitude"`
 	Longitude     string      `json:"longitude"`
-	CoverImageURL string      `json:"cover_image_url"`
+	CoverImageURL *string     `json:"cover_image_url"`
 	Regency       *Location   `json:"kabkota"`
 	District      *Location   `json:"kecamatan"`
 	Village       *Location   `json:"kelurahan"`
