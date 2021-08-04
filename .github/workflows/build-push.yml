@@ -36,3 +36,26 @@ jobs:
         context: ./
         push: true
         tags: ${{ secrets.SERVICE_PHONEBOOK_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ secrets.GCLOUD_PROJECT }}
+        service_account_email: ${{ secrets.GCLOUD_EMAIL }}
+        service_account_key: ${{ secrets.GCLOUD_CREDENTIALS }}
+        export_default_credentials: true
+
+    # Get the GKE credentials so we can deploy to the cluster
+    - run: |-
+        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
+
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        export VERSION=$(${{ steps.vars.outputs.sha_short }})
+        echo VERSION
+        sed -i "s/__VERSION__/${VERSION}/g" ./kubernetes/deployment.phonebookv2.yml
+
+        # kubectl config set-context --current --namespace=sapawarga
+        # kubectl apply -f deployment-phonebook-v2.yaml
+        # kubectl get deployment,pods,service,node -o wide
