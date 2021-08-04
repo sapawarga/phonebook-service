@@ -102,7 +102,7 @@ var GetDetailPhonebookData = []GetDetailPhonebook{
 				Village:       location,
 				Latitude:      "-6.231928",
 				Longitude:     "0.988789",
-				CoverImageURL: "http://localhost:9080",
+				CoverImageURL: helper.SetPointerString("local.test"),
 				Status:        10,
 				CreatedAt:     currentTime,
 				UpdatedAt:     currentTime,

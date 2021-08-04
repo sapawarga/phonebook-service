@@ -72,7 +72,7 @@ type PhonebookDetail struct {
 	Latitude       string          `json:"latitude"`
 	Longitude      string          `json:"longitude"`
 	Sequence       int64           `json:"seq"`
-	CoverImagePath string          `json:"cover_image_url"`
+	CoverImagePath *string         `json:"cover_image_url"`
 	Status         int64           `json:"status"`
 	StatusLabel    string          `json:"status_label"`
 	CreatedAt      int64           `json:"created_at"`
@@ -100,24 +100,23 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 		category, ok := v.Category.(*model.Category)
 
 		encodeData := &Phonebook{
-			ID:            v.ID,
-			PhoneNumbers:  phoneNumbers,
-			Description:   helper.SetPointerString(v.Description),
-			Name:          helper.SetPointerString(v.Name),
-			Address:       helper.SetPointerString(v.Address),
-			CoverImageURL: helper.SetPointerString(fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, v.CoverImageURL)),
-			Latitude:      helper.SetPointerString(v.Latitude),
-			Longitude:     helper.SetPointerString(v.Longitude),
-			Status:        v.Status,
-			StatusLabel:   GetStatusLabel[v.Status]["id"],
-			Category:      v.Category,
-			Distance:      v.Distance,
-			Sequence:      v.Sequence,
-			CreatedAt:     v.CreatedAt,
-			UpdatedAt:     v.UpdatedAt,
-			Regency:       v.Regency,
-			District:      v.District,
-			Village:       v.Village,
+			ID:           v.ID,
+			PhoneNumbers: phoneNumbers,
+			Description:  helper.SetPointerString(v.Description),
+			Name:         helper.SetPointerString(v.Name),
+			Address:      helper.SetPointerString(v.Address),
+			Latitude:     helper.SetPointerString(v.Latitude),
+			Longitude:    helper.SetPointerString(v.Longitude),
+			Status:       v.Status,
+			StatusLabel:  GetStatusLabel[v.Status]["id"],
+			Category:     v.Category,
+			Distance:     v.Distance,
+			Sequence:     v.Sequence,
+			CreatedAt:    v.CreatedAt,
+			UpdatedAt:    v.UpdatedAt,
+			Regency:      v.Regency,
+			District:     v.District,
+			Village:      v.Village,
 		}
 		if ok {
 			encodeData.CategoryID = helper.SetPointerInt64(category.ID)
@@ -134,7 +133,9 @@ func EncodePhonebook(data []*model.Phonebook) []*Phonebook {
 		if len(phoneNumbers) == 0 {
 			encodeData.PhoneNumbers = nil
 		}
-
+		if v.CoverImageURL != nil {
+			encodeData.CoverImageURL = helper.SetPointerString(fmt.Sprintf("%s/%s", cfg.AppStoragePublicURL, *v.CoverImageURL))
+		}
 		result = append(result, encodeData)
 	}
 
