@@ -37,5 +37,5 @@ jobs:
           echo ::set-output name=sha::$(git rev-parse HEAD) > version
           export VERSION=$(cat ./version)
           echo $VERSION
-          sed -i "s/__VERSION__/${VERSION}/g" deployment.phonebookv2.yml
+          sed -i "s/__VERSION__/${{env.SHA}}/g" kubernetes/deployment-phonebookv2.yml
 
