@@ -55,8 +55,8 @@ jobs:
       run: |-
         echo ${{ steps.vars.outputs.sha_short }} > version
         export VERSION=$(cat ./version)
-        echo VERSION
-        sed -i "s/__VERSION__/${VERSION}/g" ./kubernetes/deployment.phonebookv2.yml
+        echo $VERSION
+        sed -i "s/__VERSION__/${VERSION}/g" kubernetes/deployment.phonebookv2.yml
 
         # kubectl config set-context --current --namespace=sapawarga
         # kubectl apply -f deployment-phonebook-v2.yaml
