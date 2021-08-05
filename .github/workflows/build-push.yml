@@ -10,29 +10,57 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@main
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Github short-commit
+        uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+        with:
+          length: 6
+      - run: echo $SHA
+        env:
+          SHA: ${{ env.SHA }}
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    
-    # Configure Docker with Credentials
-    - name: Configure Docker
-      run: |
-        docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
       
-    # Build the Docker image
-    - name: Set version tag
-      id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      
+      # Configure Docker with Credentials
+      - name: Configure Docker
+        run: |
+          docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+        
+      # Build the Docker image
+      - name: Set version tag
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-    - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        context: ./
-        push: true
-        tags: ${{ secrets.SERVICE_PHONEBOOK_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          push: true
+          tags: ${{ secrets.SERVICE_PHONEBOOK_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCLOUD_PROJECT }}
+          service_account_email: ${{ secrets.GCLOUD_EMAIL }}
+          service_account_key: ${{ secrets.GCLOUD_CREDENTIALS }}
+          export_default_credentials: true
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - run: |-
+          gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
+
+      - name: Deploy
+        run: |-
+          sed -i "s/__VERSION__/${{env.SHA}}/g" kubernetes/deployment-phonebookv2.yml
+          kubectl config set-context --current --namespace=sapawarga
+          kubectl apply -f deployment-phonebook-v2.yaml
+          kubectl get deployment,pods,service,node -o wide
+

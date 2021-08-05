@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phonebook-v2
+  namespace: sapawarga
+  labels:
+    app: phonebook
+    version: v2
+spec:
+  selector:
+    matchLabels:
+      app: phonebook
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: phonebook
+        version: v2
+    spec:
+      containers:
+      - name: phonebook
+        image: registry.digitalservice.id/sapawarga/service-phonebook:__VERSION__
+        ports:
+        - containerPort: 3002
+        readinessProbe:
+          httpGet:
+            path: /phone-books/
+            port: 3002
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        env:
+        - name: APP_ENV
+          value: "production"
+        - name: APP_DEBUG
+          value: "true"
+        - name: APP_GRPC_PORT
+          value: "3001"
+        - name: APP_HTTP_PORT
+          value: "3002"
+        - name: DB_DRIVER_NAME
+          value: "mysql"
+        - name: DB_HOST
+          value: "mysql"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "sapawarga_db"
+        - name: DB_USER
+          value: "sapawarga"
+        - name: DB_PASS
+          value: "password" 
+        - name: APP_STORAGE_PUBLIC_URL
+          valueFrom:
+            secretKeyRef:
+              name: secret-backend
+              key: APP_STORAGE_PUBLIC_URL
