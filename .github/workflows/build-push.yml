@@ -20,9 +20,6 @@ jobs:
           length: 6
       - run: echo $SHA
         env:
-          SHA: ${{ steps.short-sha.outputs.sha }}
-      - run: echo $SHA
-        env:
           SHA: ${{ env.SHA }}
 
       # Build the Docker image
@@ -30,12 +27,7 @@ jobs:
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-
       - name: Deploy
         run: |-
-          ls -al
-          echo ::set-output name=sha::$(git rev-parse HEAD) > version
-          export VERSION=$(cat ./version)
-          echo $VERSION
           sed -i "s/__VERSION__/${{env.SHA}}/g" kubernetes/deployment-phonebookv2.yml
 
