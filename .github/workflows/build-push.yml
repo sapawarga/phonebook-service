@@ -11,9 +11,19 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@test-workflow
-#      - name: Checkout
-#        uses: actions/checkout@main
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Github short-commit
+        uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+        with:
+          length: 6
+      - run: echo $SHA
+        env:
+          SHA: ${{ steps.short-sha.outputs.sha }}
+      - run: echo $SHA
+        env:
+          SHA: ${{ env.SHA }}
 
 #     - name: Set up QEMU
 #       uses: docker/setup-qemu-action@v1
@@ -25,7 +35,7 @@ jobs:
 #     - name: Configure Docker
 #       run: |
 #         docker login ${{ secrets.REGISTRY_URL }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-      
+
     # Build the Docker image
     - name: Set version tag
       id: vars
