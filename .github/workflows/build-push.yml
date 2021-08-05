@@ -53,6 +53,7 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
+        ls -al
         echo ::set-output name=sha::$(git rev-parse HEAD) > version
         export VERSION=$(cat ./version)
         echo $VERSION
