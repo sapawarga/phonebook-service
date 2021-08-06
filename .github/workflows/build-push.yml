@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - workflow-deploy
 
   workflow_dispatch:
 jobs:
