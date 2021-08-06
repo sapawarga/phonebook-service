@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - workflow-deploy
 
   workflow_dispatch:
 jobs:
@@ -46,11 +47,11 @@ jobs:
           tags: ${{ secrets.SERVICE_PHONEBOOK_IMAGENAME }}:${{ steps.vars.outputs.sha_short }}
 
       # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@master
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{ secrets.GCLOUD_PROJECT }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
         with:
-          project_id: ${{ secrets.GCLOUD_PROJECT }}
-          service_account_email: ${{ secrets.GCLOUD_EMAIL }}
-          service_account_key: ${{ secrets.GCLOUD_CREDENTIALS }}
           export_default_credentials: true
 
       # Get the GKE credentials so we can deploy to the cluster
